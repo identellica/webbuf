@@ -1,6 +1,7 @@
 +++
-status = "open"
+status = "closed"
 opened = "2026-06-20"
+closed = "2026-06-20"
 +++
 
 # Body text contrast too low (harder to read than astrohacker)
@@ -63,3 +64,26 @@ This becomes one experiment, designed and committed per the repo workflow.
 ## Experiments
 
 - [Experiment 1: Raise the --muted token to WCAG AA](01-raise-muted-contrast.md) — **Pass**
+
+## Conclusion
+
+Body-text readability is fixed and live at https://webbuf.pages.dev.
+
+The cause was a single token: webbuf rendered nearly all secondary prose in
+`--muted`, which was set to Tokyo Night's *comment* color — fine for code
+comments, far too dim for reading text (2.76:1 in dark mode, failing even the
+large-text threshold; 3.57:1 in light). `~/dev/ah` avoids this by using a
+brighter token for body text and reserving the dim one for minor chrome.
+
+Fix: raise `--muted` in both themes in `src/styles/global.css`, keeping it below
+`--fg` so the heading/body hierarchy survives:
+
+- dark: `#565f89` → `#a9b1d6` (2.76:1 → **8.10:1**, Tokyo Night `fg_dark`,
+  matching ah)
+- light: `#6172b0` → `#515b85` (3.57:1 → **5.10:1**)
+
+Key decision: a one-token bump rather than introducing a second token and
+rewriting per-element classes. webbuf's `--muted` is almost entirely body prose,
+so a single change fixed all ~18 usages with minimal risk; the few decorative
+labels (uppercase category headers, the `kind` badge) read fine at the higher
+contrast.
