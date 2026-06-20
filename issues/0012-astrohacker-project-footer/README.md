@@ -1,6 +1,7 @@
 +++
-status = "open"
+status = "closed"
 opened = "2026-06-20"
+closed = "2026-06-20"
 +++
 
 # "An Astrohacker Project" footer branding
@@ -58,3 +59,27 @@ This becomes one experiment, designed and committed per the repo workflow.
 ## Experiments
 
 - [Experiment 1: Astrohacker logo pipeline and footer link](01-footer-and-logo-pipeline.md) — **Pass**
+
+## Conclusion
+
+The footer now carries an "An Astrohacker Project" logo link to
+https://astrohacker.com, matching the branding used in `~/dev/termsurf`, and the
+work is live at https://webbuf.pages.dev.
+
+What changed:
+
+- Added the `astrohacker-6` source logos (`assets/astrohacker-6-{light,dark}.png`,
+  700×700) — the same logo family termsurf ships.
+- Extended `scripts/process-images.ts`: the per-variant `favicon` field is now
+  optional, and the two Astrohacker logos are processed as WebP-only variants
+  (no favicon). This regenerated `src/lib/images.ts` and emitted
+  `astrohacker-6-{light,dark}-{32..400}.webp`.
+- Updated `Footer.astro` to add the centered "An Astrohacker Project" link below
+  the existing copyright + GitHub / npm row, using webbuf's light/dark
+  dual-`<img>` approach at a retina-safe source (20px display ← 64px source).
+
+Key decision: rather than replace webbuf's footer with termsurf's, the
+Astrohacker branding was **added** to webbuf's existing footer, preserving its
+project-specific GitHub / npm links and copyright. The logo follows webbuf's own
+image pipeline and `siteImage` typing rather than being copied as loose WebP
+files.

@@ -2,14 +2,14 @@
 
 ## Open
 
-| #                                                 | Title                                    | Opened     |
-| ------------------------------------------------- | ---------------------------------------- | ---------- |
-| [0012](0012-astrohacker-project-footer/README.md) | "An Astrohacker Project" footer branding | 2026-06-20 |
+| #   | Title | Opened |
+| --- | ----- | ------ |
 
 ## Closed
 
 | #                                                 | Title                                                                           | Opened     | Closed     |
 | ------------------------------------------------- | ------------------------------------------------------------------------------- | ---------- | ---------- |
+| [0012](0012-astrohacker-project-footer/README.md) | "An Astrohacker Project" footer branding                                        | 2026-06-20 | 2026-06-20 |
 | [0011](0011-lucide-icons/README.md)               | Lucide icons across the site and a fixed-width theme toggle                     | 2026-06-20 | 2026-06-20 |
 | [0010](0010-logo-retina-resolution/README.md)     | Home-page logo is blurry on retina                                              | 2026-06-20 | 2026-06-20 |
 | [0009](0009-website-cloudflare-deploy/README.md)  | Deploy the website to Cloudflare Pages                                          | 2026-06-20 | 2026-06-20 |
