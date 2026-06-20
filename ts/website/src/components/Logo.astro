@@ -1,5 +1,5 @@
 ---
-import { siteImage } from "../lib/images";
+import { siteImage, type SiteImage } from "../lib/images";
 
 interface Props {
   /** Rendered pixel size (square). */
@@ -8,18 +8,29 @@ interface Props {
 }
 
 const { size = 32, class: className } = Astro.props;
+
+// WebP source sizes emitted by scripts/process-images.ts.
+const SOURCE_SIZES = [32, 64, 96, 128, 180, 200, 300, 400] as const;
+// Use a source at least 3x the rendered size so the logo stays crisp on retina
+// (2x-3x DPR); fall back to the largest available.
+const res =
+  SOURCE_SIZES.find((s) => s >= size * 3) ??
+  SOURCE_SIZES[SOURCE_SIZES.length - 1];
+
+const lightSrc = siteImage(`/images/webbuf-2-light-${res}.webp` as SiteImage);
+const darkSrc = siteImage(`/images/webbuf-2-dark-${res}.webp` as SiteImage);
 ---
 
 <span class:list={["inline-flex shrink-0", className]}>
   <img
-    src={siteImage("/images/webbuf-2-light-64.webp")}
+    src={lightSrc}
     width={size}
     height={size}
     alt="WebBuf"
     class="block dark:hidden"
   />
   <img
-    src={siteImage("/images/webbuf-2-dark-64.webp")}
+    src={darkSrc}
     width={size}
     height={size}
     alt=""
