@@ -25,12 +25,13 @@ interface Variant {
   name: string;
   /** Source PNG in the repo-root assets folder. */
   source: string;
-  /** Favicon file name written to public/. */
-  favicon: string;
+  /** Favicon file name written to public/. Omit for non-favicon logos. */
+  favicon?: string;
 }
 
 // The light-variant art is drawn for light backgrounds -> light-mode favicon;
-// the dark-variant -> dark-mode favicon.
+// the dark-variant -> dark-mode favicon. The Astrohacker logos are footer-only
+// branding, so they emit WebP but no favicon.
 const VARIANTS: readonly Variant[] = [
   {
     name: "webbuf-2-light",
@@ -41,6 +42,14 @@ const VARIANTS: readonly Variant[] = [
     name: "webbuf-2-dark",
     source: "webbuf-2-dark.png",
     favicon: "favicon-dark.png",
+  },
+  {
+    name: "astrohacker-6-light",
+    source: "astrohacker-6-light.png",
+  },
+  {
+    name: "astrohacker-6-dark",
+    source: "astrohacker-6-dark.png",
   },
 ];
 
@@ -62,14 +71,16 @@ async function main(): Promise<void> {
       console.log(`webp  ${fileName}`);
     }
 
-    await sharp(src)
-      .resize(FAVICON_SIZE, FAVICON_SIZE, {
-        fit: "contain",
-        background: TRANSPARENT,
-      })
-      .png()
-      .toFile(join(publicDir, variant.favicon));
-    console.log(`png   ${variant.favicon}`);
+    if (variant.favicon) {
+      await sharp(src)
+        .resize(FAVICON_SIZE, FAVICON_SIZE, {
+          fit: "contain",
+          background: TRANSPARENT,
+        })
+        .png()
+        .toFile(join(publicDir, variant.favicon));
+      console.log(`png   ${variant.favicon}`);
+    }
   }
 
   const sorted = [...webPaths].sort();

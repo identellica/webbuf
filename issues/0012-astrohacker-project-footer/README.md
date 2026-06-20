@@ -57,4 +57,4 @@ This becomes one experiment, designed and committed per the repo workflow.
 
 ## Experiments
 
-- [Experiment 1: Astrohacker logo pipeline and footer link](01-footer-and-logo-pipeline.md) — **Designed**
+- [Experiment 1: Astrohacker logo pipeline and footer link](01-footer-and-logo-pipeline.md) — **Pass**

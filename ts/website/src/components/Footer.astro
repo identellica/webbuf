@@ -1,6 +1,7 @@
 ---
 import Icon from "./Icon.astro";
 import externalLink from "lucide-static/icons/external-link.svg?raw";
+import { siteImage } from "../lib/images";
 
 const year = new Date().getFullYear();
 
@@ -12,22 +13,48 @@ const links = [
 
 <footer class="border-t border-border">
   <div
-    class="mx-auto flex max-w-3xl flex-col gap-2 px-6 py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between"
+    class="mx-auto flex max-w-3xl flex-col gap-4 px-6 py-8 text-sm text-muted"
   >
-    <p>&copy; {year} Astrohacker. MIT licensed.</p>
-    <nav class="flex gap-4">
-      {
-        links.map((link) => (
-          <a
-            href={link.href}
-            class="inline-flex items-center gap-1.5 transition-colors hover:text-accent"
-            rel="noopener noreferrer"
-          >
-            {link.label}
-            <Icon icon={externalLink} size={14} />
-          </a>
-        ))
-      }
-    </nav>
+    <div
+      class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>&copy; {year} Astrohacker. MIT licensed.</p>
+      <nav class="flex gap-4">
+        {
+          links.map((link) => (
+            <a
+              href={link.href}
+              class="inline-flex items-center gap-1.5 transition-colors hover:text-accent"
+              rel="noopener noreferrer"
+            >
+              {link.label}
+              <Icon icon={externalLink} size={14} />
+            </a>
+          ))
+        }
+      </nav>
+    </div>
+    <a
+      href="https://astrohacker.com"
+      rel="noopener noreferrer"
+      class="flex items-center justify-center gap-2 text-xs transition-colors hover:text-accent"
+    >
+      <img
+        src={siteImage("/images/astrohacker-6-light-64.webp")}
+        width="20"
+        height="20"
+        alt="Astrohacker"
+        class="block h-5 w-5 dark:hidden"
+      />
+      <img
+        src={siteImage("/images/astrohacker-6-dark-64.webp")}
+        width="20"
+        height="20"
+        alt=""
+        aria-hidden="true"
+        class="hidden h-5 w-5 dark:block"
+      />
+      An Astrohacker Project
+    </a>
   </div>
 </footer>
