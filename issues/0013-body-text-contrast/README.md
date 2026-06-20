@@ -62,4 +62,4 @@ This becomes one experiment, designed and committed per the repo workflow.
 
 ## Experiments
 
-- [Experiment 1: Raise the --muted token to WCAG AA](01-raise-muted-contrast.md) — **Designed**
+- [Experiment 1: Raise the --muted token to WCAG AA](01-raise-muted-contrast.md) — **Pass**
