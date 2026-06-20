@@ -1,6 +1,7 @@
 +++
-status = "open"
+status = "closed"
 opened = "2026-06-20"
+closed = "2026-06-20"
 +++
 
 # Lucide icons across the site and a fixed-width theme toggle
@@ -108,3 +109,31 @@ the repo workflow.
 
 - [Experiment 1: Lucide icon system and fixed-width theme toggle](01-icon-system-and-theme-toggle.md) — **Pass**
 - [Experiment 2: Lucide icons across the site](02-icons-across-the-site.md) — **Pass**
+
+## Conclusion
+
+Lucide icons are adopted across the website and the work is live at
+https://webbuf.pages.dev.
+
+**Icon system** (Experiment 1): added `lucide-static` plus
+`src/components/Icon.astro`, a tiny wrapper that inlines a raw Lucide SVG with
+`currentColor`, a configurable `size`, optional `class`, and optional
+`strokeWidth`. No Astro integration was added; icons are imported per-name
+(`lucide-static/icons/<name>.svg?raw`), so only used icons are bundled.
+
+**Theme toggle** (Experiment 1): `ThemeToggle.astro` is now a fixed-width
+segmented control of three equal `h-7 w-7` icon buttons — sun (light), monitor
+(system), moon (dark) — replacing the single cycling, text-labeled button that
+changed width as its label cycled. Interaction is direct-select via
+`window.__theme.setMode`, the active mode is highlighted (`aria-pressed` +
+background/text classes), and it re-syncs on the `themechange` event. The
+existing `window.__theme` contract is unchanged.
+
+**Icons across the site** (Experiment 2): restrained, consistent placements —
+header `Docs` link (`book-open`), hero CTAs (`book-open`, `external-link`),
+feature cards (`cpu` / `zap` / `binary`), and footer external links
+(`external-link`).
+
+**Key decision — brand icons:** Lucide ships no GitHub/npm brand glyphs
+(`github.svg` is absent from `lucide-static`), so external links use the generic
+`external-link` icon with their text retained, rather than a brand logo.
