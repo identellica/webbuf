@@ -2,8 +2,9 @@
 
 ## Open
 
-| #   | Title | Opened |
-| --- | ----- | ------ |
+| #                                   | Title                                                       | Opened     |
+| ----------------------------------- | ----------------------------------------------------------- | ---------- |
+| [0011](0011-lucide-icons/README.md) | Lucide icons across the site and a fixed-width theme toggle | 2026-06-20 |
 
 ## Closed
 
