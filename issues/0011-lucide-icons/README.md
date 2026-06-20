@@ -103,3 +103,7 @@ per placement.
 
 Each of these becomes its own experiment, designed and committed in order per
 the repo workflow.
+
+## Experiments
+
+- [Experiment 1: Lucide icon system and fixed-width theme toggle](01-icon-system-and-theme-toggle.md) — **Designed**
