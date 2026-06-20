@@ -2,8 +2,9 @@
 
 ## Open
 
-| #   | Title | Opened |
-| --- | ----- | ------ |
+| #                                                 | Title                                    | Opened     |
+| ------------------------------------------------- | ---------------------------------------- | ---------- |
+| [0012](0012-astrohacker-project-footer/README.md) | "An Astrohacker Project" footer branding | 2026-06-20 |
 
 ## Closed
 
