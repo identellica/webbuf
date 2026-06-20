@@ -4,7 +4,7 @@
   "description": "Rust/wasm SLH-DSA (FIPS 205) post-quantum hash-based digital signatures for the web, node.js, deno, and bun.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/identellica/webbuf"
+    "url": "https://github.com/astrohackerlabs/webbuf"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

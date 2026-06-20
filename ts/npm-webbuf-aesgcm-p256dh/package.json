@@ -4,7 +4,7 @@
   "description": "AES-GCM authenticated encryption with P-256 (NIST) Diffie-Hellman shared secret for web, node.js, deno and bun.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/identellica/webbuf"
+    "url": "https://github.com/astrohackerlabs/webbuf"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

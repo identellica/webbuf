@@ -4,7 +4,7 @@
   "description": "Rust/wasm X25519 ECDH (RFC 7748) for the web, node.js, deno, and bun.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/identellica/webbuf"
+    "url": "https://github.com/astrohackerlabs/webbuf"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
