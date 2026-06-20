@@ -1,0 +1,27 @@
+---
+interface Props {
+  /** Raw SVG string imported from lucide-static, e.g. `sun.svg?raw`. */
+  icon: string;
+  /** Rendered pixel size (square). */
+  size?: number;
+  /** Extra classes merged onto the <svg> (icons use currentColor). */
+  class?: string;
+  /** Override the Lucide stroke width (default 2). */
+  strokeWidth?: number;
+}
+
+const { icon, size = 20, class: className, strokeWidth } = Astro.props;
+
+let svg = icon
+  .replace(/<!--[\s\S]*?-->/, "")
+  .trim()
+  .replace(/\swidth="[^"]*"/, ` width="${size}"`)
+  .replace(/\sheight="[^"]*"/, ` height="${size}"`)
+  .replace(/\sclass="[^"]*"/, className ? ` class="${className}"` : "");
+
+if (strokeWidth !== undefined) {
+  svg = svg.replace(/stroke-width="[^"]*"/, `stroke-width="${strokeWidth}"`);
+}
+---
+
+<Fragment set:html={svg} />

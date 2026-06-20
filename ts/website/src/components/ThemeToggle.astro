@@ -1,28 +1,60 @@
 ---
-// Cycles color theme: system -> light -> dark. The actual theme state lives in
-// the inline head script (window.__theme); this only drives and labels it.
+// Fixed-width segmented control: light / system / dark. The theme state lives in
+// the inline head script (window.__theme); this drives setMode and reflects it.
+import Icon from "./Icon.astro";
+import sun from "lucide-static/icons/sun.svg?raw";
+import monitor from "lucide-static/icons/monitor.svg?raw";
+import moon from "lucide-static/icons/moon.svg?raw";
+
+const options = [
+  { mode: "light", icon: sun, label: "Light" },
+  { mode: "system", icon: monitor, label: "System" },
+  { mode: "dark", icon: moon, label: "Dark" },
+] as const;
 ---
 
-<button
-  id="theme-toggle"
-  type="button"
-  aria-label="Toggle color theme"
-  class="rounded-md border border-border bg-surface px-3 py-1.5 text-sm font-medium text-fg transition-colors hover:border-accent hover:text-accent"
+<div
+  role="group"
+  aria-label="Color theme"
+  class="inline-flex items-center gap-0.5 rounded-md border border-border bg-surface p-0.5"
 >
-  <span data-theme-label>System</span>
-</button>
+  {
+    options.map(({ mode, icon, label }) => (
+      <button
+        type="button"
+        data-theme-option={mode}
+        aria-label={label}
+        aria-pressed="false"
+        class="inline-flex h-7 w-7 items-center justify-center rounded text-muted transition-colors hover:text-accent"
+      >
+        <Icon icon={icon} size={16} />
+      </button>
+    ))
+  }
+</div>
 
 <script>
-  const names = { system: "System", light: "Light", dark: "Dark" } as const;
-  const btn = document.getElementById("theme-toggle");
-  const label = btn?.querySelector<HTMLElement>("[data-theme-label]");
+  import type { ThemeMode } from "../lib/theme";
+
+  const btns =
+    document.querySelectorAll<HTMLButtonElement>("[data-theme-option]");
 
   const sync = () => {
     const mode = window.__theme?.getMode() ?? "system";
-    if (label) label.textContent = names[mode];
+    btns.forEach((btn) => {
+      const active = btn.dataset.themeOption === mode;
+      btn.setAttribute("aria-pressed", String(active));
+      btn.classList.toggle("bg-bg", active);
+      btn.classList.toggle("text-accent", active);
+      btn.classList.toggle("text-muted", !active);
+    });
   };
 
-  btn?.addEventListener("click", () => window.__theme?.cycle());
+  btns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      window.__theme?.setMode(btn.dataset.themeOption as ThemeMode);
+    });
+  });
   window.addEventListener("themechange", sync);
   sync();
 </script>

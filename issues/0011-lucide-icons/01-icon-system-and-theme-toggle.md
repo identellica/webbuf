@@ -52,3 +52,28 @@ fixed-width cycle button — it most directly satisfies "fixed width" and
 
 Pass = typecheck + build succeed and the built header shows a fixed-width
 three-icon theme control.
+
+## Result
+
+**Pass.**
+
+- `lucide-static@^1.21.0` added.
+- `pnpm run check` → 0 errors / 0 warnings / 0 hints (incl. `?raw` imports and
+  `setMode(ThemeMode)`).
+- `pnpm run build` → 31 pages built.
+- Built `dist/index.html` theme control: one `role="group"` with three
+  `data-theme-option` buttons (`light` / `system` / `dark`), each containing an
+  inlined `<svg width="16" height="16" stroke="currentColor">` (sun / monitor /
+  moon). Buttons are uniform `h-7 w-7`, so the control's width is independent of
+  the active mode.
+- `Icon.astro` confirmed reusable: it inlines the raw Lucide SVG, rewrites
+  `width`/`height` to `size`, and keeps `currentColor` so Tailwind text colors
+  apply.
+
+## Conclusion
+
+The Lucide icon system is in place (`lucide-static` + `Icon.astro`,
+no Astro integration, tree-shakeable per-import), and the theme toggle is now a
+fixed-width segmented control showing sun / monitor / moon with the active mode
+highlighted via the existing `window.__theme` contract. Ready to roll icons out
+across the rest of the site (Experiment 2).
