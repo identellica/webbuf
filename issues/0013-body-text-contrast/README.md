@@ -59,3 +59,7 @@ the `kind` badge) was considered but deemed unnecessary: those are small/bold an
 read fine at the new contrast, and a single-token bump is lower-risk.
 
 This becomes one experiment, designed and committed per the repo workflow.
+
+## Experiments
+
+- [Experiment 1: Raise the --muted token to WCAG AA](01-raise-muted-contrast.md) — **Designed**
