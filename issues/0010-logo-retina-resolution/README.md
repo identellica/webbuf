@@ -44,3 +44,7 @@ displayed dimensions at `size` while supplying retina-grade pixels:
 
 The fix lives entirely in the component; the existing image pipeline already
 produces the needed sizes.
+
+## Experiments
+
+- [Experiment 1: Select logo source at >= 3x rendered size](01-retina-source-selection.md) — **Designed**
