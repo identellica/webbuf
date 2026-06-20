@@ -2,8 +2,9 @@
 
 ## Open
 
-| #   | Title | Opened |
-| --- | ----- | ------ |
+| #                                         | Title                                                        | Opened     |
+| ----------------------------------------- | ------------------------------------------------------------ | ---------- |
+| [0013](0013-body-text-contrast/README.md) | Body text contrast too low (harder to read than astrohacker) | 2026-06-20 |
 
 ## Closed
 
