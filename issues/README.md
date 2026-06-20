@@ -2,8 +2,9 @@
 
 ## Open
 
-| #   | Title | Opened |
-| --- | ----- | ------ |
+| #                                             | Title                              | Opened     |
+| --------------------------------------------- | ---------------------------------- | ---------- |
+| [0010](0010-logo-retina-resolution/README.md) | Home-page logo is blurry on retina | 2026-06-20 |
 
 ## Closed
 
