@@ -107,3 +107,4 @@ the repo workflow.
 ## Experiments
 
 - [Experiment 1: Lucide icon system and fixed-width theme toggle](01-icon-system-and-theme-toggle.md) — **Pass**
+- [Experiment 2: Lucide icons across the site](02-icons-across-the-site.md) — **Designed**
