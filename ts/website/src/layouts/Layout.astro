@@ -4,6 +4,8 @@ import { themeScript } from "../lib/theme";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import Logo from "../components/Logo.astro";
 import Footer from "../components/Footer.astro";
+import Icon from "../components/Icon.astro";
+import bookOpen from "lucide-static/icons/book-open.svg?raw";
 
 interface Props {
   title?: string;
@@ -50,7 +52,11 @@ const {
           WebBuf
         </a>
         <div class="flex items-center gap-5">
-          <a href="/docs" class="text-sm font-medium transition-colors hover:text-accent">
+          <a
+            href="/docs"
+            class="flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-accent"
+          >
+            <Icon icon={bookOpen} size={16} />
             Docs
           </a>
           <ThemeToggle />

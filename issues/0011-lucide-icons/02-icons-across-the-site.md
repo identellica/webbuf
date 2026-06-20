@@ -45,3 +45,25 @@ All via `import Icon from ".../Icon.astro"` plus per-icon
 Pass = typecheck + build succeed and the home page shows icons on the header
 link, hero buttons, and all three feature cards, with external-link icons in the
 footer.
+
+## Result
+
+**Pass.**
+
+- `pnpm run check` → 0 errors / 0 warnings / 0 hints.
+- `pnpm run build` → 31 pages built.
+- Built `dist/index.html` has 11 inlined `<svg>`s: 3 theme toggle + 1 header
+  `book-open` + 2 hero buttons (`book-open`, `external-link`) + 3 feature cards
+  (`cpu`/`zap`/`binary`, size 22) + 2 footer `external-link` (size 14).
+  `book-open` and `external-link` path signatures confirmed present.
+- Every doc page carries the 2 footer `external-link` icons (verified on
+  `dist/docs/index.html`).
+- Link/button text retained everywhere; icons use `currentColor` and inherit the
+  existing hover colors.
+
+## Conclusion
+
+Lucide icons are rolled out across the site in restrained, consistent spots —
+header Docs link, hero CTAs, feature cards, and footer external links — all
+through the `Icon.astro` system. GitHub/npm links use the generic
+`external-link` glyph since Lucide ships no brand logos. Goal of issue 0011 met.

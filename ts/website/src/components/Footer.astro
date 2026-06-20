@@ -1,4 +1,7 @@
 ---
+import Icon from "./Icon.astro";
+import externalLink from "lucide-static/icons/external-link.svg?raw";
+
 const year = new Date().getFullYear();
 
 const links = [
@@ -17,10 +20,11 @@ const links = [
         links.map((link) => (
           <a
             href={link.href}
-            class="transition-colors hover:text-accent"
+            class="inline-flex items-center gap-1.5 transition-colors hover:text-accent"
             rel="noopener noreferrer"
           >
             {link.label}
+            <Icon icon={externalLink} size={14} />
           </a>
         ))
       }
