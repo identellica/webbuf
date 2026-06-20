@@ -2,8 +2,9 @@
 
 ## Open
 
-| #   | Title | Opened |
-| --- | ----- | ------ |
+| #                                                | Title                                  | Opened     |
+| ------------------------------------------------ | -------------------------------------- | ---------- |
+| [0009](0009-website-cloudflare-deploy/README.md) | Deploy the website to Cloudflare Pages | 2026-06-20 |
 
 ## Closed
 
