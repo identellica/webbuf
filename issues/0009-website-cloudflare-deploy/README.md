@@ -79,3 +79,7 @@ Mirror the shannon recipe in `ts/website`:
 5. One-time Cloudflare auth + project creation by the issue owner:
    `wrangler login` (interactive, browser-based), then `pnpm run deploy` to
    create the `webbuf` Pages project and publish the first deploy.
+
+## Experiments
+
+- [Experiment 1: Wire wrangler config and deploy script](01-wire-wrangler-and-deploy.md) — **Designed**
