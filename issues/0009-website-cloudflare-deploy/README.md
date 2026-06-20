@@ -1,6 +1,7 @@
 +++
-status = "open"
+status = "closed"
 opened = "2026-06-20"
+closed = "2026-06-20"
 +++
 
 # Deploy the website to Cloudflare Pages
@@ -83,3 +84,32 @@ Mirror the shannon recipe in `ts/website`:
 ## Experiments
 
 - [Experiment 1: Wire wrangler config and deploy script](01-wire-wrangler-and-deploy.md) — **Pass** (live at https://webbuf.pages.dev)
+
+## Conclusion
+
+The website at `ts/website` is deployed to Cloudflare Pages and live at
+**https://webbuf.pages.dev** (returns `HTTP 200`, serves the WebBuf site).
+
+What changed, all in `ts/website`:
+
+- `wrangler.toml` — `name = "webbuf"`, `pages_build_output_dir = "dist"`.
+- `package.json` — added `wrangler` (`^4.79.0`) devDependency and a
+  `deploy` script: `pnpm run build && wrangler pages deploy dist`.
+- `astro.config.ts` — explicit `output: "static"` (convention).
+
+This mirrors the sibling Cloudflare Pages sites (`rxc`, `nutorch`, `shannon`):
+a manual-CLI deploy of a static `dist/`, no git-connected auto-deploy.
+
+Key decisions and notes:
+
+- **Project name** `webbuf` → `webbuf.pages.dev`. The custom domain `webbuf.com`
+  is owned but intentionally **not** wired up here — out of scope.
+- **First deploy required explicit project creation**:
+  `wrangler pages project create webbuf --production-branch main`.
+  `wrangler pages deploy` does not auto-create a missing project. The project now
+  exists, so future deploys are just
+  `pnpm --filter @webbuf/website run deploy`.
+- The Cloudflare account was already authenticated via `wrangler`; no
+  `wrangler login` step was needed in practice.
+
+To re-deploy after website changes: `pnpm --filter @webbuf/website run deploy`.
