@@ -1,6 +1,7 @@
 +++
-status = "open"
+status = "closed"
 opened = "2026-06-20"
+closed = "2026-06-20"
 +++
 
 # Home-page logo is blurry on retina
@@ -47,4 +48,21 @@ produces the needed sizes.
 
 ## Experiments
 
-- [Experiment 1: Select logo source at >= 3x rendered size](01-retina-source-selection.md) — **Designed**
+- [Experiment 1: Select logo source at >= 3x rendered size](01-retina-source-selection.md) — **Pass** (live, home logo now 300px source)
+
+## Conclusion
+
+The blurry retina logo is fixed and live at https://webbuf.pages.dev.
+
+`src/components/Logo.astro` no longer hardcodes the 64px source. It now selects
+the smallest emitted WebP size that is at least `3 × size` (capped at the largest
+available, 400px), keeping the displayed `width`/`height` at `size`:
+
+- home page `size={72}` → **300px** source (was 64px, upscaled) — ≈ 4.2×
+- header `size={28}` → **96px** source (was 64px) — ≈ 3.4×
+
+Both comfortably exceed the 3× target, so the logo is crisp at 2×–3× device pixel
+ratios. No image-pipeline or generated-types changes were needed — the required
+sizes (96, 300) were already produced by `scripts/process-images.ts` from the
+1000×1000 source art. The change was rebuilt, verified in the built HTML, and
+deployed to Cloudflare Pages.
