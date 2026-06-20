@@ -82,4 +82,4 @@ Mirror the shannon recipe in `ts/website`:
 
 ## Experiments
 
-- [Experiment 1: Wire wrangler config and deploy script](01-wire-wrangler-and-deploy.md) — **Designed**
+- [Experiment 1: Wire wrangler config and deploy script](01-wire-wrangler-and-deploy.md) — **Pass** (live at https://webbuf.pages.dev)
