@@ -54,3 +54,7 @@ but no Astrohacker-project branding and no Astrohacker logo asset.
    retina-safe source size (20px display ← 64px source, ≈ 3.2×).
 
 This becomes one experiment, designed and committed per the repo workflow.
+
+## Experiments
+
+- [Experiment 1: Astrohacker logo pipeline and footer link](01-footer-and-logo-pipeline.md) — **Designed**
