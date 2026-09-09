@@ -1,5 +1,13 @@
 # @webbuf/slhdsa
 
+## WebBuf 4 byte access
+
+Public APIs keep WebBuf and FixedBuf wrappers. For native APIs use
+`value.bytes` or `fixed.buf.bytes`. This package unwraps selected native
+views at its WASM boundary; key/signature/secret formats and cryptographic
+behavior are unchanged. Inputs are not mutated and outputs retain their
+existing independent storage. Nonzero-offset selections are supported.
+
 SLH-DSA (FIPS 205) stateless hash-based post-quantum digital signatures for
 WebBuf.
 
@@ -10,6 +18,15 @@ separation and default to hedged signing by generating `addrnd` with the
 platform CSPRNG through `FixedBuf.fromRandom`.
 
 ```typescript
+import {
+  slhDsaSha2_128fKeyPair,
+  slhDsaSha2_128fSign,
+  slhDsaSha2_128fVerify,
+} from "@webbuf/slhdsa";
+import { WebBuf } from "@webbuf/webbuf";
+
+const message = WebBuf.fromUtf8("Signed message");
+const context = WebBuf.fromUtf8("example");
 const { verifyingKey, signingKey } = slhDsaSha2_128fKeyPair();
 const signature = slhDsaSha2_128fSign(signingKey, message, context);
 const ok = slhDsaSha2_128fVerify(verifyingKey, message, signature, context);

@@ -33,7 +33,7 @@ describe("aesgcm-mlkem round-trip", () => {
     const { encapsulationKey, decapsulationKey } = mlKem768KeyPair();
     const plaintext = WebBuf.alloc(64 * 1024);
     for (let i = 0; i < plaintext.length; i++) {
-      plaintext[i] = i & 0xff;
+      plaintext.bytes[i] = i & 0xff;
     }
 
     const ciphertext = aesgcmMlkemEncrypt(encapsulationKey, plaintext);
@@ -68,8 +68,8 @@ describe("aesgcm-mlkem round-trip", () => {
       encapsulationKey,
       WebBuf.fromUtf8("x"),
     );
-    expect(ciphertext[0]).toBe(AESGCM_MLKEM.versionByte);
-    expect(ciphertext[0]).toBe(0x01);
+    expect(ciphertext.bytes[0]).toBe(AESGCM_MLKEM.versionByte);
+    expect(ciphertext.bytes[0]).toBe(0x01);
   });
 });
 
@@ -89,9 +89,11 @@ describe("aesgcm-mlkem rejection paths", () => {
     const plaintext = WebBuf.fromUtf8("tamper me");
 
     const ciphertext = aesgcmMlkemEncrypt(encapsulationKey, plaintext);
-    const tampered = WebBuf.fromUint8Array(ciphertext);
+    const tampered = WebBuf.fromUint8Array(ciphertext.bytes);
     // Flip a byte inside the KEM ciphertext region (bytes 1..1089)
-    tampered[500] = (tampered[500]! ^ 0xff) & 0xff;
+    const byte = tampered.bytes[500];
+    if (byte === undefined) throw new Error("Missing tamper byte");
+    tampered.bytes[500] = (byte ^ 0xff) & 0xff;
 
     expect(() => aesgcmMlkemDecrypt(decapsulationKey, tampered)).toThrow();
   });
@@ -101,11 +103,13 @@ describe("aesgcm-mlkem rejection paths", () => {
     const plaintext = WebBuf.fromUtf8("tamper the body");
 
     const ciphertext = aesgcmMlkemEncrypt(encapsulationKey, plaintext);
-    const tampered = WebBuf.fromUint8Array(ciphertext);
+    const tampered = WebBuf.fromUint8Array(ciphertext.bytes);
     // Flip a byte in the AES ciphertext region (after IV, before tag)
     const aesBodyStart =
       1 + AESGCM_MLKEM.kemCiphertextSize + AESGCM_MLKEM.ivSize;
-    tampered[aesBodyStart] = (tampered[aesBodyStart]! ^ 0xff) & 0xff;
+    const byte = tampered.bytes[aesBodyStart];
+    if (byte === undefined) throw new Error("Missing tamper byte");
+    tampered.bytes[aesBodyStart] = (byte ^ 0xff) & 0xff;
 
     expect(() => aesgcmMlkemDecrypt(decapsulationKey, tampered)).toThrow();
   });
@@ -115,9 +119,11 @@ describe("aesgcm-mlkem rejection paths", () => {
     const plaintext = WebBuf.fromUtf8("tamper IV");
 
     const ciphertext = aesgcmMlkemEncrypt(encapsulationKey, plaintext);
-    const tampered = WebBuf.fromUint8Array(ciphertext);
+    const tampered = WebBuf.fromUint8Array(ciphertext.bytes);
     const ivStart = 1 + AESGCM_MLKEM.kemCiphertextSize;
-    tampered[ivStart] = (tampered[ivStart]! ^ 0xff) & 0xff;
+    const byte = tampered.bytes[ivStart];
+    if (byte === undefined) throw new Error("Missing tamper byte");
+    tampered.bytes[ivStart] = (byte ^ 0xff) & 0xff;
 
     expect(() => aesgcmMlkemDecrypt(decapsulationKey, tampered)).toThrow();
   });
@@ -128,8 +134,8 @@ describe("aesgcm-mlkem rejection paths", () => {
       encapsulationKey,
       WebBuf.fromUtf8("x"),
     );
-    const wrongVersion = WebBuf.fromUint8Array(ciphertext);
-    wrongVersion[0] = 0x02;
+    const wrongVersion = WebBuf.fromUint8Array(ciphertext.bytes);
+    wrongVersion.bytes[0] = 0x02;
 
     expect(() => aesgcmMlkemDecrypt(decapsulationKey, wrongVersion)).toThrow(
       /version byte/,

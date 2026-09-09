@@ -54,7 +54,7 @@ describe("Ripemd160", () => {
       const input = WebBuf.fromUtf8("test input");
       const result = ripemd160Hash(input);
       const expectedHashHex = WebBuf.fromUint8Array(
-        (await ripemd160(input)) as Uint8Array,
+        (await ripemd160(input.bytes)) as Uint8Array,
       ).toHex();
 
       expect(result.toHex()).toBe(expectedHashHex);

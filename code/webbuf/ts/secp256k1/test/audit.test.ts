@@ -39,7 +39,7 @@ describe("Audit: Known test vectors", () => {
       // Generator point G (compressed form starts with 02 or 03)
       // G.x = 79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798
       expect(pubKey.buf.length).toBe(33);
-      expect(pubKey.buf[0]).toBe(0x02); // Even y coordinate
+      expect(pubKey.buf.bytes[0]).toBe(0x02); // Even y coordinate
       expect(pubKey.toHex().substring(2)).toBe(
         "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
       );
@@ -55,7 +55,7 @@ describe("Audit: Known test vectors", () => {
       // 2*G has known coordinates
       expect(pubKey.buf.length).toBe(33);
       // Verify against noble
-      const noblePubKey = noble.getPublicKey(privKey.buf, true);
+      const noblePubKey = noble.getPublicKey(privKey.buf.bytes, true);
       expect(pubKey.toHex()).toBe(WebBuf.fromUint8Array(noblePubKey).toHex());
     });
 
@@ -99,7 +99,7 @@ describe("Audit: Cross-implementation verification with @noble/secp256k1", () =>
         if (!privateKeyVerify(privKey)) continue;
 
         const webbufPubKey = publicKeyCreate(privKey);
-        const noblePubKey = noble.getPublicKey(privKey.buf, true); // compressed
+        const noblePubKey = noble.getPublicKey(privKey.buf.bytes, true); // compressed
 
         expect(webbufPubKey.toHex()).toBe(
           WebBuf.fromUint8Array(noblePubKey).toHex(),
@@ -119,7 +119,7 @@ describe("Audit: Cross-implementation verification with @noble/secp256k1", () =>
       for (const keyHex of testKeys) {
         const privKey = FixedBuf.fromHex(32, keyHex);
         const webbufPubKey = publicKeyCreate(privKey);
-        const noblePubKey = noble.getPublicKey(privKey.buf, true);
+        const noblePubKey = noble.getPublicKey(privKey.buf.bytes, true);
 
         expect(webbufPubKey.toHex()).toBe(
           WebBuf.fromUint8Array(noblePubKey).toHex(),
@@ -154,8 +154,14 @@ describe("Audit: Cross-implementation verification with @noble/secp256k1", () =>
         expect(shared1.toHex()).toBe(shared2.toHex());
 
         // Compare with noble
-        const nobleShared = noble.getSharedSecret(privKey1.buf, pubKey2.buf, true);
-        expect(shared1.toHex()).toBe(WebBuf.fromUint8Array(nobleShared).toHex());
+        const nobleShared = noble.getSharedSecret(
+          privKey1.buf.bytes,
+          pubKey2.buf.bytes,
+          true,
+        );
+        expect(shared1.toHex()).toBe(
+          WebBuf.fromUint8Array(nobleShared).toHex(),
+        );
       }
     });
   });
@@ -257,7 +263,7 @@ describe("Audit: Signature correctness", () => {
     // Create tampered signature by copying and modifying
     const tamperedBytes = WebBuf.alloc(64);
     tamperedBytes.set(signature.buf);
-    tamperedBytes[0]! ^= 0x01;
+    tamperedBytes.bytes[0]! ^= 0x01;
     const tamperedSig = FixedBuf.fromBuf(64, tamperedBytes);
 
     expect(verify(tamperedSig, digest, pubKey)).toBe(false);
@@ -328,14 +334,14 @@ describe("Audit: Public key validation", () => {
     const privKey = FixedBuf.fromRandom(32);
     const pubKey = publicKeyCreate(privKey);
     const invalidPubKey = pubKey.clone();
-    invalidPubKey.buf[0] = 0x04; // Invalid for compressed key
+    invalidPubKey.buf.bytes[0] = 0x04; // Invalid for compressed key
 
     expect(publicKeyVerify(invalidPubKey)).toBe(false);
   });
 
   it("should reject all-zero public key", () => {
     const zeroPubKey = FixedBuf.alloc(33);
-    zeroPubKey.buf[0] = 0x02;
+    zeroPubKey.buf.bytes[0] = 0x02;
     expect(publicKeyVerify(zeroPubKey)).toBe(false);
   });
 });
@@ -384,7 +390,8 @@ describe("Audit: Key addition (HD wallet support)", () => {
         const privKey1 = FixedBuf.fromRandom(32);
         const privKey2 = FixedBuf.fromRandom(32);
 
-        if (!privateKeyVerify(privKey1) || !privateKeyVerify(privKey2)) continue;
+        if (!privateKeyVerify(privKey1) || !privateKeyVerify(privKey2))
+          continue;
 
         const sum = privateKeyAdd(privKey1, privKey2);
         // The sum should produce a valid public key
@@ -487,7 +494,7 @@ describe("Audit: ECDH (Diffie-Hellman)", () => {
 
     expect(shared.buf.length).toBe(33);
     // Should be valid compressed point format
-    expect([0x02, 0x03]).toContain(shared.buf[0]);
+    expect([0x02, 0x03]).toContain(shared.buf.bytes[0]);
   });
 });
 

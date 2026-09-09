@@ -192,12 +192,22 @@ describe("Audit: Web Crypto interoperability", () => {
       const ciphertext = ivAndCiphertext.slice(16);
 
       // Verify HMAC with Web Crypto
-      const hmacValid = await webCryptoHmacVerify(key.buf, ivAndCiphertext, hmac);
+      const hmacValid = await webCryptoHmacVerify(
+        key.buf.bytes,
+        ivAndCiphertext.bytes,
+        hmac.bytes,
+      );
       expect(hmacValid).toBe(true);
 
       // Decrypt with Web Crypto
-      const decrypted = await webCryptoDecrypt(ciphertext, key.buf, extractedIv);
-      expect(WebBuf.fromUint8Array(decrypted).toUtf8()).toBe("Hello from ACS2!");
+      const decrypted = await webCryptoDecrypt(
+        ciphertext.bytes,
+        key.buf.bytes,
+        extractedIv.bytes,
+      );
+      expect(WebBuf.fromUint8Array(decrypted).toUtf8()).toBe(
+        "Hello from ACS2!",
+      );
     });
   });
 
@@ -208,16 +218,26 @@ describe("Audit: Web Crypto interoperability", () => {
       const plaintext = WebBuf.fromUtf8("Hello from Web Crypto!");
 
       // Encrypt with Web Crypto
-      const ciphertext = await webCryptoEncrypt(plaintext, key.buf, iv.buf);
+      const ciphertext = await webCryptoEncrypt(
+        plaintext.bytes,
+        key.buf.bytes,
+        iv.buf.bytes,
+      );
 
       // Construct IV || ciphertext
-      const ivAndCiphertext = WebBuf.concat([iv.buf, WebBuf.fromUint8Array(ciphertext)]);
+      const ivAndCiphertext = WebBuf.concat([
+        iv.buf,
+        WebBuf.fromUint8Array(ciphertext),
+      ]);
 
       // Compute HMAC with Web Crypto
-      const hmac = await webCryptoHmac(key.buf, ivAndCiphertext);
+      const hmac = await webCryptoHmac(key.buf.bytes, ivAndCiphertext.bytes);
 
       // Assemble as HMAC || IV || ciphertext
-      const assembled = WebBuf.concat([WebBuf.fromUint8Array(hmac), ivAndCiphertext]);
+      const assembled = WebBuf.concat([
+        WebBuf.fromUint8Array(hmac),
+        ivAndCiphertext,
+      ]);
 
       // Decrypt with acs2
       const decrypted = acs2Decrypt(assembled, key);
@@ -240,9 +260,14 @@ describe("Audit: Web Crypto interoperability", () => {
       const ivAndCiphertext = encrypted.slice(32);
 
       // Compute HMAC with Web Crypto
-      const webCryptoHmacResult = await webCryptoHmac(key.buf, ivAndCiphertext);
+      const webCryptoHmacResult = await webCryptoHmac(
+        key.buf.bytes,
+        ivAndCiphertext.bytes,
+      );
 
-      expect(webbufHmac.toHex()).toBe(WebBuf.fromUint8Array(webCryptoHmacResult).toHex());
+      expect(webbufHmac.toHex()).toBe(
+        WebBuf.fromUint8Array(webCryptoHmacResult).toHex(),
+      );
     });
   });
 });
@@ -257,9 +282,11 @@ describe("Audit: HMAC tampering detection", () => {
     // Tamper with first byte of HMAC
     const tampered = WebBuf.alloc(encrypted.length);
     tampered.set(encrypted);
-    tampered[0]! ^= 0x01;
+    tampered.bytes[0]! ^= 0x01;
 
-    expect(() => acs2Decrypt(tampered, key)).toThrow("Message authentication failed");
+    expect(() => acs2Decrypt(tampered, key)).toThrow(
+      "Message authentication failed",
+    );
   });
 
   it("should reject when last byte of HMAC is modified", () => {
@@ -271,9 +298,11 @@ describe("Audit: HMAC tampering detection", () => {
     // Tamper with last byte of HMAC (byte 31)
     const tampered = WebBuf.alloc(encrypted.length);
     tampered.set(encrypted);
-    tampered[31]! ^= 0x01;
+    tampered.bytes[31]! ^= 0x01;
 
-    expect(() => acs2Decrypt(tampered, key)).toThrow("Message authentication failed");
+    expect(() => acs2Decrypt(tampered, key)).toThrow(
+      "Message authentication failed",
+    );
   });
 
   it("should reject when middle byte of HMAC is modified", () => {
@@ -285,9 +314,11 @@ describe("Audit: HMAC tampering detection", () => {
     // Tamper with middle byte of HMAC (byte 16)
     const tampered = WebBuf.alloc(encrypted.length);
     tampered.set(encrypted);
-    tampered[16]! ^= 0x01;
+    tampered.bytes[16]! ^= 0x01;
 
-    expect(() => acs2Decrypt(tampered, key)).toThrow("Message authentication failed");
+    expect(() => acs2Decrypt(tampered, key)).toThrow(
+      "Message authentication failed",
+    );
   });
 
   it("should reject when HMAC is replaced with all zeros", () => {
@@ -300,10 +331,12 @@ describe("Audit: HMAC tampering detection", () => {
     const tampered = WebBuf.alloc(encrypted.length);
     tampered.set(encrypted);
     for (let i = 0; i < 32; i++) {
-      tampered[i] = 0;
+      tampered.bytes[i] = 0;
     }
 
-    expect(() => acs2Decrypt(tampered, key)).toThrow("Message authentication failed");
+    expect(() => acs2Decrypt(tampered, key)).toThrow(
+      "Message authentication failed",
+    );
   });
 });
 
@@ -317,9 +350,11 @@ describe("Audit: IV tampering detection", () => {
     // Tamper with first byte of IV (byte 32)
     const tampered = WebBuf.alloc(encrypted.length);
     tampered.set(encrypted);
-    tampered[32]! ^= 0x01;
+    tampered.bytes[32]! ^= 0x01;
 
-    expect(() => acs2Decrypt(tampered, key)).toThrow("Message authentication failed");
+    expect(() => acs2Decrypt(tampered, key)).toThrow(
+      "Message authentication failed",
+    );
   });
 
   it("should reject when last byte of IV is modified", () => {
@@ -331,9 +366,11 @@ describe("Audit: IV tampering detection", () => {
     // Tamper with last byte of IV (byte 47)
     const tampered = WebBuf.alloc(encrypted.length);
     tampered.set(encrypted);
-    tampered[47]! ^= 0x01;
+    tampered.bytes[47]! ^= 0x01;
 
-    expect(() => acs2Decrypt(tampered, key)).toThrow("Message authentication failed");
+    expect(() => acs2Decrypt(tampered, key)).toThrow(
+      "Message authentication failed",
+    );
   });
 });
 
@@ -347,9 +384,11 @@ describe("Audit: Ciphertext tampering detection", () => {
     // Tamper with first byte of ciphertext (byte 48)
     const tampered = WebBuf.alloc(encrypted.length);
     tampered.set(encrypted);
-    tampered[48]! ^= 0x01;
+    tampered.bytes[48]! ^= 0x01;
 
-    expect(() => acs2Decrypt(tampered, key)).toThrow("Message authentication failed");
+    expect(() => acs2Decrypt(tampered, key)).toThrow(
+      "Message authentication failed",
+    );
   });
 
   it("should reject when last byte of ciphertext is modified", () => {
@@ -361,14 +400,18 @@ describe("Audit: Ciphertext tampering detection", () => {
     // Tamper with last byte of ciphertext
     const tampered = WebBuf.alloc(encrypted.length);
     tampered.set(encrypted);
-    tampered[encrypted.length - 1]! ^= 0x01;
+    tampered.bytes[encrypted.length - 1]! ^= 0x01;
 
-    expect(() => acs2Decrypt(tampered, key)).toThrow("Message authentication failed");
+    expect(() => acs2Decrypt(tampered, key)).toThrow(
+      "Message authentication failed",
+    );
   });
 
   it("should reject when middle byte of ciphertext is modified", () => {
     const key = FixedBuf.fromRandom(32);
-    const plaintext = WebBuf.fromUtf8("secret message with more content for multiple blocks");
+    const plaintext = WebBuf.fromUtf8(
+      "secret message with more content for multiple blocks",
+    );
 
     const encrypted = acs2Encrypt(plaintext, key);
 
@@ -376,9 +419,11 @@ describe("Audit: Ciphertext tampering detection", () => {
     const middleIndex = 48 + Math.floor((encrypted.length - 48) / 2);
     const tampered = WebBuf.alloc(encrypted.length);
     tampered.set(encrypted);
-    tampered[middleIndex]! ^= 0x01;
+    tampered.bytes[middleIndex]! ^= 0x01;
 
-    expect(() => acs2Decrypt(tampered, key)).toThrow("Message authentication failed");
+    expect(() => acs2Decrypt(tampered, key)).toThrow(
+      "Message authentication failed",
+    );
   });
 });
 
@@ -388,7 +433,9 @@ describe("Audit: Length validation", () => {
 
     // 63 bytes - too short
     const shortData = WebBuf.alloc(63);
-    expect(() => acs2Decrypt(shortData, key)).toThrow("at least 256+128+128 bits");
+    expect(() => acs2Decrypt(shortData, key)).toThrow(
+      "at least 256+128+128 bits",
+    );
   });
 
   it("should accept data of exactly minimum length (64 bytes)", () => {
@@ -437,20 +484,24 @@ describe("Audit: Key sensitivity", () => {
 
     const encrypted = acs2Encrypt(plaintext, key1);
 
-    expect(() => acs2Decrypt(encrypted, key2)).toThrow("Message authentication failed");
+    expect(() => acs2Decrypt(encrypted, key2)).toThrow(
+      "Message authentication failed",
+    );
   });
 
   it("should fail with key differing by one bit", () => {
     const key1 = FixedBuf.fromRandom(32);
     const key2Bytes = WebBuf.alloc(32);
     key2Bytes.set(key1.buf);
-    key2Bytes[0]! ^= 0x01;
+    key2Bytes.bytes[0]! ^= 0x01;
     const key2 = FixedBuf.fromBuf(32, key2Bytes);
 
     const plaintext = WebBuf.fromUtf8("secret message");
     const encrypted = acs2Encrypt(plaintext, key1);
 
-    expect(() => acs2Decrypt(encrypted, key2)).toThrow("Message authentication failed");
+    expect(() => acs2Decrypt(encrypted, key2)).toThrow(
+      "Message authentication failed",
+    );
   });
 
   it("should produce different ciphertext with different keys", () => {
@@ -495,7 +546,7 @@ describe("Audit: Round-trip tests", () => {
       const plaintext = WebBuf.alloc(size);
       // Use deterministic pattern instead of crypto.getRandomValues
       for (let i = 0; i < size; i++) {
-        plaintext[i] = i % 256;
+        plaintext.bytes[i] = i % 256;
       }
 
       const encrypted = acs2Encrypt(plaintext, key);
@@ -532,7 +583,9 @@ describe("Audit: IV handling", () => {
     const encrypted = acs2Encrypt(plaintext, key, iv);
 
     // IV should be at position 32-48 (after HMAC)
-    expect(encrypted.slice(32, 48).toHex()).toBe("00112233445566778899aabbccddeeff");
+    expect(encrypted.slice(32, 48).toHex()).toBe(
+      "00112233445566778899aabbccddeeff",
+    );
   });
 
   it("should generate random IV when not provided", () => {
@@ -630,7 +683,7 @@ describe("Audit: Security properties", () => {
     // Count differing bytes (should be many due to CBC mode propagation)
     let differentBytes = 0;
     for (let i = 0; i < encrypted1.length; i++) {
-      if (encrypted1[i] !== encrypted2[i]) {
+      if (encrypted1.bytes[i] !== encrypted2.bytes[i]) {
         differentBytes++;
       }
     }
@@ -686,7 +739,7 @@ describe("Audit: Edge cases", () => {
     // Use deterministic pattern
     const plaintext = WebBuf.alloc(100 * 1024);
     for (let i = 0; i < plaintext.length; i++) {
-      plaintext[i] = i % 256;
+      plaintext.bytes[i] = i % 256;
     }
 
     const encrypted = acs2Encrypt(plaintext, key);

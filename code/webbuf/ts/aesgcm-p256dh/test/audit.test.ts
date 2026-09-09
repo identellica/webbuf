@@ -30,7 +30,12 @@ describe("Audit: Key derivation verification", () => {
     const ecdhSecret = p256SharedSecret(alice.privKey, bob.pubKey);
     const derivedKey = sha256Hash(ecdhSecret.buf);
 
-    const dhEncrypted = aesgcmP256dhEncrypt(alice.privKey, bob.pubKey, plaintext, iv);
+    const dhEncrypted = aesgcmP256dhEncrypt(
+      alice.privKey,
+      bob.pubKey,
+      plaintext,
+      iv,
+    );
     const manualEncrypted = aesgcmEncrypt(plaintext, derivedKey, iv);
 
     expect(dhEncrypted.toHex()).toBe(manualEncrypted.toHex());
@@ -94,8 +99,12 @@ describe("Audit: Third party cannot decrypt", () => {
 
     const encrypted = aesgcmP256dhEncrypt(alice.privKey, bob.pubKey, plaintext);
 
-    expect(() => aesgcmP256dhDecrypt(eve.privKey, alice.pubKey, encrypted)).toThrow();
-    expect(() => aesgcmP256dhDecrypt(eve.privKey, bob.pubKey, encrypted)).toThrow();
+    expect(() =>
+      aesgcmP256dhDecrypt(eve.privKey, alice.pubKey, encrypted),
+    ).toThrow();
+    expect(() =>
+      aesgcmP256dhDecrypt(eve.privKey, bob.pubKey, encrypted),
+    ).toThrow();
   });
 
   it("should not allow decryption with wrong private key", () => {
@@ -106,7 +115,9 @@ describe("Audit: Third party cannot decrypt", () => {
 
     const encrypted = aesgcmP256dhEncrypt(alice.privKey, bob.pubKey, plaintext);
 
-    expect(() => aesgcmP256dhDecrypt(wrongKey.privKey, alice.pubKey, encrypted)).toThrow();
+    expect(() =>
+      aesgcmP256dhDecrypt(wrongKey.privKey, alice.pubKey, encrypted),
+    ).toThrow();
   });
 
   it("should not allow decryption with wrong public key", () => {
@@ -117,7 +128,9 @@ describe("Audit: Third party cannot decrypt", () => {
 
     const encrypted = aesgcmP256dhEncrypt(alice.privKey, bob.pubKey, plaintext);
 
-    expect(() => aesgcmP256dhDecrypt(bob.privKey, wrongKey.pubKey, encrypted)).toThrow();
+    expect(() =>
+      aesgcmP256dhDecrypt(bob.privKey, wrongKey.pubKey, encrypted),
+    ).toThrow();
   });
 });
 
@@ -132,7 +145,12 @@ describe("Audit: Cross-verification with primitives", () => {
     const key = sha256Hash(ecdhSecret.buf);
     const manualEncrypted = aesgcmEncrypt(plaintext, key, iv);
 
-    const dhEncrypted = aesgcmP256dhEncrypt(alice.privKey, bob.pubKey, plaintext, iv);
+    const dhEncrypted = aesgcmP256dhEncrypt(
+      alice.privKey,
+      bob.pubKey,
+      plaintext,
+      iv,
+    );
 
     expect(dhEncrypted.toHex()).toBe(manualEncrypted.toHex());
   });
@@ -157,7 +175,11 @@ describe("Audit: Round-trip tests", () => {
     const alice = createKeyPair();
     const bob = createKeyPair();
 
-    const encrypted = aesgcmP256dhEncrypt(alice.privKey, bob.pubKey, WebBuf.alloc(0));
+    const encrypted = aesgcmP256dhEncrypt(
+      alice.privKey,
+      bob.pubKey,
+      WebBuf.alloc(0),
+    );
     const decrypted = aesgcmP256dhDecrypt(bob.privKey, alice.pubKey, encrypted);
 
     expect(decrypted.length).toBe(0);
@@ -170,8 +192,16 @@ describe("Audit: Round-trip tests", () => {
 
     for (const size of sizes) {
       const plaintext = WebBuf.alloc(size, 0x42);
-      const encrypted = aesgcmP256dhEncrypt(alice.privKey, bob.pubKey, plaintext);
-      const decrypted = aesgcmP256dhDecrypt(bob.privKey, alice.pubKey, encrypted);
+      const encrypted = aesgcmP256dhEncrypt(
+        alice.privKey,
+        bob.pubKey,
+        plaintext,
+      );
+      const decrypted = aesgcmP256dhDecrypt(
+        bob.privKey,
+        alice.pubKey,
+        encrypted,
+      );
       expect(decrypted.toHex()).toBe(plaintext.toHex());
     }
   });
@@ -187,8 +217,16 @@ describe("Audit: Round-trip tests", () => {
 
     for (const str of testStrings) {
       const plaintext = WebBuf.fromUtf8(str);
-      const encrypted = aesgcmP256dhEncrypt(alice.privKey, bob.pubKey, plaintext);
-      const decrypted = aesgcmP256dhDecrypt(bob.privKey, alice.pubKey, encrypted);
+      const encrypted = aesgcmP256dhEncrypt(
+        alice.privKey,
+        bob.pubKey,
+        plaintext,
+      );
+      const decrypted = aesgcmP256dhDecrypt(
+        bob.privKey,
+        alice.pubKey,
+        encrypted,
+      );
       expect(decrypted.toUtf8()).toBe(str);
     }
   });
@@ -204,9 +242,11 @@ describe("Audit: Tamper detection", () => {
 
     const tampered = WebBuf.alloc(encrypted.length);
     tampered.set(encrypted);
-    tampered[12]! ^= 0x01;
+    tampered.bytes[12]! ^= 0x01;
 
-    expect(() => aesgcmP256dhDecrypt(bob.privKey, alice.pubKey, tampered)).toThrow();
+    expect(() =>
+      aesgcmP256dhDecrypt(bob.privKey, alice.pubKey, tampered),
+    ).toThrow();
   });
 
   it("should reject tampered auth tag", () => {
@@ -218,9 +258,11 @@ describe("Audit: Tamper detection", () => {
 
     const tampered = WebBuf.alloc(encrypted.length);
     tampered.set(encrypted);
-    tampered[tampered.length - 1]! ^= 0x01;
+    tampered.bytes[tampered.length - 1]! ^= 0x01;
 
-    expect(() => aesgcmP256dhDecrypt(bob.privKey, alice.pubKey, tampered)).toThrow();
+    expect(() =>
+      aesgcmP256dhDecrypt(bob.privKey, alice.pubKey, tampered),
+    ).toThrow();
   });
 
   it("should reject tampered nonce", () => {
@@ -232,9 +274,11 @@ describe("Audit: Tamper detection", () => {
 
     const tampered = WebBuf.alloc(encrypted.length);
     tampered.set(encrypted);
-    tampered[0]! ^= 0x01;
+    tampered.bytes[0]! ^= 0x01;
 
-    expect(() => aesgcmP256dhDecrypt(bob.privKey, alice.pubKey, tampered)).toThrow();
+    expect(() =>
+      aesgcmP256dhDecrypt(bob.privKey, alice.pubKey, tampered),
+    ).toThrow();
   });
 });
 
@@ -255,13 +299,23 @@ describe("Audit: Known test vectors", () => {
     const iv = FixedBuf.fromHex(12, "000102030405060708090a0b");
     const plaintext = WebBuf.fromUtf8("test");
 
-    const encrypted = aesgcmP256dhEncrypt(alicePrivKey, bobPubKey, plaintext, iv);
+    const encrypted = aesgcmP256dhEncrypt(
+      alicePrivKey,
+      bobPubKey,
+      plaintext,
+      iv,
+    );
     const decrypted = aesgcmP256dhDecrypt(bobPrivKey, alicePubKey, encrypted);
 
     expect(decrypted.toUtf8()).toBe("test");
 
     // Verify determinism
-    const encrypted2 = aesgcmP256dhEncrypt(alicePrivKey, bobPubKey, plaintext, iv);
+    const encrypted2 = aesgcmP256dhEncrypt(
+      alicePrivKey,
+      bobPubKey,
+      plaintext,
+      iv,
+    );
     expect(encrypted.toHex()).toBe(encrypted2.toHex());
   });
 });
@@ -274,8 +328,18 @@ describe("Audit: Security properties", () => {
     const iv = FixedBuf.fromRandom(12);
     const plaintext = WebBuf.fromUtf8("same message");
 
-    const encryptedForBob = aesgcmP256dhEncrypt(alice.privKey, bob.pubKey, plaintext, iv);
-    const encryptedForCharlie = aesgcmP256dhEncrypt(alice.privKey, charlie.pubKey, plaintext, iv);
+    const encryptedForBob = aesgcmP256dhEncrypt(
+      alice.privKey,
+      bob.pubKey,
+      plaintext,
+      iv,
+    );
+    const encryptedForCharlie = aesgcmP256dhEncrypt(
+      alice.privKey,
+      charlie.pubKey,
+      plaintext,
+      iv,
+    );
 
     expect(encryptedForBob.toHex()).not.toBe(encryptedForCharlie.toHex());
   });

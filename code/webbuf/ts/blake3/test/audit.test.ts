@@ -19,7 +19,7 @@ import { FixedBuf } from "@webbuf/fixedbuf";
 function generateTestInput(length: number): WebBuf {
   const buf = WebBuf.alloc(length);
   for (let i = 0; i < length; i++) {
-    buf[i] = i % 251;
+    buf.bytes[i] = i % 251;
   }
   return buf;
 }

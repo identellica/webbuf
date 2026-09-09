@@ -164,14 +164,10 @@ function requireAllSeeds<N extends number>(
   return [skSeed, skPrf, pkSeed];
 }
 
-function slhSignHedged<
-  SkSize extends number,
-  SigSize extends number,
-  N extends number,
->(
+function slhSignHedged<SkSize extends number, SigSize extends number>(
   sign: SlhSignFn,
   signatureSize: SigSize,
-  seedSize: N,
+  seedSize: number,
   signingKey: FixedBuf<SkSize>,
   message: WebBuf,
   context?: WebBuf,
@@ -199,10 +195,10 @@ function slhSignDeterministic<
   addrnd?: FixedBuf<N>,
 ): FixedBuf<SigSize> {
   const out = sign(
-    signingKey.buf,
-    message,
-    defaultContext(context),
-    addrnd ? addrnd.buf : EMPTY_OPT_RAND,
+    signingKey.buf.bytes,
+    message.bytes,
+    defaultContext(context).bytes,
+    (addrnd ? addrnd.buf : EMPTY_OPT_RAND).bytes,
   );
   return FixedBuf.fromBuf(signatureSize, WebBuf.fromUint8Array(out));
 }
@@ -215,10 +211,10 @@ function slhVerify<VkSize extends number, SigSize extends number>(
   context?: WebBuf,
 ): boolean {
   return verify(
-    verifyingKey.buf,
-    message,
-    signature.buf,
-    defaultContext(context),
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
+    defaultContext(context).bytes,
   );
 }
 
@@ -254,7 +250,11 @@ export function slhDsaSha2_128sKeyPairDeterministic(
   skPrf: FixedBuf<16>,
   pkSeed: FixedBuf<16>,
 ): SlhDsaKeyPair<32, 64> {
-  const out = slh_dsa_sha2_128s_keypair(skSeed.buf, skPrf.buf, pkSeed.buf);
+  const out = slh_dsa_sha2_128s_keypair(
+    skSeed.buf.bytes,
+    skPrf.buf.bytes,
+    pkSeed.buf.bytes,
+  );
   return splitKeypair(out, 32, 64);
 }
 
@@ -308,9 +308,9 @@ export function slhDsaSha2_128sSignInternal(
   addrnd?: FixedBuf<16>,
 ): FixedBuf<7856> {
   const out = slh_dsa_sha2_128s_sign_internal(
-    signingKey.buf,
-    message,
-    addrnd ? addrnd.buf : EMPTY_OPT_RAND,
+    signingKey.buf.bytes,
+    message.bytes,
+    (addrnd ? addrnd.buf : EMPTY_OPT_RAND).bytes,
   );
   return FixedBuf.fromBuf(7856, WebBuf.fromUint8Array(out));
 }
@@ -321,9 +321,9 @@ export function slhDsaSha2_128sVerifyInternal(
   signature: FixedBuf<7856>,
 ): boolean {
   return slh_dsa_sha2_128s_verify_internal(
-    verifyingKey.buf,
-    message,
-    signature.buf,
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
   );
 }
 
@@ -355,7 +355,11 @@ export function slhDsaSha2_128fKeyPairDeterministic(
   skPrf: FixedBuf<16>,
   pkSeed: FixedBuf<16>,
 ): SlhDsaKeyPair<32, 64> {
-  const out = slh_dsa_sha2_128f_keypair(skSeed.buf, skPrf.buf, pkSeed.buf);
+  const out = slh_dsa_sha2_128f_keypair(
+    skSeed.buf.bytes,
+    skPrf.buf.bytes,
+    pkSeed.buf.bytes,
+  );
   return splitKeypair(out, 32, 64);
 }
 
@@ -409,9 +413,9 @@ export function slhDsaSha2_128fSignInternal(
   addrnd?: FixedBuf<16>,
 ): FixedBuf<17088> {
   const out = slh_dsa_sha2_128f_sign_internal(
-    signingKey.buf,
-    message,
-    addrnd ? addrnd.buf : EMPTY_OPT_RAND,
+    signingKey.buf.bytes,
+    message.bytes,
+    (addrnd ? addrnd.buf : EMPTY_OPT_RAND).bytes,
   );
   return FixedBuf.fromBuf(17088, WebBuf.fromUint8Array(out));
 }
@@ -422,9 +426,9 @@ export function slhDsaSha2_128fVerifyInternal(
   signature: FixedBuf<17088>,
 ): boolean {
   return slh_dsa_sha2_128f_verify_internal(
-    verifyingKey.buf,
-    message,
-    signature.buf,
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
   );
 }
 
@@ -456,7 +460,11 @@ export function slhDsaSha2_192sKeyPairDeterministic(
   skPrf: FixedBuf<24>,
   pkSeed: FixedBuf<24>,
 ): SlhDsaKeyPair<48, 96> {
-  const out = slh_dsa_sha2_192s_keypair(skSeed.buf, skPrf.buf, pkSeed.buf);
+  const out = slh_dsa_sha2_192s_keypair(
+    skSeed.buf.bytes,
+    skPrf.buf.bytes,
+    pkSeed.buf.bytes,
+  );
   return splitKeypair(out, 48, 96);
 }
 
@@ -510,9 +518,9 @@ export function slhDsaSha2_192sSignInternal(
   addrnd?: FixedBuf<24>,
 ): FixedBuf<16224> {
   const out = slh_dsa_sha2_192s_sign_internal(
-    signingKey.buf,
-    message,
-    addrnd ? addrnd.buf : EMPTY_OPT_RAND,
+    signingKey.buf.bytes,
+    message.bytes,
+    (addrnd ? addrnd.buf : EMPTY_OPT_RAND).bytes,
   );
   return FixedBuf.fromBuf(16224, WebBuf.fromUint8Array(out));
 }
@@ -523,9 +531,9 @@ export function slhDsaSha2_192sVerifyInternal(
   signature: FixedBuf<16224>,
 ): boolean {
   return slh_dsa_sha2_192s_verify_internal(
-    verifyingKey.buf,
-    message,
-    signature.buf,
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
   );
 }
 
@@ -557,7 +565,11 @@ export function slhDsaSha2_192fKeyPairDeterministic(
   skPrf: FixedBuf<24>,
   pkSeed: FixedBuf<24>,
 ): SlhDsaKeyPair<48, 96> {
-  const out = slh_dsa_sha2_192f_keypair(skSeed.buf, skPrf.buf, pkSeed.buf);
+  const out = slh_dsa_sha2_192f_keypair(
+    skSeed.buf.bytes,
+    skPrf.buf.bytes,
+    pkSeed.buf.bytes,
+  );
   return splitKeypair(out, 48, 96);
 }
 
@@ -611,9 +623,9 @@ export function slhDsaSha2_192fSignInternal(
   addrnd?: FixedBuf<24>,
 ): FixedBuf<35664> {
   const out = slh_dsa_sha2_192f_sign_internal(
-    signingKey.buf,
-    message,
-    addrnd ? addrnd.buf : EMPTY_OPT_RAND,
+    signingKey.buf.bytes,
+    message.bytes,
+    (addrnd ? addrnd.buf : EMPTY_OPT_RAND).bytes,
   );
   return FixedBuf.fromBuf(35664, WebBuf.fromUint8Array(out));
 }
@@ -624,9 +636,9 @@ export function slhDsaSha2_192fVerifyInternal(
   signature: FixedBuf<35664>,
 ): boolean {
   return slh_dsa_sha2_192f_verify_internal(
-    verifyingKey.buf,
-    message,
-    signature.buf,
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
   );
 }
 
@@ -658,7 +670,11 @@ export function slhDsaSha2_256sKeyPairDeterministic(
   skPrf: FixedBuf<32>,
   pkSeed: FixedBuf<32>,
 ): SlhDsaKeyPair<64, 128> {
-  const out = slh_dsa_sha2_256s_keypair(skSeed.buf, skPrf.buf, pkSeed.buf);
+  const out = slh_dsa_sha2_256s_keypair(
+    skSeed.buf.bytes,
+    skPrf.buf.bytes,
+    pkSeed.buf.bytes,
+  );
   return splitKeypair(out, 64, 128);
 }
 
@@ -712,9 +728,9 @@ export function slhDsaSha2_256sSignInternal(
   addrnd?: FixedBuf<32>,
 ): FixedBuf<29792> {
   const out = slh_dsa_sha2_256s_sign_internal(
-    signingKey.buf,
-    message,
-    addrnd ? addrnd.buf : EMPTY_OPT_RAND,
+    signingKey.buf.bytes,
+    message.bytes,
+    (addrnd ? addrnd.buf : EMPTY_OPT_RAND).bytes,
   );
   return FixedBuf.fromBuf(29792, WebBuf.fromUint8Array(out));
 }
@@ -725,9 +741,9 @@ export function slhDsaSha2_256sVerifyInternal(
   signature: FixedBuf<29792>,
 ): boolean {
   return slh_dsa_sha2_256s_verify_internal(
-    verifyingKey.buf,
-    message,
-    signature.buf,
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
   );
 }
 
@@ -759,7 +775,11 @@ export function slhDsaSha2_256fKeyPairDeterministic(
   skPrf: FixedBuf<32>,
   pkSeed: FixedBuf<32>,
 ): SlhDsaKeyPair<64, 128> {
-  const out = slh_dsa_sha2_256f_keypair(skSeed.buf, skPrf.buf, pkSeed.buf);
+  const out = slh_dsa_sha2_256f_keypair(
+    skSeed.buf.bytes,
+    skPrf.buf.bytes,
+    pkSeed.buf.bytes,
+  );
   return splitKeypair(out, 64, 128);
 }
 
@@ -813,9 +833,9 @@ export function slhDsaSha2_256fSignInternal(
   addrnd?: FixedBuf<32>,
 ): FixedBuf<49856> {
   const out = slh_dsa_sha2_256f_sign_internal(
-    signingKey.buf,
-    message,
-    addrnd ? addrnd.buf : EMPTY_OPT_RAND,
+    signingKey.buf.bytes,
+    message.bytes,
+    (addrnd ? addrnd.buf : EMPTY_OPT_RAND).bytes,
   );
   return FixedBuf.fromBuf(49856, WebBuf.fromUint8Array(out));
 }
@@ -826,9 +846,9 @@ export function slhDsaSha2_256fVerifyInternal(
   signature: FixedBuf<49856>,
 ): boolean {
   return slh_dsa_sha2_256f_verify_internal(
-    verifyingKey.buf,
-    message,
-    signature.buf,
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
   );
 }
 
@@ -864,7 +884,11 @@ export function slhDsaShake_128sKeyPairDeterministic(
   skPrf: FixedBuf<16>,
   pkSeed: FixedBuf<16>,
 ): SlhDsaKeyPair<32, 64> {
-  const out = slh_dsa_shake_128s_keypair(skSeed.buf, skPrf.buf, pkSeed.buf);
+  const out = slh_dsa_shake_128s_keypair(
+    skSeed.buf.bytes,
+    skPrf.buf.bytes,
+    pkSeed.buf.bytes,
+  );
   return splitKeypair(out, 32, 64);
 }
 
@@ -918,9 +942,9 @@ export function slhDsaShake_128sSignInternal(
   addrnd?: FixedBuf<16>,
 ): FixedBuf<7856> {
   const out = slh_dsa_shake_128s_sign_internal(
-    signingKey.buf,
-    message,
-    addrnd ? addrnd.buf : EMPTY_OPT_RAND,
+    signingKey.buf.bytes,
+    message.bytes,
+    (addrnd ? addrnd.buf : EMPTY_OPT_RAND).bytes,
   );
   return FixedBuf.fromBuf(7856, WebBuf.fromUint8Array(out));
 }
@@ -931,9 +955,9 @@ export function slhDsaShake_128sVerifyInternal(
   signature: FixedBuf<7856>,
 ): boolean {
   return slh_dsa_shake_128s_verify_internal(
-    verifyingKey.buf,
-    message,
-    signature.buf,
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
   );
 }
 
@@ -965,7 +989,11 @@ export function slhDsaShake_128fKeyPairDeterministic(
   skPrf: FixedBuf<16>,
   pkSeed: FixedBuf<16>,
 ): SlhDsaKeyPair<32, 64> {
-  const out = slh_dsa_shake_128f_keypair(skSeed.buf, skPrf.buf, pkSeed.buf);
+  const out = slh_dsa_shake_128f_keypair(
+    skSeed.buf.bytes,
+    skPrf.buf.bytes,
+    pkSeed.buf.bytes,
+  );
   return splitKeypair(out, 32, 64);
 }
 
@@ -1019,9 +1047,9 @@ export function slhDsaShake_128fSignInternal(
   addrnd?: FixedBuf<16>,
 ): FixedBuf<17088> {
   const out = slh_dsa_shake_128f_sign_internal(
-    signingKey.buf,
-    message,
-    addrnd ? addrnd.buf : EMPTY_OPT_RAND,
+    signingKey.buf.bytes,
+    message.bytes,
+    (addrnd ? addrnd.buf : EMPTY_OPT_RAND).bytes,
   );
   return FixedBuf.fromBuf(17088, WebBuf.fromUint8Array(out));
 }
@@ -1032,9 +1060,9 @@ export function slhDsaShake_128fVerifyInternal(
   signature: FixedBuf<17088>,
 ): boolean {
   return slh_dsa_shake_128f_verify_internal(
-    verifyingKey.buf,
-    message,
-    signature.buf,
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
   );
 }
 
@@ -1066,7 +1094,11 @@ export function slhDsaShake_192sKeyPairDeterministic(
   skPrf: FixedBuf<24>,
   pkSeed: FixedBuf<24>,
 ): SlhDsaKeyPair<48, 96> {
-  const out = slh_dsa_shake_192s_keypair(skSeed.buf, skPrf.buf, pkSeed.buf);
+  const out = slh_dsa_shake_192s_keypair(
+    skSeed.buf.bytes,
+    skPrf.buf.bytes,
+    pkSeed.buf.bytes,
+  );
   return splitKeypair(out, 48, 96);
 }
 
@@ -1120,9 +1152,9 @@ export function slhDsaShake_192sSignInternal(
   addrnd?: FixedBuf<24>,
 ): FixedBuf<16224> {
   const out = slh_dsa_shake_192s_sign_internal(
-    signingKey.buf,
-    message,
-    addrnd ? addrnd.buf : EMPTY_OPT_RAND,
+    signingKey.buf.bytes,
+    message.bytes,
+    (addrnd ? addrnd.buf : EMPTY_OPT_RAND).bytes,
   );
   return FixedBuf.fromBuf(16224, WebBuf.fromUint8Array(out));
 }
@@ -1133,9 +1165,9 @@ export function slhDsaShake_192sVerifyInternal(
   signature: FixedBuf<16224>,
 ): boolean {
   return slh_dsa_shake_192s_verify_internal(
-    verifyingKey.buf,
-    message,
-    signature.buf,
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
   );
 }
 
@@ -1167,7 +1199,11 @@ export function slhDsaShake_192fKeyPairDeterministic(
   skPrf: FixedBuf<24>,
   pkSeed: FixedBuf<24>,
 ): SlhDsaKeyPair<48, 96> {
-  const out = slh_dsa_shake_192f_keypair(skSeed.buf, skPrf.buf, pkSeed.buf);
+  const out = slh_dsa_shake_192f_keypair(
+    skSeed.buf.bytes,
+    skPrf.buf.bytes,
+    pkSeed.buf.bytes,
+  );
   return splitKeypair(out, 48, 96);
 }
 
@@ -1221,9 +1257,9 @@ export function slhDsaShake_192fSignInternal(
   addrnd?: FixedBuf<24>,
 ): FixedBuf<35664> {
   const out = slh_dsa_shake_192f_sign_internal(
-    signingKey.buf,
-    message,
-    addrnd ? addrnd.buf : EMPTY_OPT_RAND,
+    signingKey.buf.bytes,
+    message.bytes,
+    (addrnd ? addrnd.buf : EMPTY_OPT_RAND).bytes,
   );
   return FixedBuf.fromBuf(35664, WebBuf.fromUint8Array(out));
 }
@@ -1234,9 +1270,9 @@ export function slhDsaShake_192fVerifyInternal(
   signature: FixedBuf<35664>,
 ): boolean {
   return slh_dsa_shake_192f_verify_internal(
-    verifyingKey.buf,
-    message,
-    signature.buf,
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
   );
 }
 
@@ -1268,7 +1304,11 @@ export function slhDsaShake_256sKeyPairDeterministic(
   skPrf: FixedBuf<32>,
   pkSeed: FixedBuf<32>,
 ): SlhDsaKeyPair<64, 128> {
-  const out = slh_dsa_shake_256s_keypair(skSeed.buf, skPrf.buf, pkSeed.buf);
+  const out = slh_dsa_shake_256s_keypair(
+    skSeed.buf.bytes,
+    skPrf.buf.bytes,
+    pkSeed.buf.bytes,
+  );
   return splitKeypair(out, 64, 128);
 }
 
@@ -1322,9 +1362,9 @@ export function slhDsaShake_256sSignInternal(
   addrnd?: FixedBuf<32>,
 ): FixedBuf<29792> {
   const out = slh_dsa_shake_256s_sign_internal(
-    signingKey.buf,
-    message,
-    addrnd ? addrnd.buf : EMPTY_OPT_RAND,
+    signingKey.buf.bytes,
+    message.bytes,
+    (addrnd ? addrnd.buf : EMPTY_OPT_RAND).bytes,
   );
   return FixedBuf.fromBuf(29792, WebBuf.fromUint8Array(out));
 }
@@ -1335,9 +1375,9 @@ export function slhDsaShake_256sVerifyInternal(
   signature: FixedBuf<29792>,
 ): boolean {
   return slh_dsa_shake_256s_verify_internal(
-    verifyingKey.buf,
-    message,
-    signature.buf,
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
   );
 }
 
@@ -1369,7 +1409,11 @@ export function slhDsaShake_256fKeyPairDeterministic(
   skPrf: FixedBuf<32>,
   pkSeed: FixedBuf<32>,
 ): SlhDsaKeyPair<64, 128> {
-  const out = slh_dsa_shake_256f_keypair(skSeed.buf, skPrf.buf, pkSeed.buf);
+  const out = slh_dsa_shake_256f_keypair(
+    skSeed.buf.bytes,
+    skPrf.buf.bytes,
+    pkSeed.buf.bytes,
+  );
   return splitKeypair(out, 64, 128);
 }
 
@@ -1423,9 +1467,9 @@ export function slhDsaShake_256fSignInternal(
   addrnd?: FixedBuf<32>,
 ): FixedBuf<49856> {
   const out = slh_dsa_shake_256f_sign_internal(
-    signingKey.buf,
-    message,
-    addrnd ? addrnd.buf : EMPTY_OPT_RAND,
+    signingKey.buf.bytes,
+    message.bytes,
+    (addrnd ? addrnd.buf : EMPTY_OPT_RAND).bytes,
   );
   return FixedBuf.fromBuf(49856, WebBuf.fromUint8Array(out));
 }
@@ -1436,8 +1480,8 @@ export function slhDsaShake_256fVerifyInternal(
   signature: FixedBuf<49856>,
 ): boolean {
   return slh_dsa_shake_256f_verify_internal(
-    verifyingKey.buf,
-    message,
-    signature.buf,
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
   );
 }

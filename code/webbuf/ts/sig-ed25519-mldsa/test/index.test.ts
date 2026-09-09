@@ -26,27 +26,30 @@ describe("sig-ed25519-mldsa round-trip", () => {
     const s = freshSetup();
     const message = WebBuf.fromUtf8("composite signature");
     const sig = sigEd25519MldsaSign(s.edPriv, s.mldsaSigningKey, message);
-    expect(sigEd25519MldsaVerify(s.edPub, s.mldsaVerifyingKey, message, sig))
-      .toBe(true);
+    expect(
+      sigEd25519MldsaVerify(s.edPub, s.mldsaVerifyingKey, message, sig),
+    ).toBe(true);
   });
 
   it("signs and verifies an empty message", () => {
     const s = freshSetup();
     const empty = WebBuf.alloc(0);
     const sig = sigEd25519MldsaSign(s.edPriv, s.mldsaSigningKey, empty);
-    expect(sigEd25519MldsaVerify(s.edPub, s.mldsaVerifyingKey, empty, sig))
-      .toBe(true);
+    expect(
+      sigEd25519MldsaVerify(s.edPub, s.mldsaVerifyingKey, empty, sig),
+    ).toBe(true);
   });
 
   it("signs and verifies a 64 KiB message", () => {
     const s = freshSetup();
     const big = WebBuf.alloc(64 * 1024);
     for (let i = 0; i < big.length; i++) {
-      big[i] = i & 0xff;
+      big.bytes[i] = i & 0xff;
     }
     const sig = sigEd25519MldsaSign(s.edPriv, s.mldsaSigningKey, big);
-    expect(sigEd25519MldsaVerify(s.edPub, s.mldsaVerifyingKey, big, sig))
-      .toBe(true);
+    expect(sigEd25519MldsaVerify(s.edPub, s.mldsaVerifyingKey, big, sig)).toBe(
+      true,
+    );
   });
 
   it("signature is exactly 3374 bytes", () => {
@@ -67,8 +70,8 @@ describe("sig-ed25519-mldsa round-trip", () => {
       s.mldsaSigningKey,
       WebBuf.fromUtf8("x"),
     );
-    expect(sig.buf[0]).toBe(SIG_ED25519_MLDSA.versionByte);
-    expect(sig.buf[0]).toBe(0x01);
+    expect(sig.buf.bytes[0]).toBe(SIG_ED25519_MLDSA.versionByte);
+    expect(sig.buf.bytes[0]).toBe(0x01);
   });
 
   it("constants object reports the expected sizes", () => {
@@ -91,8 +94,8 @@ describe("sig-ed25519-mldsa round-trip", () => {
     // PureEdDSA is RFC-deterministic.
     const ed1 = sig1.buf.slice(1, 65);
     const ed2 = sig2.buf.slice(1, 65);
-    expect(WebBuf.fromUint8Array(ed1).toHex()).toBe(
-      WebBuf.fromUint8Array(ed2).toHex(),
+    expect(WebBuf.fromUint8Array(ed1.bytes).toHex()).toBe(
+      WebBuf.fromUint8Array(ed2.bytes).toHex(),
     );
   });
 });
@@ -134,9 +137,9 @@ describe("sig-ed25519-mldsa hybrid defense-in-depth", () => {
     const message = WebBuf.fromUtf8("tamper Ed25519 half");
     const sig = sigEd25519MldsaSign(s.edPriv, s.mldsaSigningKey, message);
 
-    const tamperedBuf = WebBuf.fromUint8Array(sig.buf);
+    const tamperedBuf = WebBuf.fromUint8Array(sig.buf.bytes);
     // Flip a byte in the Ed25519 R portion (byte 1).
-    tamperedBuf[1] = ((tamperedBuf[1] ?? 0) ^ 0x01) & 0xff;
+    tamperedBuf.bytes[1] = ((tamperedBuf.bytes[1] ?? 0) ^ 0x01) & 0xff;
     const tampered = FixedBuf.fromBuf(3374, tamperedBuf);
 
     expect(
@@ -149,9 +152,9 @@ describe("sig-ed25519-mldsa hybrid defense-in-depth", () => {
     const message = WebBuf.fromUtf8("tamper ML-DSA half");
     const sig = sigEd25519MldsaSign(s.edPriv, s.mldsaSigningKey, message);
 
-    const tamperedBuf = WebBuf.fromUint8Array(sig.buf);
+    const tamperedBuf = WebBuf.fromUint8Array(sig.buf.bytes);
     // Flip a byte deep inside the ML-DSA half.
-    tamperedBuf[200] = ((tamperedBuf[200] ?? 0) ^ 0x01) & 0xff;
+    tamperedBuf.bytes[200] = ((tamperedBuf.bytes[200] ?? 0) ^ 0x01) & 0xff;
     const tampered = FixedBuf.fromBuf(3374, tamperedBuf);
 
     expect(
@@ -165,8 +168,8 @@ describe("sig-ed25519-mldsa hybrid defense-in-depth", () => {
     const sig = sigEd25519MldsaSign(s.edPriv, s.mldsaSigningKey, message);
 
     for (const wrongVersion of [0x00, 0x02, 0xff]) {
-      const tamperedBuf = WebBuf.fromUint8Array(sig.buf);
-      tamperedBuf[0] = wrongVersion;
+      const tamperedBuf = WebBuf.fromUint8Array(sig.buf.bytes);
+      tamperedBuf.bytes[0] = wrongVersion;
       const tampered = FixedBuf.fromBuf(3374, tamperedBuf);
       expect(
         sigEd25519MldsaVerify(s.edPub, s.mldsaVerifyingKey, message, tampered),
@@ -181,8 +184,8 @@ describe("sig-ed25519-mldsa rejection paths", () => {
     const original = WebBuf.fromUtf8("original message");
     const sig = sigEd25519MldsaSign(s.edPriv, s.mldsaSigningKey, original);
 
-    const tampered = WebBuf.fromUint8Array(original);
-    tampered[0] = ((tampered[0] ?? 0) ^ 0xff) & 0xff;
+    const tampered = WebBuf.fromUint8Array(original.bytes);
+    tampered.bytes[0] = ((tampered.bytes[0] ?? 0) ^ 0xff) & 0xff;
 
     expect(
       sigEd25519MldsaVerify(s.edPub, s.mldsaVerifyingKey, tampered, sig),
@@ -208,12 +211,12 @@ describe("sig-ed25519-mldsa rejection paths", () => {
     // before the ML-DSA half matters).
     const realSig = sigEd25519MldsaSign(s.edPriv, s.mldsaSigningKey, message);
 
-    const forgeryBuf = WebBuf.fromUint8Array(realSig.buf);
-    forgeryBuf[0] = 0x01; // version
+    const forgeryBuf = WebBuf.fromUint8Array(realSig.buf.bytes);
+    forgeryBuf.bytes[0] = 0x01; // version
     // R = identity (01 || 00*31), S = zeros.
-    forgeryBuf[1] = 0x01;
+    forgeryBuf.bytes[1] = 0x01;
     for (let i = 2; i < 1 + 64; i++) {
-      forgeryBuf[i] = 0;
+      forgeryBuf.bytes[i] = 0;
     }
     const forgery = FixedBuf.fromBuf(3374, forgeryBuf);
 

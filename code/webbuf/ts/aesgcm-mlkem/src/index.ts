@@ -126,17 +126,19 @@ export function aesgcmMlkemDecrypt(
       `aesgcm-mlkem ciphertext too short: ${String(ciphertext.length)} < ${String(FIXED_OVERHEAD)}`,
     );
   }
-  const versionByte = ciphertext[0];
+  const versionByte = ciphertext.bytes[0] ?? 0;
   if (versionByte !== VERSION) {
     throw new Error(
-      `aesgcm-mlkem unexpected version byte: 0x${versionByte!.toString(16).padStart(2, "0")} (expected 0x01)`,
+      `aesgcm-mlkem unexpected version byte: 0x${versionByte.toString(16).padStart(2, "0")} (expected 0x01)`,
     );
   }
   const kemCt = FixedBuf.fromBuf(
     KEM_CT_SIZE,
-    WebBuf.fromUint8Array(ciphertext.subarray(1, 1 + KEM_CT_SIZE)),
+    WebBuf.fromUint8Array(ciphertext.subarray(1, 1 + KEM_CT_SIZE).bytes),
   );
-  const aesPart = WebBuf.fromUint8Array(ciphertext.subarray(1 + KEM_CT_SIZE));
+  const aesPart = WebBuf.fromUint8Array(
+    ciphertext.subarray(1 + KEM_CT_SIZE).bytes,
+  );
   const sharedSecret = mlKem768Decapsulate(decapKey, kemCt);
   const aesKey = hkdfSha256L32(ZERO_SALT, sharedSecret.buf, INFO);
   return aesgcmDecrypt(aesPart, aesKey, aad);

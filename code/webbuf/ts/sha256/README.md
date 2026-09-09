@@ -1,5 +1,13 @@
 # @webbuf/sha256
 
+## WebBuf 4 byte access
+
+Public inputs and outputs retain WebBuf/FixedBuf wrapper types. Use
+`value.bytes` (WebBuf) or `value.buf.bytes` (FixedBuf) when calling native
+array APIs yourself. This package unwraps selected byte views at its WASM
+boundary; algorithms, output formats and existing input/output ownership
+remain unchanged. Nonzero-offset views are supported without copying inputs.
+
 SHA-256 hash and HMAC-SHA256, optimized with Rust/WASM.
 
 ## Installation

@@ -24,7 +24,12 @@ export function aesgcmEncrypt(
   iv: FixedBuf<12> = FixedBuf.fromRandom(12),
   aad: WebBuf = EMPTY_AAD,
 ): WebBuf {
-  const encrypted = aesgcm_encrypt(plaintext, aesKey.buf, iv.buf, aad);
+  const encrypted = aesgcm_encrypt(
+    plaintext.bytes,
+    aesKey.buf.bytes,
+    iv.buf.bytes,
+    aad.bytes,
+  );
   return WebBuf.concat([iv.buf, WebBuf.fromUint8Array(encrypted)]);
 }
 
@@ -47,6 +52,11 @@ export function aesgcmDecrypt(
   const iv = FixedBuf.fromBuf(12, ciphertext.slice(0, 12));
   const encryptedData = ciphertext.slice(12);
   return WebBuf.fromUint8Array(
-    aesgcm_decrypt(encryptedData, aesKey.buf, iv.buf, aad),
+    aesgcm_decrypt(
+      encryptedData.bytes,
+      aesKey.buf.bytes,
+      iv.buf.bytes,
+      aad.bytes,
+    ),
   );
 }

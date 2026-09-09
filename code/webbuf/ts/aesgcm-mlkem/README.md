@@ -1,5 +1,13 @@
 # @webbuf/aesgcm-mlkem
 
+## WebBuf 4 byte access
+
+These APIs continue to accept and return WebBuf/FixedBuf values. WebBuf now
+contains a native array rather than inheriting from it: use `.bytes` (or
+`.buf.bytes` for FixedBuf) for native APIs and indexed byte access. Ciphertext,
+signature and key formats are unchanged. `slice` copies; `subarray` shares
+selected bytes. See the core WebBuf documentation for the complete contract.
+
 AES-256-GCM authenticated encryption with ML-KEM-768 key encapsulation. Pure
 post-quantum encryption: the recipient holds an ML-KEM-768 keypair, the sender
 encapsulates a fresh shared secret per message, derives an AES-256 key via

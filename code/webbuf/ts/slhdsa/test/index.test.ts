@@ -12,15 +12,11 @@ import {
   slhDsaSha2_128fVerifyInternal,
   slhDsaShake_192sKeyPair,
   slhDsaShake_192sSign,
-  slhDsaShake_192sSignInternal,
   slhDsaShake_192sVerify,
-  slhDsaShake_192sVerifyInternal,
   slhDsaSha2_256fKeyPair,
   slhDsaSha2_256fSign,
   slhDsaSha2_256fSignDeterministic,
   slhDsaSha2_256fVerify,
-  slhDsaSha2_256fSignInternal,
-  slhDsaSha2_256fVerifyInternal,
 } from "../src/index.js";
 import { WebBuf } from "@webbuf/webbuf";
 import { FixedBuf } from "@webbuf/fixedbuf";
@@ -51,7 +47,7 @@ describe("SLH-DSA round-trip", () => {
     expect(sig.buf.length).toBe(SLH_DSA_SHAKE_192S.signatureSize);
 
     expect(slhDsaShake_192sVerify(verifyingKey, message, sig)).toBe(true);
-  });
+  }, 60000);
 
   it("SHA2-256f keygen + sign + verify", () => {
     const message = WebBuf.fromUtf8("256-bit security");

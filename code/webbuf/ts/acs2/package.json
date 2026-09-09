@@ -1,6 +1,6 @@
 {
   "name": "@webbuf/acs2",
-  "version": "3.8.1",
+  "version": "4.0.0",
   "description": "AES+CBC encryption/decryption with SHA-256 HMAC for web, node.js, deno and bun.",
   "repository": {
     "type": "git",

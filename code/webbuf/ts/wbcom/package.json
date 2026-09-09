@@ -11,6 +11,8 @@
     "check": "react-router typegen && tsc --noEmit",
     "typecheck": "bun run check",
     "test:navigation": "bun test app/lib/docs-navigation.test.ts",
+    "test:api": "bun test ./app/lib/api-catalog.test.ts ./app/lib/api-examples.test.ts",
+    "test:static": "bun test ./app/lib/static-docs.integration.test.ts",
     "extract:api": "tsx scripts/extract-api.ts",
     "lint": "eslint .",
     "format": "prettier --write . --ignore-path ../.prettierignore"

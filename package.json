@@ -12,9 +12,9 @@
     "code/astrohacker/ts/ui"
   ],
   "scripts": {
-    "build:webbuf": "bun run --filter '@webbuf/*' --filter '!@webbuf/website' --filter webbuf build",
-    "typecheck:webbuf": "bun run --filter '@webbuf/*' --filter '!@webbuf/website' --filter webbuf typecheck",
-    "test:webbuf": "bun run --filter '@webbuf/*' --filter '!@webbuf/website' --filter webbuf test",
+    "build:webbuf": "bun run --filter '@webbuf/{acb3,acb3dh,acb3p256dh,acs2,acs2dh,acs2p256dh,aescbc,aesgcm,aesgcm-mlkem,aesgcm-p256dh,aesgcm-p256dh-mlkem,aesgcm-x25519dh-mlkem,blake3,ed25519,fixedbuf,mldsa,mlkem,numbers,p256,pbkdf2-sha256,ripemd160,rw,secp256k1,sha256,sig-ed25519-mldsa,slhdsa,webbuf,x25519}' --filter webbuf build",
+    "typecheck:webbuf": "bun run --filter '@webbuf/{acb3,acb3dh,acb3p256dh,acs2,acs2dh,acs2p256dh,aescbc,aesgcm,aesgcm-mlkem,aesgcm-p256dh,aesgcm-p256dh-mlkem,aesgcm-x25519dh-mlkem,blake3,ed25519,fixedbuf,mldsa,mlkem,numbers,p256,pbkdf2-sha256,ripemd160,rw,secp256k1,sha256,sig-ed25519-mldsa,slhdsa,webbuf,x25519}' --filter webbuf typecheck",
+    "test:webbuf": "bun run --filter '@webbuf/{acb3,acb3dh,acb3p256dh,acs2,acs2dh,acs2p256dh,aescbc,aesgcm,aesgcm-mlkem,aesgcm-p256dh,aesgcm-p256dh-mlkem,aesgcm-x25519dh-mlkem,blake3,ed25519,fixedbuf,mldsa,mlkem,numbers,p256,pbkdf2-sha256,ripemd160,rw,secp256k1,sha256,sig-ed25519-mldsa,slhdsa,webbuf,x25519}' --filter webbuf test",
     "benchmark:webbuf": "bun run --filter @webbuf/webbuf benchmark",
     "dev:wbcom": "bun run --cwd code/webbuf/ts/wbcom dev",
     "build:wbcom": "bun run --cwd code/webbuf/ts/wbcom build"

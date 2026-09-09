@@ -18,7 +18,9 @@ export function sign(
 ): FixedBuf<64> {
   return FixedBuf.fromBuf(
     64,
-    WebBuf.fromUint8Array(raw_sign(digest.buf, privateKey.buf, k.buf)),
+    WebBuf.fromUint8Array(
+      raw_sign(digest.buf.bytes, privateKey.buf.bytes, k.buf.bytes),
+    ),
   );
 }
 
@@ -28,7 +30,7 @@ export function verify(
   publicKey: FixedBuf<33>,
 ): boolean {
   try {
-    raw_verify(signature.buf, digest.buf, publicKey.buf);
+    raw_verify(signature.buf.bytes, digest.buf.bytes, publicKey.buf.bytes);
   } catch {
     return false;
   }
@@ -41,7 +43,9 @@ export function sharedSecret(
 ): FixedBuf<33> {
   return FixedBuf.fromBuf(
     33,
-    WebBuf.fromUint8Array(shared_secret(privateKey.buf, publicKey.buf)),
+    WebBuf.fromUint8Array(
+      shared_secret(privateKey.buf.bytes, publicKey.buf.bytes),
+    ),
   );
 }
 
@@ -51,19 +55,21 @@ export function publicKeyAdd(
 ): FixedBuf<33> {
   return FixedBuf.fromBuf(
     33,
-    WebBuf.fromUint8Array(public_key_add(publicKey1.buf, publicKey2.buf)),
+    WebBuf.fromUint8Array(
+      public_key_add(publicKey1.buf.bytes, publicKey2.buf.bytes),
+    ),
   );
 }
 
 export function publicKeyCreate(privateKey: FixedBuf<32>): FixedBuf<33> {
   return FixedBuf.fromBuf(
     33,
-    WebBuf.fromUint8Array(public_key_create(privateKey.buf)),
+    WebBuf.fromUint8Array(public_key_create(privateKey.buf.bytes)),
   );
 }
 
 export function publicKeyVerify(publicKey: FixedBuf<33>): boolean {
-  return public_key_verify(publicKey.buf);
+  return public_key_verify(publicKey.buf.bytes);
 }
 
 export function privateKeyAdd(
@@ -72,10 +78,12 @@ export function privateKeyAdd(
 ): FixedBuf<32> {
   return FixedBuf.fromBuf(
     32,
-    WebBuf.fromUint8Array(private_key_add(privKey1.buf, privKey2.buf)),
+    WebBuf.fromUint8Array(
+      private_key_add(privKey1.buf.bytes, privKey2.buf.bytes),
+    ),
   );
 }
 
 export function privateKeyVerify(privateKey: FixedBuf<32>): boolean {
-  return private_key_verify(privateKey.buf);
+  return private_key_verify(privateKey.buf.bytes);
 }

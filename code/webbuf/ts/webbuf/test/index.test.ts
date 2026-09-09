@@ -41,8 +41,8 @@ describe("wipe", () => {
 
   it("should work on a large buffer", () => {
     const buf = WebBuf.alloc(1024, 0xff);
-    expect(buf[0]).toBe(0xff);
-    expect(buf[1023]).toBe(0xff);
+    expect(buf.bytes[0]).toBe(0xff);
+    expect(buf.bytes[1023]).toBe(0xff);
     buf.wipe();
     for (const byte of buf) {
       expect(byte).toBe(0);

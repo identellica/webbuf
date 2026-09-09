@@ -100,17 +100,10 @@ export function mlKem512KeyPairDeterministic(
   d: FixedBuf<32>,
   z: FixedBuf<32>,
 ): MlKemKeyPair<800, 1632> {
-  const out = ml_kem_512_keypair(d.buf, z.buf);
+  const out = ml_kem_512_keypair(d.buf.bytes, z.buf.bytes);
   return splitKeypair(out, 800, 1632);
 }
 
-export function mlKem512Encapsulate(
-  encapsulationKey: FixedBuf<800>,
-): MlKemEncapResult<768, 32>;
-export function mlKem512Encapsulate(
-  encapsulationKey: FixedBuf<800>,
-  m: FixedBuf<32>,
-): MlKemEncapResult<768, 32>;
 export function mlKem512Encapsulate(
   encapsulationKey: FixedBuf<800>,
   m?: FixedBuf<32>,
@@ -125,7 +118,7 @@ export function mlKem512EncapsulateDeterministic(
   encapsulationKey: FixedBuf<800>,
   m: FixedBuf<32>,
 ): MlKemEncapResult<768, 32> {
-  const out = ml_kem_512_encapsulate(encapsulationKey.buf, m.buf);
+  const out = ml_kem_512_encapsulate(encapsulationKey.buf.bytes, m.buf.bytes);
   return splitEncap(out, 768, 32);
 }
 
@@ -133,7 +126,10 @@ export function mlKem512Decapsulate(
   decapsulationKey: FixedBuf<1632>,
   ciphertext: FixedBuf<768>,
 ): FixedBuf<32> {
-  const out = ml_kem_512_decapsulate(decapsulationKey.buf, ciphertext.buf);
+  const out = ml_kem_512_decapsulate(
+    decapsulationKey.buf.bytes,
+    ciphertext.buf.bytes,
+  );
   return FixedBuf.fromBuf(32, WebBuf.fromUint8Array(out));
 }
 
@@ -161,17 +157,10 @@ export function mlKem768KeyPairDeterministic(
   d: FixedBuf<32>,
   z: FixedBuf<32>,
 ): MlKemKeyPair<1184, 2400> {
-  const out = ml_kem_768_keypair(d.buf, z.buf);
+  const out = ml_kem_768_keypair(d.buf.bytes, z.buf.bytes);
   return splitKeypair(out, 1184, 2400);
 }
 
-export function mlKem768Encapsulate(
-  encapsulationKey: FixedBuf<1184>,
-): MlKemEncapResult<1088, 32>;
-export function mlKem768Encapsulate(
-  encapsulationKey: FixedBuf<1184>,
-  m: FixedBuf<32>,
-): MlKemEncapResult<1088, 32>;
 export function mlKem768Encapsulate(
   encapsulationKey: FixedBuf<1184>,
   m?: FixedBuf<32>,
@@ -186,7 +175,7 @@ export function mlKem768EncapsulateDeterministic(
   encapsulationKey: FixedBuf<1184>,
   m: FixedBuf<32>,
 ): MlKemEncapResult<1088, 32> {
-  const out = ml_kem_768_encapsulate(encapsulationKey.buf, m.buf);
+  const out = ml_kem_768_encapsulate(encapsulationKey.buf.bytes, m.buf.bytes);
   return splitEncap(out, 1088, 32);
 }
 
@@ -194,7 +183,10 @@ export function mlKem768Decapsulate(
   decapsulationKey: FixedBuf<2400>,
   ciphertext: FixedBuf<1088>,
 ): FixedBuf<32> {
-  const out = ml_kem_768_decapsulate(decapsulationKey.buf, ciphertext.buf);
+  const out = ml_kem_768_decapsulate(
+    decapsulationKey.buf.bytes,
+    ciphertext.buf.bytes,
+  );
   return FixedBuf.fromBuf(32, WebBuf.fromUint8Array(out));
 }
 
@@ -222,17 +214,10 @@ export function mlKem1024KeyPairDeterministic(
   d: FixedBuf<32>,
   z: FixedBuf<32>,
 ): MlKemKeyPair<1568, 3168> {
-  const out = ml_kem_1024_keypair(d.buf, z.buf);
+  const out = ml_kem_1024_keypair(d.buf.bytes, z.buf.bytes);
   return splitKeypair(out, 1568, 3168);
 }
 
-export function mlKem1024Encapsulate(
-  encapsulationKey: FixedBuf<1568>,
-): MlKemEncapResult<1568, 32>;
-export function mlKem1024Encapsulate(
-  encapsulationKey: FixedBuf<1568>,
-  m: FixedBuf<32>,
-): MlKemEncapResult<1568, 32>;
 export function mlKem1024Encapsulate(
   encapsulationKey: FixedBuf<1568>,
   m?: FixedBuf<32>,
@@ -247,7 +232,7 @@ export function mlKem1024EncapsulateDeterministic(
   encapsulationKey: FixedBuf<1568>,
   m: FixedBuf<32>,
 ): MlKemEncapResult<1568, 32> {
-  const out = ml_kem_1024_encapsulate(encapsulationKey.buf, m.buf);
+  const out = ml_kem_1024_encapsulate(encapsulationKey.buf.bytes, m.buf.bytes);
   return splitEncap(out, 1568, 32);
 }
 
@@ -255,6 +240,9 @@ export function mlKem1024Decapsulate(
   decapsulationKey: FixedBuf<3168>,
   ciphertext: FixedBuf<1568>,
 ): FixedBuf<32> {
-  const out = ml_kem_1024_decapsulate(decapsulationKey.buf, ciphertext.buf);
+  const out = ml_kem_1024_decapsulate(
+    decapsulationKey.buf.bytes,
+    ciphertext.buf.bytes,
+  );
   return FixedBuf.fromBuf(32, WebBuf.fromUint8Array(out));
 }

@@ -39,7 +39,12 @@ describe("Audit: Key derivation verification", () => {
     const derivedKey = sha256Hash(ecdhSecret.buf);
 
     // Encrypt with acs2p256dh
-    const acs2p256dhEncrypted = acs2p256dhEncrypt(alice.privKey, bob.pubKey, plaintext, iv);
+    const acs2p256dhEncrypted = acs2p256dhEncrypt(
+      alice.privKey,
+      bob.pubKey,
+      plaintext,
+      iv,
+    );
 
     // Encrypt with manual key using acs2
     const manualEncrypted = acs2Encrypt(plaintext, derivedKey, iv);
@@ -125,8 +130,12 @@ describe("Audit: Third party cannot decrypt", () => {
 
     const encrypted = acs2p256dhEncrypt(alice.privKey, bob.pubKey, plaintext);
 
-    expect(() => acs2p256dhDecrypt(eve.privKey, alice.pubKey, encrypted)).toThrow();
-    expect(() => acs2p256dhDecrypt(eve.privKey, bob.pubKey, encrypted)).toThrow();
+    expect(() =>
+      acs2p256dhDecrypt(eve.privKey, alice.pubKey, encrypted),
+    ).toThrow();
+    expect(() =>
+      acs2p256dhDecrypt(eve.privKey, bob.pubKey, encrypted),
+    ).toThrow();
   });
 
   it("should not allow decryption with wrong private key", () => {
@@ -137,7 +146,9 @@ describe("Audit: Third party cannot decrypt", () => {
 
     const encrypted = acs2p256dhEncrypt(alice.privKey, bob.pubKey, plaintext);
 
-    expect(() => acs2p256dhDecrypt(wrongKey.privKey, alice.pubKey, encrypted)).toThrow();
+    expect(() =>
+      acs2p256dhDecrypt(wrongKey.privKey, alice.pubKey, encrypted),
+    ).toThrow();
   });
 
   it("should not allow decryption with wrong public key", () => {
@@ -148,7 +159,9 @@ describe("Audit: Third party cannot decrypt", () => {
 
     const encrypted = acs2p256dhEncrypt(alice.privKey, bob.pubKey, plaintext);
 
-    expect(() => acs2p256dhDecrypt(bob.privKey, wrongKey.pubKey, encrypted)).toThrow();
+    expect(() =>
+      acs2p256dhDecrypt(bob.privKey, wrongKey.pubKey, encrypted),
+    ).toThrow();
   });
 });
 
@@ -163,7 +176,12 @@ describe("Audit: Cross-verification with primitives", () => {
     const key = sha256Hash(ecdhSecret.buf);
     const manualEncrypted = acs2Encrypt(plaintext, key, iv);
 
-    const acs2p256dhEncrypted = acs2p256dhEncrypt(alice.privKey, bob.pubKey, plaintext, iv);
+    const acs2p256dhEncrypted = acs2p256dhEncrypt(
+      alice.privKey,
+      bob.pubKey,
+      plaintext,
+      iv,
+    );
 
     expect(acs2p256dhEncrypted.toHex()).toBe(manualEncrypted.toHex());
   });
@@ -247,10 +265,17 @@ describe("Audit: IV handling", () => {
     const iv = FixedBuf.fromHex(16, "00112233445566778899aabbccddeeff");
     const plaintext = WebBuf.fromUtf8("test");
 
-    const encrypted = acs2p256dhEncrypt(alice.privKey, bob.pubKey, plaintext, iv);
+    const encrypted = acs2p256dhEncrypt(
+      alice.privKey,
+      bob.pubKey,
+      plaintext,
+      iv,
+    );
 
     // IV should be at position 32-48 (after HMAC)
-    expect(encrypted.slice(32, 48).toHex()).toBe("00112233445566778899aabbccddeeff");
+    expect(encrypted.slice(32, 48).toHex()).toBe(
+      "00112233445566778899aabbccddeeff",
+    );
   });
 
   it("should generate random IV when not provided", () => {
@@ -265,8 +290,12 @@ describe("Audit: IV handling", () => {
     const iv2 = encrypted2.slice(32, 48).toHex();
     expect(iv1).not.toBe(iv2);
 
-    expect(acs2p256dhDecrypt(bob.privKey, alice.pubKey, encrypted1).toUtf8()).toBe("test");
-    expect(acs2p256dhDecrypt(bob.privKey, alice.pubKey, encrypted2).toUtf8()).toBe("test");
+    expect(
+      acs2p256dhDecrypt(bob.privKey, alice.pubKey, encrypted1).toUtf8(),
+    ).toBe("test");
+    expect(
+      acs2p256dhDecrypt(bob.privKey, alice.pubKey, encrypted2).toUtf8(),
+    ).toBe("test");
   });
 });
 
@@ -277,8 +306,18 @@ describe("Audit: Determinism", () => {
     const iv = FixedBuf.fromRandom(16);
     const plaintext = WebBuf.fromUtf8("deterministic test");
 
-    const encrypted1 = acs2p256dhEncrypt(alice.privKey, bob.pubKey, plaintext, iv);
-    const encrypted2 = acs2p256dhEncrypt(alice.privKey, bob.pubKey, plaintext, iv);
+    const encrypted1 = acs2p256dhEncrypt(
+      alice.privKey,
+      bob.pubKey,
+      plaintext,
+      iv,
+    );
+    const encrypted2 = acs2p256dhEncrypt(
+      alice.privKey,
+      bob.pubKey,
+      plaintext,
+      iv,
+    );
 
     expect(encrypted1.toHex()).toBe(encrypted2.toHex());
   });
@@ -305,9 +344,11 @@ describe("Audit: Tamper detection", () => {
 
     const tampered = WebBuf.alloc(encrypted.length);
     tampered.set(encrypted);
-    tampered[0]! ^= 0x01;
+    tampered.bytes[0]! ^= 0x01;
 
-    expect(() => acs2p256dhDecrypt(bob.privKey, alice.pubKey, tampered)).toThrow();
+    expect(() =>
+      acs2p256dhDecrypt(bob.privKey, alice.pubKey, tampered),
+    ).toThrow();
   });
 
   it("should reject tampered IV", () => {
@@ -319,9 +360,11 @@ describe("Audit: Tamper detection", () => {
 
     const tampered = WebBuf.alloc(encrypted.length);
     tampered.set(encrypted);
-    tampered[32]! ^= 0x01;
+    tampered.bytes[32]! ^= 0x01;
 
-    expect(() => acs2p256dhDecrypt(bob.privKey, alice.pubKey, tampered)).toThrow();
+    expect(() =>
+      acs2p256dhDecrypt(bob.privKey, alice.pubKey, tampered),
+    ).toThrow();
   });
 
   it("should reject tampered ciphertext", () => {
@@ -333,9 +376,11 @@ describe("Audit: Tamper detection", () => {
 
     const tampered = WebBuf.alloc(encrypted.length);
     tampered.set(encrypted);
-    tampered[48]! ^= 0x01;
+    tampered.bytes[48]! ^= 0x01;
 
-    expect(() => acs2p256dhDecrypt(bob.privKey, alice.pubKey, tampered)).toThrow();
+    expect(() =>
+      acs2p256dhDecrypt(bob.privKey, alice.pubKey, tampered),
+    ).toThrow();
   });
 });
 
@@ -362,7 +407,12 @@ describe("Audit: Known test vectors", () => {
     expect(decrypted.toUtf8()).toBe("test");
 
     // Verify determinism
-    const encrypted2 = acs2p256dhEncrypt(alicePrivKey, bobPubKey, plaintext, iv);
+    const encrypted2 = acs2p256dhEncrypt(
+      alicePrivKey,
+      bobPubKey,
+      plaintext,
+      iv,
+    );
     expect(encrypted.toHex()).toBe(encrypted2.toHex());
   });
 });
@@ -373,7 +423,7 @@ describe("Audit: Edge cases", () => {
     const bob = createKeyPair();
     const plaintext = WebBuf.alloc(50 * 1024);
     for (let i = 0; i < plaintext.length; i++) {
-      plaintext[i] = i % 256;
+      plaintext.bytes[i] = i % 256;
     }
 
     const encrypted = acs2p256dhEncrypt(alice.privKey, bob.pubKey, plaintext);
@@ -390,12 +440,20 @@ describe("Audit: Edge cases", () => {
     const encryptedMessages: WebBuf[] = [];
 
     for (const msg of messages) {
-      const encrypted = acs2p256dhEncrypt(alice.privKey, bob.pubKey, WebBuf.fromUtf8(msg));
+      const encrypted = acs2p256dhEncrypt(
+        alice.privKey,
+        bob.pubKey,
+        WebBuf.fromUtf8(msg),
+      );
       encryptedMessages.push(encrypted);
     }
 
     for (let i = 0; i < messages.length; i++) {
-      const decrypted = acs2p256dhDecrypt(bob.privKey, alice.pubKey, encryptedMessages[i]!);
+      const decrypted = acs2p256dhDecrypt(
+        bob.privKey,
+        alice.pubKey,
+        encryptedMessages[i]!,
+      );
       expect(decrypted.toUtf8()).toBe(messages[i]);
     }
   });
@@ -424,8 +482,18 @@ describe("Audit: Security properties", () => {
     const iv = FixedBuf.fromRandom(16);
     const plaintext = WebBuf.fromUtf8("same message");
 
-    const encryptedForBob = acs2p256dhEncrypt(alice.privKey, bob.pubKey, plaintext, iv);
-    const encryptedForCharlie = acs2p256dhEncrypt(alice.privKey, charlie.pubKey, plaintext, iv);
+    const encryptedForBob = acs2p256dhEncrypt(
+      alice.privKey,
+      bob.pubKey,
+      plaintext,
+      iv,
+    );
+    const encryptedForCharlie = acs2p256dhEncrypt(
+      alice.privKey,
+      charlie.pubKey,
+      plaintext,
+      iv,
+    );
 
     expect(encryptedForBob.toHex()).not.toBe(encryptedForCharlie.toHex());
   });
@@ -437,8 +505,18 @@ describe("Audit: Security properties", () => {
     const iv = FixedBuf.fromRandom(16);
     const plaintext = WebBuf.fromUtf8("same message");
 
-    const fromAlice = acs2p256dhEncrypt(alice.privKey, bob.pubKey, plaintext, iv);
-    const fromAlice2 = acs2p256dhEncrypt(alice2.privKey, bob.pubKey, plaintext, iv);
+    const fromAlice = acs2p256dhEncrypt(
+      alice.privKey,
+      bob.pubKey,
+      plaintext,
+      iv,
+    );
+    const fromAlice2 = acs2p256dhEncrypt(
+      alice2.privKey,
+      bob.pubKey,
+      plaintext,
+      iv,
+    );
 
     expect(fromAlice.toHex()).not.toBe(fromAlice2.toHex());
   });

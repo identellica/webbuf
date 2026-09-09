@@ -227,42 +227,42 @@ describe("Audit: SHA-256 block boundary tests", () => {
   it("should handle input exactly 55 bytes (padding fits in one block)", async () => {
     const input = WebBuf.alloc(55, 0x61); // 55 'a's
     const result = sha256Hash(input);
-    const webCryptoResult = await webCryptoSha256(input);
+    const webCryptoResult = await webCryptoSha256(input.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(webCryptoResult));
   });
 
   it("should handle input exactly 56 bytes (padding spans two blocks)", async () => {
     const input = WebBuf.alloc(56, 0x61); // 56 'a's
     const result = sha256Hash(input);
-    const webCryptoResult = await webCryptoSha256(input);
+    const webCryptoResult = await webCryptoSha256(input.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(webCryptoResult));
   });
 
   it("should handle input exactly 63 bytes", async () => {
     const input = WebBuf.alloc(63, 0x61);
     const result = sha256Hash(input);
-    const webCryptoResult = await webCryptoSha256(input);
+    const webCryptoResult = await webCryptoSha256(input.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(webCryptoResult));
   });
 
   it("should handle input exactly 64 bytes (one full block)", async () => {
     const input = WebBuf.alloc(64, 0x61);
     const result = sha256Hash(input);
-    const webCryptoResult = await webCryptoSha256(input);
+    const webCryptoResult = await webCryptoSha256(input.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(webCryptoResult));
   });
 
   it("should handle input exactly 65 bytes", async () => {
     const input = WebBuf.alloc(65, 0x61);
     const result = sha256Hash(input);
-    const webCryptoResult = await webCryptoSha256(input);
+    const webCryptoResult = await webCryptoSha256(input.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(webCryptoResult));
   });
 
   it("should handle input exactly 128 bytes (two full blocks)", async () => {
     const input = WebBuf.alloc(128, 0x61);
     const result = sha256Hash(input);
-    const webCryptoResult = await webCryptoSha256(input);
+    const webCryptoResult = await webCryptoSha256(input.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(webCryptoResult));
   });
 });
@@ -285,7 +285,7 @@ describe("Audit: HMAC-SHA256 key handling", () => {
     const key = WebBuf.from([0x42]);
     const message = WebBuf.fromUtf8("test message");
     const result = sha256Hmac(key, message);
-    const webCryptoResult = await webCryptoHmacSha256(key, message);
+    const webCryptoResult = await webCryptoHmacSha256(key.bytes, message.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(webCryptoResult));
   });
 
@@ -293,7 +293,7 @@ describe("Audit: HMAC-SHA256 key handling", () => {
     const key = WebBuf.alloc(64, 0xaa);
     const message = WebBuf.fromUtf8("test message");
     const result = sha256Hmac(key, message);
-    const webCryptoResult = await webCryptoHmacSha256(key, message);
+    const webCryptoResult = await webCryptoHmacSha256(key.bytes, message.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(webCryptoResult));
   });
 
@@ -301,7 +301,7 @@ describe("Audit: HMAC-SHA256 key handling", () => {
     const key = WebBuf.alloc(65, 0xaa);
     const message = WebBuf.fromUtf8("test message");
     const result = sha256Hmac(key, message);
-    const webCryptoResult = await webCryptoHmacSha256(key, message);
+    const webCryptoResult = await webCryptoHmacSha256(key.bytes, message.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(webCryptoResult));
   });
 
@@ -309,7 +309,7 @@ describe("Audit: HMAC-SHA256 key handling", () => {
     const key = WebBuf.alloc(128, 0xaa);
     const message = WebBuf.fromUtf8("test message");
     const result = sha256Hmac(key, message);
-    const webCryptoResult = await webCryptoHmacSha256(key, message);
+    const webCryptoResult = await webCryptoHmacSha256(key.bytes, message.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(webCryptoResult));
   });
 
@@ -317,7 +317,7 @@ describe("Audit: HMAC-SHA256 key handling", () => {
     const key = WebBuf.alloc(32, 0xaa);
     const message = WebBuf.alloc(0);
     const result = sha256Hmac(key, message);
-    const webCryptoResult = await webCryptoHmacSha256(key, message);
+    const webCryptoResult = await webCryptoHmacSha256(key.bytes, message.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(webCryptoResult));
   });
 });
@@ -415,7 +415,7 @@ describe("Audit: Known application test vectors", () => {
     it("should hash 'hello' correctly", async () => {
       const input = WebBuf.fromUtf8("hello");
       const result = sha256Hash(input);
-      const webCryptoResult = await webCryptoSha256(input);
+      const webCryptoResult = await webCryptoSha256(input.bytes);
       expect(result.buf).toEqual(WebBuf.fromUint8Array(webCryptoResult));
       // Known hash of "hello"
       expect(result.toHex()).toBe(
@@ -426,7 +426,7 @@ describe("Audit: Known application test vectors", () => {
     it("should hash 'hello world' correctly", async () => {
       const input = WebBuf.fromUtf8("hello world");
       const result = sha256Hash(input);
-      const webCryptoResult = await webCryptoSha256(input);
+      const webCryptoResult = await webCryptoSha256(input.bytes);
       expect(result.buf).toEqual(WebBuf.fromUint8Array(webCryptoResult));
     });
   });
@@ -448,7 +448,7 @@ describe("Audit: Edge cases", () => {
   it("should handle very large input (1MB)", async () => {
     const large = WebBuf.alloc(1024 * 1024, 0x42);
     const result = sha256Hash(large);
-    const webCryptoResult = await webCryptoSha256(large);
+    const webCryptoResult = await webCryptoSha256(large.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(webCryptoResult));
   });
 });

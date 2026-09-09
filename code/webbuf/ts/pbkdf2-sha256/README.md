@@ -1,5 +1,13 @@
 # @webbuf/pbkdf2-sha256
 
+## WebBuf 4 byte access
+
+Public inputs and outputs retain WebBuf/FixedBuf wrapper types. Use
+`value.bytes` (WebBuf) or `value.buf.bytes` (FixedBuf) when calling native
+array APIs yourself. This package unwraps selected byte views at its WASM
+boundary; algorithms, output formats and existing input/output ownership
+remain unchanged. Nonzero-offset views are supported without copying inputs.
+
 PBKDF2-HMAC-SHA256 password-based key derivation, optimized with Rust/WASM.
 
 Implements RFC 8018 (PKCS #5 v2.1) with HMAC-SHA256 as the pseudorandom function.

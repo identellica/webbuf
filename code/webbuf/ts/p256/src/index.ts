@@ -58,7 +58,9 @@ export function p256Sign(
 ): FixedBuf<64> {
   return FixedBuf.fromBuf(
     64,
-    WebBuf.fromUint8Array(raw_sign(digest.buf, privateKey.buf, k.buf)),
+    WebBuf.fromUint8Array(
+      raw_sign(digest.buf.bytes, privateKey.buf.bytes, k.buf.bytes),
+    ),
   );
 }
 
@@ -68,7 +70,7 @@ export function p256Verify(
   publicKey: FixedBuf<33>,
 ): boolean {
   try {
-    raw_verify(signature.buf, digest.buf, publicKey.buf);
+    raw_verify(signature.buf.bytes, digest.buf.bytes, publicKey.buf.bytes);
   } catch {
     return false;
   }
@@ -81,7 +83,9 @@ export function p256SharedSecret(
 ): FixedBuf<33> {
   return FixedBuf.fromBuf(
     33,
-    WebBuf.fromUint8Array(shared_secret(privateKey.buf, publicKey.buf)),
+    WebBuf.fromUint8Array(
+      shared_secret(privateKey.buf.bytes, publicKey.buf.bytes),
+    ),
   );
 }
 
@@ -101,7 +105,9 @@ export function p256SharedSecretRaw(
 ): FixedBuf<32> {
   return FixedBuf.fromBuf(
     32,
-    WebBuf.fromUint8Array(shared_secret_raw(privateKey.buf, publicKey.buf)),
+    WebBuf.fromUint8Array(
+      shared_secret_raw(privateKey.buf.bytes, publicKey.buf.bytes),
+    ),
   );
 }
 
@@ -111,19 +117,21 @@ export function p256PublicKeyAdd(
 ): FixedBuf<33> {
   return FixedBuf.fromBuf(
     33,
-    WebBuf.fromUint8Array(public_key_add(publicKey1.buf, publicKey2.buf)),
+    WebBuf.fromUint8Array(
+      public_key_add(publicKey1.buf.bytes, publicKey2.buf.bytes),
+    ),
   );
 }
 
 export function p256PublicKeyCreate(privateKey: FixedBuf<32>): FixedBuf<33> {
   return FixedBuf.fromBuf(
     33,
-    WebBuf.fromUint8Array(public_key_create(privateKey.buf)),
+    WebBuf.fromUint8Array(public_key_create(privateKey.buf.bytes)),
   );
 }
 
 export function p256PublicKeyVerify(publicKey: FixedBuf<33>): boolean {
-  return public_key_verify(publicKey.buf);
+  return public_key_verify(publicKey.buf.bytes);
 }
 
 export function p256PrivateKeyAdd(
@@ -132,12 +140,14 @@ export function p256PrivateKeyAdd(
 ): FixedBuf<32> {
   return FixedBuf.fromBuf(
     32,
-    WebBuf.fromUint8Array(private_key_add(privKey1.buf, privKey2.buf)),
+    WebBuf.fromUint8Array(
+      private_key_add(privKey1.buf.bytes, privKey2.buf.bytes),
+    ),
   );
 }
 
 export function p256PrivateKeyVerify(privateKey: FixedBuf<32>): boolean {
-  return private_key_verify(privateKey.buf);
+  return private_key_verify(privateKey.buf.bytes);
 }
 
 /**
@@ -149,7 +159,7 @@ export function p256PublicKeyDecompress(
 ): FixedBuf<65> {
   return FixedBuf.fromBuf(
     65,
-    WebBuf.fromUint8Array(public_key_decompress(compressed.buf)),
+    WebBuf.fromUint8Array(public_key_decompress(compressed.buf.bytes)),
   );
 }
 
@@ -162,7 +172,7 @@ export function p256PublicKeyCompress(
 ): FixedBuf<33> {
   return FixedBuf.fromBuf(
     33,
-    WebBuf.fromUint8Array(public_key_compress(uncompressed.buf)),
+    WebBuf.fromUint8Array(public_key_compress(uncompressed.buf.bytes)),
   );
 }
 
@@ -170,13 +180,11 @@ export function p256PublicKeyCompress(
  * Convert a compressed P-256 public key to a JsonWebKey, ready to pass to
  * `crypto.subtle.importKey("jwk", jwk, ...)`.
  */
-export function p256PublicKeyToJwk(
-  compressed: FixedBuf<33>,
-): P256PublicKeyJwk {
+export function p256PublicKeyToJwk(compressed: FixedBuf<33>): P256PublicKeyJwk {
   const uncompressed = p256PublicKeyDecompress(compressed);
   // uncompressed is 0x04 || X(32) || Y(32)
-  const x = WebBuf.fromUint8Array(uncompressed.buf.slice(1, 33));
-  const y = WebBuf.fromUint8Array(uncompressed.buf.slice(33, 65));
+  const x = WebBuf.fromUint8Array(uncompressed.buf.slice(1, 33).bytes);
+  const y = WebBuf.fromUint8Array(uncompressed.buf.slice(33, 65).bytes);
   return {
     kty: "EC",
     crv: "P-256",
@@ -212,10 +220,14 @@ export function p256PublicKeyFromJwk(jwk: {
   const x = fromBase64Url(jwk.x);
   const y = fromBase64Url(jwk.y);
   if (x.length !== 32) {
-    throw new Error(`Invalid JWK: x must decode to 32 bytes, got ${x.length}`);
+    throw new Error(
+      `Invalid JWK: x must decode to 32 bytes, got ${String(x.length)}`,
+    );
   }
   if (y.length !== 32) {
-    throw new Error(`Invalid JWK: y must decode to 32 bytes, got ${y.length}`);
+    throw new Error(
+      `Invalid JWK: y must decode to 32 bytes, got ${String(y.length)}`,
+    );
   }
   const prefix = WebBuf.fromUint8Array(new Uint8Array([0x04]));
   const uncompressed = FixedBuf.fromBuf(65, WebBuf.concat([prefix, x, y]));

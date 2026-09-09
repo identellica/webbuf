@@ -16,7 +16,7 @@ import { FixedBuf } from "@webbuf/fixedbuf";
  * `SigningKey::from_bytes`.
  */
 export function ed25519PublicKeyCreate(privKey: FixedBuf<32>): FixedBuf<32> {
-  const pub = ed25519_public_key_create(privKey.buf);
+  const pub = ed25519_public_key_create(privKey.buf.bytes);
   return FixedBuf.fromBuf(32, WebBuf.fromUint8Array(pub));
 }
 
@@ -35,7 +35,7 @@ export function ed25519Sign(
   privKey: FixedBuf<32>,
   message: WebBuf,
 ): FixedBuf<64> {
-  const sig = ed25519_sign(privKey.buf, message);
+  const sig = ed25519_sign(privKey.buf.bytes, message.bytes);
   return FixedBuf.fromBuf(64, WebBuf.fromUint8Array(sig));
 }
 
@@ -61,5 +61,5 @@ export function ed25519Verify(
   message: WebBuf,
   signature: FixedBuf<64>,
 ): boolean {
-  return ed25519_verify(pubKey.buf, message, signature.buf);
+  return ed25519_verify(pubKey.buf.bytes, message.bytes, signature.buf.bytes);
 }

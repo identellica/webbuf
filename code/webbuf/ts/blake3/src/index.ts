@@ -7,16 +7,16 @@ import { WebBuf } from "@webbuf/webbuf";
 import { FixedBuf } from "@webbuf/fixedbuf";
 
 export function blake3Hash(buf: WebBuf): FixedBuf<32> {
-  const hash = blake3_hash(buf);
+  const hash = blake3_hash(buf.bytes);
   return FixedBuf.fromBuf(32, WebBuf.fromUint8Array(hash));
 }
 
 export function doubleBlake3Hash(buf: WebBuf): FixedBuf<32> {
-  const hash = double_blake3_hash(buf);
+  const hash = double_blake3_hash(buf.bytes);
   return FixedBuf.fromBuf(32, WebBuf.fromUint8Array(hash));
 }
 
 export function blake3Mac(key: FixedBuf<32>, message: WebBuf): FixedBuf<32> {
-  const mac = blake3_mac(key.buf, message);
+  const mac = blake3_mac(key.buf.bytes, message.bytes);
   return FixedBuf.fromBuf(32, WebBuf.fromUint8Array(mac));
 }

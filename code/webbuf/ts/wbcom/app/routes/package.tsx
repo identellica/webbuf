@@ -97,6 +97,9 @@ export default function PackagePage({ loaderData }: Route.ComponentProps) {
           items={[
             { id: "section-install", label: "Install" },
             ...(api?.usage ? [{ id: "section-usage", label: "Usage" }] : []),
+            ...(pkg.slug === "core"
+              ? [{ id: "section-composition", label: "WebBuf 4 byte access" }]
+              : []),
             { id: "section-api", label: "API reference" },
           ]}
         />
@@ -123,6 +126,46 @@ export default function PackagePage({ loaderData }: Route.ComponentProps) {
               <CodeBlock code={api.usage} lang={api.usageLang} />
             </div>
           </>
+        )}
+
+        {pkg.slug === "core" && (
+          <section
+            id="section-composition"
+            className="mt-14 space-y-4 text-base leading-relaxed text-foreground-dark"
+          >
+            <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground">
+              WebBuf 4 byte access
+            </h2>
+            <p>
+              This is the in-progress WebBuf 4 source contract, not a claim that
+              version 4 is already published. WebBuf has a Uint8Array; it is not
+              a Uint8Array. Use <code>buf.bytes[i]</code> for indexed access and
+              pass <code>buf.bytes</code> to TextDecoder, Web Crypto, Node
+              Buffer and WASM. The wrapper itself is not a native BufferSource.
+            </p>
+            <p>
+              The <code>bytes</code> property is readonly in TypeScript, but its
+              contents are mutable. Native views preserve the selected byte
+              offset and length. Iteration, length, byteLength, byteOffset,
+              buffer and named encoding helpers remain available.
+            </p>
+            <p>
+              <code>view</code>, <code>subarray</code> and <code>read</code>{" "}
+              share selected storage; <code>slice</code>, <code>clone</code> and{" "}
+              <code>fromUint8Array</code> copy. Constructing from an ArrayBuffer
+              views it; constructing from an array or iterable copies it.{" "}
+              <code>from</code> without a mapper shares native-array or WebBuf
+              input, while a mapper produces a copy.
+            </p>
+            <p>
+              Stored bytes use ordinary ArrayBuffer backing. SharedArrayBuffer
+              views cannot be wrapped: explicitly copy them with{" "}
+              <code>fromUint8Array(sharedView)</code> or{" "}
+              <code>new WebBuf(sharedView)</code>. Wrapping a Node Buffer
+              produces a plain Uint8Array view of its selected storage without
+              copying.
+            </p>
+          </section>
         )}
 
         <h2

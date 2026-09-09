@@ -1,6 +1,6 @@
 {
   "name": "@webbuf/fixedbuf",
-  "version": "3.8.1",
+  "version": "4.0.0",
   "description": "Fixed-sized buffers optimized with Rust/WASM for the web, node.js, deno, and bun.",
   "repository": {
     "type": "git",

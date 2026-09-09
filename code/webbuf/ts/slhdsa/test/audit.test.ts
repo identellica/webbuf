@@ -45,12 +45,37 @@ const SIZES: Record<ParamSet, Sizes> = {
   "SLH-DSA-SHA2-128f": { seedSize: 16, vkSize: 32, skSize: 64, sigSize: 17088 },
   "SLH-DSA-SHA2-192s": { seedSize: 24, vkSize: 48, skSize: 96, sigSize: 16224 },
   "SLH-DSA-SHA2-192f": { seedSize: 24, vkSize: 48, skSize: 96, sigSize: 35664 },
-  "SLH-DSA-SHA2-256s": { seedSize: 32, vkSize: 64, skSize: 128, sigSize: 29792 },
-  "SLH-DSA-SHA2-256f": { seedSize: 32, vkSize: 64, skSize: 128, sigSize: 49856 },
+  "SLH-DSA-SHA2-256s": {
+    seedSize: 32,
+    vkSize: 64,
+    skSize: 128,
+    sigSize: 29792,
+  },
+  "SLH-DSA-SHA2-256f": {
+    seedSize: 32,
+    vkSize: 64,
+    skSize: 128,
+    sigSize: 49856,
+  },
   "SLH-DSA-SHAKE-128s": { seedSize: 16, vkSize: 32, skSize: 64, sigSize: 7856 },
-  "SLH-DSA-SHAKE-128f": { seedSize: 16, vkSize: 32, skSize: 64, sigSize: 17088 },
-  "SLH-DSA-SHAKE-192s": { seedSize: 24, vkSize: 48, skSize: 96, sigSize: 16224 },
-  "SLH-DSA-SHAKE-192f": { seedSize: 24, vkSize: 48, skSize: 96, sigSize: 35664 },
+  "SLH-DSA-SHAKE-128f": {
+    seedSize: 16,
+    vkSize: 32,
+    skSize: 64,
+    sigSize: 17088,
+  },
+  "SLH-DSA-SHAKE-192s": {
+    seedSize: 24,
+    vkSize: 48,
+    skSize: 96,
+    sigSize: 16224,
+  },
+  "SLH-DSA-SHAKE-192f": {
+    seedSize: 24,
+    vkSize: 48,
+    skSize: 96,
+    sigSize: 35664,
+  },
   "SLH-DSA-SHAKE-256s": {
     seedSize: 32,
     vkSize: 64,
@@ -129,11 +154,7 @@ interface Impl {
     msg: WebBuf,
     rnd?: FixedBuf<number>,
   ) => FixedBuf<number>;
-  verify: (
-    vk: FixedBuf<number>,
-    msg: WebBuf,
-    sig: FixedBuf<number>,
-  ) => boolean;
+  verify: (vk: FixedBuf<number>, msg: WebBuf, sig: FixedBuf<number>) => boolean;
 }
 
 const IMPLS: Record<ParamSet, Impl> = {
@@ -213,9 +234,7 @@ describe("Audit: NIST ACVP keyGen test vectors (FIPS 205)", () => {
           expect(out.verifyingKey.toHex().toLowerCase()).toBe(
             t.pk.toLowerCase(),
           );
-          expect(out.signingKey.toHex().toLowerCase()).toBe(
-            t.sk.toLowerCase(),
-          );
+          expect(out.signingKey.toHex().toLowerCase()).toBe(t.sk.toLowerCase());
         });
       }
     });
@@ -232,9 +251,12 @@ describe("Audit: NIST ACVP sigGen test vectors (FIPS 205)", () => {
         it(`tcId ${String(t.tcId)}: sign_internal matches expected signature`, () => {
           const sk = FixedBuf.fromHex(sizes.skSize, t.sk);
           const msg = WebBuf.fromHex(t.message);
+          if (!group.deterministic && t.additionalRandomness === undefined) {
+            throw new Error("hedged vector is missing randomness");
+          }
           const rnd = group.deterministic
             ? undefined
-            : FixedBuf.fromHex(sizes.seedSize, t.additionalRandomness!);
+            : FixedBuf.fromHex(sizes.seedSize, t.additionalRandomness ?? "");
           const sig = impl.sign(sk, msg, rnd);
           expect(sig.toHex().toLowerCase()).toBe(t.signature.toLowerCase());
         });

@@ -1,5 +1,13 @@
 # webbuf
 
+## WebBuf 4 byte access
+
+These APIs continue to accept and return WebBuf/FixedBuf values. WebBuf now
+contains a native array rather than inheriting from it: use `.bytes` (or
+`.buf.bytes` for FixedBuf) for native APIs and indexed byte access. Ciphertext,
+signature and key formats are unchanged. `slice` copies; `subarray` shares
+selected bytes. See the core WebBuf documentation for the complete contract.
+
 Convenience package that re-exports all @webbuf packages.
 
 ## Installation
@@ -69,7 +77,7 @@ import {
 
 | Package             | Description                                  |
 | ------------------- | -------------------------------------------- |
-| `@webbuf/webbuf`    | Extended Uint8Array with base64/hex encoding |
+| `@webbuf/webbuf`    | Byte-buffer wrapper with base64/hex encoding |
 | `@webbuf/fixedbuf`  | Fixed-size buffer wrapper                    |
 | `@webbuf/numbers`   | Fixed-size unsigned integers                 |
 | `@webbuf/rw`        | Buffer reader/writer                         |

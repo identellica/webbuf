@@ -13,7 +13,7 @@ import { FixedBuf } from "@webbuf/fixedbuf";
  * pre-clamp.
  */
 export function x25519PublicKeyCreate(privKey: FixedBuf<32>): FixedBuf<32> {
-  const pub = x25519_public_key_create(privKey.buf);
+  const pub = x25519_public_key_create(privKey.buf.bytes);
   return FixedBuf.fromBuf(32, WebBuf.fromUint8Array(pub));
 }
 
@@ -29,6 +29,6 @@ export function x25519SharedSecretRaw(
   privKey: FixedBuf<32>,
   pubKey: FixedBuf<32>,
 ): FixedBuf<32> {
-  const ss = x25519_shared_secret_raw(privKey.buf, pubKey.buf);
+  const ss = x25519_shared_secret_raw(privKey.buf.bytes, pubKey.buf.bytes);
   return FixedBuf.fromBuf(32, WebBuf.fromUint8Array(ss));
 }

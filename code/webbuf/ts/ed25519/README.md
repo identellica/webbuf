@@ -1,5 +1,13 @@
 # @webbuf/ed25519
 
+## WebBuf 4 byte access
+
+Public APIs keep WebBuf and FixedBuf wrappers. For native APIs use
+`value.bytes` or `fixed.buf.bytes`. This package unwraps selected native
+views at its WASM boundary; key/signature/secret formats and cryptographic
+behavior are unchanged. Inputs are not mutated and outputs retain their
+existing independent storage. Nonzero-offset selections are supported.
+
 Ed25519 PureEdDSA digital signatures (RFC 8032) for WebBuf, optimized with
 Rust/WASM.
 

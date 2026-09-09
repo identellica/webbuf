@@ -1,5 +1,5 @@
 import { readFileSync, readdirSync, writeFileSync, existsSync } from "node:fs";
-import { dirname, join, relative, isAbsolute } from "node:path";
+import { dirname, join, relative, isAbsolute, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import ts from "typescript";
@@ -142,8 +142,20 @@ function memberSignature(
   member: ts.Symbol,
   location: ts.Node,
 ): string | null {
-  const name = member.getName();
-  if (name.startsWith("_") || name === "prototype") return null;
+  const declarations = member.declarations ?? [];
+  const method = declarations.find(ts.isMethodDeclaration);
+  const name =
+    method && ts.isComputedPropertyName(method.name)
+      ? method.name.getText()
+      : member.getName();
+  if (name.startsWith("_") || name.startsWith("#") || name === "prototype")
+    return null;
+  const modifiers = declarations.reduce(
+    (flags, declaration) => flags | ts.getCombinedModifierFlags(declaration),
+    ts.ModifierFlags.None,
+  );
+  if (modifiers & (ts.ModifierFlags.Private | ts.ModifierFlags.Protected))
+    return null;
   // Only members declared in the webbuf workspace source (skip inherited
   // built-ins like Object/Function members, which live under node_modules).
   const declaredInWorkspace = member.declarations?.some((d) => {
@@ -160,7 +172,13 @@ function memberSignature(
   });
   if (!declaredInWorkspace) return null;
 
-  const prefix = isStatic(member) ? "static " : "";
+  const getterOnly =
+    declarations.some(ts.isGetAccessorDeclaration) &&
+    !declarations.some(ts.isSetAccessorDeclaration);
+  const prefix =
+    (isStatic(member) ? "static " : "") +
+    (modifiers & ts.ModifierFlags.Readonly || getterOnly ? "readonly " : "");
+  const optional = member.flags & ts.SymbolFlags.Optional ? "?" : "";
   const type = checker.getTypeOfSymbolAtLocation(member, location);
   const calls = type.getCallSignatures();
   if (calls.length > 0) {
@@ -171,10 +189,10 @@ function memberSignature(
       )
       .join("\n");
   }
-  return `${prefix}${name}: ${checker.typeToString(type, location, SIG_FLAGS)}`;
+  return `${prefix}${name}${optional}: ${checker.typeToString(type, location, SIG_FLAGS)}`;
 }
 
-function renderSignatures(
+export function renderSignatures(
   checker: ts.TypeChecker,
   symbol: ts.Symbol,
   location: ts.Node,
@@ -222,7 +240,7 @@ function renderSignatures(
 
   if (kind === "type") {
     return [
-      `type ${symbol.getName()} = ${checker.typeToString(type, location, SIG_FLAGS)}`,
+      `type ${symbol.getName()} = ${checker.typeToString(checker.getDeclaredTypeOfSymbol(symbol), location, SIG_FLAGS | ts.TypeFormatFlags.InTypeAlias)}`,
     ];
   }
 
@@ -276,22 +294,41 @@ function extractPackage(pkg: PackageDir): PackageApi {
   };
 }
 
-const catalog: Record<string, PackageApi> = {};
-for (const pkg of PACKAGES) {
-  catalog[pkg.npm] = extractPackage(pkg);
+function main(): void {
+  const catalog: Record<string, PackageApi> = {};
+  for (const pkg of PACKAGES) {
+    catalog[pkg.npm] = extractPackage(pkg);
+    console.log(
+      `${pkg.npm}: ${catalog[pkg.npm].exports.length.toString()} exports`,
+    );
+  }
+
+  // Stable key ordering for deterministic output.
+  const ordered: Record<string, PackageApi> = {};
+  for (const key of Object.keys(catalog).sort()) {
+    ordered[key] = catalog[key];
+  }
+
+  const output = `${JSON.stringify(ordered, null, 2)}\n`;
+  if (process.argv.includes("--check")) {
+    if (readFileSync(outFile, "utf8") !== output) {
+      throw new Error(
+        "API catalog is stale; run extract:api and review the diff",
+      );
+    }
+  } else {
+    writeFileSync(outFile, output);
+  }
+  const withUsage = Object.values(ordered).filter(
+    (p) => p.usage !== null,
+  ).length;
   console.log(
-    `${pkg.npm}: ${catalog[pkg.npm].exports.length.toString()} exports`,
+    `\n${process.argv.includes("--check") ? "Verified" : "Wrote"} ${outFile} (${PACKAGES.length.toString()} packages, ${withUsage.toString()} with a usage example)`,
   );
 }
 
-// Stable key ordering for deterministic output.
-const ordered: Record<string, PackageApi> = {};
-for (const key of Object.keys(catalog).sort()) {
-  ordered[key] = catalog[key];
-}
-
-writeFileSync(outFile, `${JSON.stringify(ordered, null, 2)}\n`);
-const withUsage = Object.values(ordered).filter((p) => p.usage !== null).length;
-console.log(
-  `\nWrote ${outFile} (${PACKAGES.length.toString()} packages, ${withUsage.toString()} with a usage example)`,
-);
+if (
+  process.argv[1] &&
+  resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+)
+  main();

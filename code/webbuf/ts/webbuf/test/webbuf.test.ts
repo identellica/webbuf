@@ -3,7 +3,7 @@ import { WebBuf } from "../src/webbuf.js";
 
 describe("WebBuf", () => {
   describe("to/from hex/base64 algo threshold", () => {
-    it.skip("should hande algo threshold for to hex", () => {
+    it("should hande algo threshold for to hex", () => {
       const TO_HEX_ALGO_THRESHOLD = WebBuf.TO_HEX_ALGO_THRESHOLD;
       const smallBufLength = TO_HEX_ALGO_THRESHOLD - 1;
       const largeBufLength = TO_HEX_ALGO_THRESHOLD + 1;
@@ -11,11 +11,11 @@ describe("WebBuf", () => {
       const largeBuf = WebBuf.alloc(largeBufLength);
       for (let i = 0; i < smallBufLength; i++) {
         const val = i % 256;
-        smallBuf[i] = val;
+        smallBuf.bytes[i] = val;
       }
       for (let i = 0; i < largeBufLength; i++) {
         const val = i % 255;
-        largeBuf[i] = val;
+        largeBuf.bytes[i] = val;
       }
       const smallHex = smallBuf.toHex();
       const largeHex = largeBuf.toHex();
@@ -33,11 +33,11 @@ describe("WebBuf", () => {
       const largeBuf = WebBuf.alloc(largeBufLength);
       for (let i = 0; i < smallBufLength; i++) {
         const val = i % 256;
-        smallBuf[i] = val;
+        smallBuf.bytes[i] = val;
       }
       for (let i = 0; i < largeBufLength; i++) {
         const val = i % 255;
-        largeBuf[i] = val;
+        largeBuf.bytes[i] = val;
       }
       const smallHex = smallBuf.toHex();
       const largeHex = largeBuf.toHex();
@@ -47,7 +47,7 @@ describe("WebBuf", () => {
       expect(fromLargeHex.toHex()).toBe(largeHex);
     });
 
-    it.skip("should hande algo threshold for to base64", () => {
+    it("should hande algo threshold for to base64", () => {
       const TO_BASE64_ALGO_THRESHOLD = WebBuf.TO_BASE64_ALGO_THRESHOLD;
       const smallBufLength = TO_BASE64_ALGO_THRESHOLD - 1;
       const largeBufLength = TO_BASE64_ALGO_THRESHOLD + 1;
@@ -55,11 +55,11 @@ describe("WebBuf", () => {
       const largeBuf = WebBuf.alloc(largeBufLength);
       for (let i = 0; i < smallBufLength; i++) {
         const val = i % 256;
-        smallBuf[i] = val;
+        smallBuf.bytes[i] = val;
       }
       for (let i = 0; i < largeBufLength; i++) {
         const val = i % 255;
-        largeBuf[i] = val;
+        largeBuf.bytes[i] = val;
       }
       const smallBase64 = smallBuf.toBase64();
       const largeBase64 = largeBuf.toBase64();
@@ -69,7 +69,7 @@ describe("WebBuf", () => {
       expect(fromLargeBase64.toBase64()).toBe(largeBase64);
     });
 
-    it.skip("should handle algo threshold for from base64", () => {
+    it("should handle algo threshold for from base64", () => {
       const FROM_BASE64_ALGO_THRESHOLD = WebBuf.FROM_BASE64_ALGO_THRESHOLD;
       const smallBufLength = FROM_BASE64_ALGO_THRESHOLD - 1;
       const largeBufLength = FROM_BASE64_ALGO_THRESHOLD + 1;
@@ -77,11 +77,11 @@ describe("WebBuf", () => {
       const largeBuf = WebBuf.alloc(largeBufLength);
       for (let i = 0; i < smallBufLength; i++) {
         const val = i % 256;
-        smallBuf[i] = val;
+        smallBuf.bytes[i] = val;
       }
       for (let i = 0; i < largeBufLength; i++) {
         const val = i % 255;
-        largeBuf[i] = val;
+        largeBuf.bytes[i] = val;
       }
       const smallBase64 = smallBuf.toBase64();
       const largeBase64 = largeBuf.toBase64();
@@ -302,7 +302,9 @@ describe("WebBuf", () => {
       it("should roundtrip", () => {
         const original = WebBuf.fromHex("deadbeef");
         const encoded = original.toBase32({ alphabet: "Rfc4648Lower" });
-        const decoded = WebBuf.fromBase32(encoded, { alphabet: "Rfc4648Lower" });
+        const decoded = WebBuf.fromBase32(encoded, {
+          alphabet: "Rfc4648Lower",
+        });
         expect(decoded.toHex()).toBe(original.toHex());
       });
     });

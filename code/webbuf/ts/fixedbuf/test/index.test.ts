@@ -36,11 +36,11 @@ describe("wipe", () => {
 
   it("should work on a 32-byte key-sized FixedBuf", () => {
     const buf = FixedBuf.alloc<32>(32, 0xff);
-    expect(buf.buf[0]).toBe(0xff);
-    expect(buf.buf[31]).toBe(0xff);
+    expect(buf.buf.bytes[0]).toBe(0xff);
+    expect(buf.buf.bytes[31]).toBe(0xff);
     buf.wipe();
     for (let i = 0; i < 32; i++) {
-      expect(buf.buf[i]).toBe(0);
+      expect(buf.buf.bytes[i]).toBe(0);
     }
   });
 

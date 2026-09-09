@@ -5,8 +5,8 @@ import { WebBuf } from "../src/webbuf.js";
 const SIZE = 10_000_000;
 
 describe("WebBuf Benchmarks", () => {
-  describe.skip("threshold speed tests", () => {
-    it.skip("to hex: should get the same speed for both values", () => {
+  describe("threshold speed tests", () => {
+    it("to hex: should get the same speed for both values", () => {
       for (let i = 0; i < 10; i++) {
         const TO_HEX_ALGO_THRESHOLD = WebBuf.TO_HEX_ALGO_THRESHOLD;
         const smallBufLength = TO_HEX_ALGO_THRESHOLD - 1;
@@ -15,11 +15,11 @@ describe("WebBuf Benchmarks", () => {
         const largeBuf = WebBuf.alloc(largeBufLength);
         for (let i = 0; i < smallBufLength; i++) {
           const val = i % 256;
-          smallBuf[i] = val;
+          smallBuf.bytes[i] = val;
         }
         for (let i = 0; i < largeBufLength; i++) {
           const val = i % 255;
-          largeBuf[i] = val;
+          largeBuf.bytes[i] = val;
         }
         const startSmall = performance.now();
         const smallHex = smallBuf.toHex();
@@ -45,11 +45,11 @@ describe("WebBuf Benchmarks", () => {
         const largeBuf = WebBuf.alloc(largeBufLength);
         for (let i = 0; i < smallBufLength; i++) {
           const val = i % 256;
-          smallBuf[i] = val;
+          smallBuf.bytes[i] = val;
         }
         for (let i = 0; i < largeBufLength; i++) {
           const val = i % 255;
-          largeBuf[i] = val;
+          largeBuf.bytes[i] = val;
         }
         const startSmall = performance.now();
         const smallBase64 = smallBuf.toBase64();
@@ -75,11 +75,11 @@ describe("WebBuf Benchmarks", () => {
         const largeBuf = WebBuf.alloc(largeBufLength);
         for (let i = 0; i < smallBufLength; i++) {
           const val = i % 256;
-          smallBuf[i] = val;
+          smallBuf.bytes[i] = val;
         }
         for (let i = 0; i < largeBufLength; i++) {
           const val = i % 255;
-          largeBuf[i] = val;
+          largeBuf.bytes[i] = val;
         }
         const smallHex = smallBuf.toHex();
         const largeHex = largeBuf.toHex();
@@ -113,7 +113,7 @@ describe("WebBuf Benchmarks", () => {
           smallBuf = WebBuf.alloc(smallLength);
           for (let i = 0; i < smallLength; i++) {
             const val = i % 256;
-            smallBuf[i] = val;
+            smallBuf.bytes[i] = val;
           }
           smallBase64 = smallBuf.toBase64();
         } while (smallBase64.length + 3 < FROM_BASE64_ALGO_THRESHOLD - 1);
@@ -122,7 +122,7 @@ describe("WebBuf Benchmarks", () => {
           largeBuf = WebBuf.alloc(largeLength);
           for (let i = 0; i < largeLength; i++) {
             const val = i % 256;
-            largeBuf[i] = val;
+            largeBuf.bytes[i] = val;
           }
           largeBase64 = largeBuf.toBase64();
         } while (largeBase64.length - 3 < FROM_BASE64_ALGO_THRESHOLD + 1);
@@ -187,7 +187,7 @@ describe("WebBuf Benchmarks", () => {
       console.log(`Wasm method time: ${String(endWasm - startWasm)} ms`);
 
       // Make sure they are all equal
-      expect(NpmBuffer.from(decodedWasm).toString("hex")).toBe(
+      expect(NpmBuffer.from(decodedWasm.bytes).toString("hex")).toBe(
         decodedNpm.toString("hex"),
       );
     });
@@ -239,7 +239,7 @@ describe("WebBuf Benchmarks", () => {
       console.log(`Wasm method time: ${String(endWasm - startWasm)} ms`);
 
       // Make sure they are all equal
-      expect(NpmBuffer.from(decodedWasm).toString("hex")).toBe(
+      expect(NpmBuffer.from(decodedWasm.bytes).toString("hex")).toBe(
         decodedNpm.toString("hex"),
       );
     });

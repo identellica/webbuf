@@ -118,16 +118,18 @@ export function sigEd25519MldsaVerify(
   if (sigBytes.length !== FIXED_SIZE) {
     return false;
   }
-  if (sigBytes[0] !== VERSION) {
+  if (sigBytes.bytes[0] !== VERSION) {
     return false;
   }
   const edSig = FixedBuf.fromBuf(
     ED25519_SIGNATURE_SIZE,
-    WebBuf.fromUint8Array(sigBytes.subarray(1, 1 + ED25519_SIGNATURE_SIZE)),
+    WebBuf.fromUint8Array(
+      sigBytes.subarray(1, 1 + ED25519_SIGNATURE_SIZE).bytes,
+    ),
   );
   const mldsaSig = FixedBuf.fromBuf(
     MLDSA_SIGNATURE_SIZE,
-    WebBuf.fromUint8Array(sigBytes.subarray(1 + ED25519_SIGNATURE_SIZE)),
+    WebBuf.fromUint8Array(sigBytes.subarray(1 + ED25519_SIGNATURE_SIZE).bytes),
   );
 
   const edOk = ed25519Verify(ed25519Pub, message, edSig);

@@ -6,11 +6,11 @@ import { WebBuf } from "@webbuf/webbuf";
 import { FixedBuf } from "@webbuf/fixedbuf";
 
 export function ripemd160Hash(buf: WebBuf): FixedBuf<20> {
-  const hash = ripemd160_hash(buf);
+  const hash = ripemd160_hash(buf.bytes);
   return FixedBuf.fromBuf(20, WebBuf.fromUint8Array(hash));
 }
 
 export function doubleRipemd160Hash(buf: WebBuf): FixedBuf<20> {
-  const hash = double_ripemd160_hash(buf);
+  const hash = double_ripemd160_hash(buf.bytes);
   return FixedBuf.fromBuf(20, WebBuf.fromUint8Array(hash));
 }

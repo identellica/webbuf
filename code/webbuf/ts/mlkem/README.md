@@ -1,5 +1,13 @@
 # @webbuf/mlkem
 
+## WebBuf 4 byte access
+
+Public APIs keep WebBuf and FixedBuf wrappers. For native APIs use
+`value.bytes` or `fixed.buf.bytes`. This package unwraps selected native
+views at its WASM boundary; key/signature/secret formats and cryptographic
+behavior are unchanged. Inputs are not mutated and outputs retain their
+existing independent storage. Nonzero-offset selections are supported.
+
 ML-KEM (FIPS 203) post-quantum key encapsulation for WebBuf.
 
 ## Preferred API
@@ -8,6 +16,12 @@ Use the high-level functions for application code. They generate required
 entropy with the platform CSPRNG through `FixedBuf.fromRandom`.
 
 ```typescript
+import {
+  mlKem768KeyPair,
+  mlKem768Encapsulate,
+  mlKem768Decapsulate,
+} from "@webbuf/mlkem";
+
 const { encapsulationKey, decapsulationKey } = mlKem768KeyPair();
 const { ciphertext, sharedSecret } = mlKem768Encapsulate(encapsulationKey);
 const recovered = mlKem768Decapsulate(decapsulationKey, ciphertext);

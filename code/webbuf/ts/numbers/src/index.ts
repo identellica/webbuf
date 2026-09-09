@@ -47,7 +47,7 @@ export class U8 extends FixedNum<1> {
   }
 
   toBn(): bigint {
-    return BigInt(this.buf.buf[0]!);
+    return BigInt(this.buf.buf.bytes[0]!);
   }
 
   add(other: U8): U8 {
@@ -130,8 +130,7 @@ export class U16BE extends FixedNum<2> {
 
   toBn(): bigint {
     return (
-      (BigInt(this.buf.buf[0]!) << 8n) +
-      BigInt(this.buf.buf[1]!)
+      (BigInt(this.buf.buf.bytes[0]!) << 8n) + BigInt(this.buf.buf.bytes[1]!)
     );
   }
 
@@ -215,8 +214,7 @@ export class U16LE extends FixedNum<2> {
 
   toBn(): bigint {
     return (
-      (BigInt(this.buf.buf[1]!) << 8n) +
-      BigInt(this.buf.buf[0]!)
+      (BigInt(this.buf.buf.bytes[1]!) << 8n) + BigInt(this.buf.buf.bytes[0]!)
     );
   }
 
@@ -306,7 +304,7 @@ export class U32BE extends FixedNum<4> {
     const byteLen = 4;
     let result = 0n;
     for (let i = 0; i < byteLen; i++) {
-      result = (result << 8n) + BigInt(this.buf.buf[i]!);
+      result = (result << 8n) + BigInt(this.buf.buf.bytes[i]!);
     }
     return result;
   }
@@ -397,7 +395,7 @@ export class U32LE extends FixedNum<4> {
     const byteLen = 4;
     let result = 0n;
     for (let i = byteLen - 1; i >= 0; i--) {
-      result = (result << 8n) + BigInt(this.buf.buf[i]!);
+      result = (result << 8n) + BigInt(this.buf.buf.bytes[i]!);
     }
     return result;
   }
@@ -488,7 +486,7 @@ export class U64BE extends FixedNum<8> {
     const byteLen = 8;
     let result = 0n;
     for (let i = 0; i < byteLen; i++) {
-      result = (result << 8n) + BigInt(this.buf.buf[i]!);
+      result = (result << 8n) + BigInt(this.buf.buf.bytes[i]!);
     }
     return result;
   }
@@ -579,7 +577,7 @@ export class U64LE extends FixedNum<8> {
     const byteLen = 8;
     let result = 0n;
     for (let i = byteLen - 1; i >= 0; i--) {
-      result = (result << 8n) + BigInt(this.buf.buf[i]!);
+      result = (result << 8n) + BigInt(this.buf.buf.bytes[i]!);
     }
     return result;
   }
@@ -670,7 +668,7 @@ export class U128BE extends FixedNum<16> {
     const byteLen = 16;
     let result = 0n;
     for (let i = 0; i < byteLen; i++) {
-      result = (result << 8n) + BigInt(this.buf.buf[i]!);
+      result = (result << 8n) + BigInt(this.buf.buf.bytes[i]!);
     }
     return result;
   }
@@ -761,7 +759,7 @@ export class U128LE extends FixedNum<16> {
     const byteLen = 16;
     let result = 0n;
     for (let i = byteLen - 1; i >= 0; i--) {
-      result = (result << 8n) + BigInt(this.buf.buf[i]!);
+      result = (result << 8n) + BigInt(this.buf.buf.bytes[i]!);
     }
     return result;
   }
@@ -855,7 +853,7 @@ export class U256BE extends FixedNum<32> {
     const byteLen = 32;
     let result = 0n;
     for (let i = 0; i < byteLen; i++) {
-      result = (result << 8n) + BigInt(this.buf.buf[i]!);
+      result = (result << 8n) + BigInt(this.buf.buf.bytes[i]!);
     }
     return result;
   }
@@ -949,7 +947,7 @@ export class U256LE extends FixedNum<32> {
     const byteLen = 32;
     let result = 0n;
     for (let i = byteLen - 1; i >= 0; i--) {
-      result = (result << 8n) + BigInt(this.buf.buf[i]!);
+      result = (result << 8n) + BigInt(this.buf.buf.bytes[i]!);
     }
     return result;
   }

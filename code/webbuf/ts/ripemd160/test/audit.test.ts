@@ -124,14 +124,14 @@ describe("Audit: Comparison with ripemd160-js library", () => {
   it("should match reference implementation for empty input", async () => {
     const input = WebBuf.alloc(0);
     const result = ripemd160Hash(input);
-    const reference = await referenceRipemd160(input);
+    const reference = await referenceRipemd160(input.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(reference));
   });
 
   it("should match reference implementation for single byte", async () => {
     const input = WebBuf.from([0x42]);
     const result = ripemd160Hash(input);
-    const reference = await referenceRipemd160(input);
+    const reference = await referenceRipemd160(input.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(reference));
   });
 
@@ -141,7 +141,7 @@ describe("Audit: Comparison with ripemd160-js library", () => {
     for (const size of sizes) {
       const input = WebBuf.alloc(size, 0x42);
       const result = ripemd160Hash(input);
-      const reference = await referenceRipemd160(input);
+      const reference = await referenceRipemd160(input.bytes);
       expect(result.buf).toEqual(WebBuf.fromUint8Array(reference));
     }
   });
@@ -150,10 +150,10 @@ describe("Audit: Comparison with ripemd160-js library", () => {
     for (let i = 0; i < 10; i++) {
       const size = Math.floor(Math.random() * 1000) + 1;
       const input = WebBuf.alloc(size);
-      crypto.getRandomValues(input);
+      crypto.getRandomValues(input.bytes);
 
       const result = ripemd160Hash(input);
-      const reference = await referenceRipemd160(input);
+      const reference = await referenceRipemd160(input.bytes);
       expect(result.buf).toEqual(WebBuf.fromUint8Array(reference));
     }
   });
@@ -231,7 +231,7 @@ describe("Audit: Bitcoin-style usage (HASH160)", () => {
     // Simulate SHA-256 output
     const sha256Output = WebBuf.alloc(32, 0xab);
     const result = ripemd160Hash(sha256Output);
-    const reference = await referenceRipemd160(sha256Output);
+    const reference = await referenceRipemd160(sha256Output.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(reference));
   });
 
@@ -241,7 +241,7 @@ describe("Audit: Bitcoin-style usage (HASH160)", () => {
       "03d03a42c710b7cf9085bd3115338f72b86f2d77859b6afe6d33b13ea8957a9722",
     );
     const result = ripemd160Hash(compressedPubKey);
-    const reference = await referenceRipemd160(compressedPubKey);
+    const reference = await referenceRipemd160(compressedPubKey.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(reference));
     // Known hash from existing test
     expect(result.toHex()).toBe("5a95f9ebad92d7d0c145d835af4cecd73afd987e");
@@ -250,12 +250,12 @@ describe("Audit: Bitcoin-style usage (HASH160)", () => {
   it("should correctly hash uncompressed public key (65 bytes)", async () => {
     // Uncompressed public key format: 0x04 followed by 64 bytes
     const uncompressedPubKey = WebBuf.alloc(65);
-    uncompressedPubKey[0] = 0x04;
+    uncompressedPubKey.bytes[0] = 0x04;
     for (let i = 1; i < 65; i++) {
-      uncompressedPubKey[i] = i;
+      uncompressedPubKey.bytes[i] = i;
     }
     const result = ripemd160Hash(uncompressedPubKey);
-    const reference = await referenceRipemd160(uncompressedPubKey);
+    const reference = await referenceRipemd160(uncompressedPubKey.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(reference));
   });
 });
@@ -266,42 +266,42 @@ describe("Audit: Block boundary tests", () => {
   it("should handle input exactly 55 bytes (padding fits in one block)", async () => {
     const input = WebBuf.alloc(55, 0x61);
     const result = ripemd160Hash(input);
-    const reference = await referenceRipemd160(input);
+    const reference = await referenceRipemd160(input.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(reference));
   });
 
   it("should handle input exactly 56 bytes (padding spans two blocks)", async () => {
     const input = WebBuf.alloc(56, 0x61);
     const result = ripemd160Hash(input);
-    const reference = await referenceRipemd160(input);
+    const reference = await referenceRipemd160(input.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(reference));
   });
 
   it("should handle input exactly 63 bytes", async () => {
     const input = WebBuf.alloc(63, 0x61);
     const result = ripemd160Hash(input);
-    const reference = await referenceRipemd160(input);
+    const reference = await referenceRipemd160(input.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(reference));
   });
 
   it("should handle input exactly 64 bytes (one full block)", async () => {
     const input = WebBuf.alloc(64, 0x61);
     const result = ripemd160Hash(input);
-    const reference = await referenceRipemd160(input);
+    const reference = await referenceRipemd160(input.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(reference));
   });
 
   it("should handle input exactly 65 bytes", async () => {
     const input = WebBuf.alloc(65, 0x61);
     const result = ripemd160Hash(input);
-    const reference = await referenceRipemd160(input);
+    const reference = await referenceRipemd160(input.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(reference));
   });
 
   it("should handle input exactly 128 bytes (two full blocks)", async () => {
     const input = WebBuf.alloc(128, 0x61);
     const result = ripemd160Hash(input);
-    const reference = await referenceRipemd160(input);
+    const reference = await referenceRipemd160(input.bytes);
     expect(result.buf).toEqual(WebBuf.fromUint8Array(reference));
   });
 });

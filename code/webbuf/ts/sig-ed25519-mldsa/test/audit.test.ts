@@ -51,9 +51,9 @@ describe("Audit: issue 0007 Experiment 5 sig-ed25519-mldsa KAT", () => {
 
   it("derives the captured ML-DSA-65 verifying key (by SHA-256)", () => {
     const { verifyingKey } = mlDsa65KeyPairDeterministic(KAT_MLDSA_SEED);
-    expect(sha256Hash(WebBuf.fromUint8Array(verifyingKey.buf)).toHex()).toBe(
-      KAT_MLDSA_VK_SHA256,
-    );
+    expect(
+      sha256Hash(WebBuf.fromUint8Array(verifyingKey.buf.bytes)).toHex(),
+    ).toBe(KAT_MLDSA_VK_SHA256);
   });
 
   it("matches the captured byte-precise composite signature", () => {
@@ -65,7 +65,7 @@ describe("Audit: issue 0007 Experiment 5 sig-ed25519-mldsa KAT", () => {
     );
 
     expect(sig.buf.length).toBe(KAT_SIGNATURE_LENGTH);
-    expect(sha256Hash(WebBuf.fromUint8Array(sig.buf)).toHex()).toBe(
+    expect(sha256Hash(WebBuf.fromUint8Array(sig.buf.bytes)).toHex()).toBe(
       KAT_SIGNATURE_SHA256,
     );
   });
@@ -79,16 +79,16 @@ describe("Audit: issue 0007 Experiment 5 sig-ed25519-mldsa KAT", () => {
     );
 
     // Version byte 0x01.
-    expect(sig.buf[0]).toBe(SIG_ED25519_MLDSA.versionByte);
-    expect(sig.buf[0]).toBe(0x01);
+    expect(sig.buf.bytes[0]).toBe(SIG_ED25519_MLDSA.versionByte);
+    expect(sig.buf.bytes[0]).toBe(0x01);
 
     // Ed25519 signature occupies bytes 1..65.
-    expect(WebBuf.fromUint8Array(sig.buf.slice(1, 65)).toHex()).toBe(
+    expect(WebBuf.fromUint8Array(sig.buf.slice(1, 65).bytes).toHex()).toBe(
       KAT_ED25519_SIG_HEX,
     );
 
     // ML-DSA signature begins at byte 65; check the first 16 bytes.
-    expect(WebBuf.fromUint8Array(sig.buf.slice(65, 81)).toHex()).toBe(
+    expect(WebBuf.fromUint8Array(sig.buf.slice(65, 81).bytes).toHex()).toBe(
       KAT_MLDSA_SIG_PREFIX_HEX,
     );
   });
@@ -103,8 +103,8 @@ describe("Audit: issue 0007 Experiment 5 sig-ed25519-mldsa KAT", () => {
       KAT_MESSAGE,
     );
 
-    expect(
-      sigEd25519MldsaVerify(edPub, verifyingKey, KAT_MESSAGE, sig),
-    ).toBe(true);
+    expect(sigEd25519MldsaVerify(edPub, verifyingKey, KAT_MESSAGE, sig)).toBe(
+      true,
+    );
   });
 });

@@ -1,5 +1,13 @@
 # @webbuf/aesgcm-p256dh
 
+## WebBuf 4 byte access
+
+These APIs continue to accept and return WebBuf/FixedBuf values. WebBuf now
+contains a native array rather than inheriting from it: use `.bytes` (or
+`.buf.bytes` for FixedBuf) for native APIs and indexed byte access. Ciphertext,
+signature and key formats are unchanged. `slice` copies; `subarray` shares
+selected bytes. See the core WebBuf documentation for the complete contract.
+
 Authenticated encryption with P-256 ECDH key exchange and AES-GCM.
 
 A fully NIST-approved construction: P-256 ECDH + SHA-256 key derivation + AES-256-GCM.

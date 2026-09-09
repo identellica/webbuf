@@ -98,16 +98,16 @@ describe("Audit: Web Crypto API interoperability", () => {
 
     const cryptoKey = await webcrypto.subtle.importKey(
       "raw",
-      key.buf,
+      key.buf.bytes,
       "AES-GCM",
       false,
       ["decrypt"],
     );
 
     const decrypted = await webcrypto.subtle.decrypt(
-      { name: "AES-GCM", iv: nonce },
+      { name: "AES-GCM", iv: nonce.bytes },
       cryptoKey,
-      encryptedData,
+      encryptedData.bytes,
     );
 
     expect(new TextDecoder().decode(decrypted)).toBe("webbuf to Web Crypto");
@@ -162,7 +162,7 @@ describe("Audit: Authentication tag verification", () => {
     // Tamper with ciphertext body (byte after nonce)
     const tampered = WebBuf.alloc(ciphertext.length);
     tampered.set(ciphertext);
-    tampered[12]! ^= 0x01;
+    tampered.bytes[12]! ^= 0x01;
 
     expect(() => aesgcmDecrypt(tampered, key)).toThrow();
   });
@@ -175,7 +175,7 @@ describe("Audit: Authentication tag verification", () => {
     // Tamper with last byte (auth tag)
     const tampered = WebBuf.alloc(ciphertext.length);
     tampered.set(ciphertext);
-    tampered[tampered.length - 1]! ^= 0x01;
+    tampered.bytes[tampered.length - 1]! ^= 0x01;
 
     expect(() => aesgcmDecrypt(tampered, key)).toThrow();
   });
@@ -188,7 +188,7 @@ describe("Audit: Authentication tag verification", () => {
     // Tamper with nonce (first byte)
     const tampered = WebBuf.alloc(ciphertext.length);
     tampered.set(ciphertext);
-    tampered[0]! ^= 0x01;
+    tampered.bytes[0]! ^= 0x01;
 
     expect(() => aesgcmDecrypt(tampered, key)).toThrow();
   });
@@ -314,7 +314,7 @@ describe("Audit: Large plaintext", () => {
     const key = FixedBuf.fromRandom(32);
     const plaintext = WebBuf.alloc(50 * 1024);
     for (let i = 0; i < plaintext.length; i++) {
-      plaintext[i] = i % 256;
+      plaintext.bytes[i] = i % 256;
     }
 
     const ciphertext = aesgcmEncrypt(plaintext, key);

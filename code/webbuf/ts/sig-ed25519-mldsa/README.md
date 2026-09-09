@@ -1,5 +1,13 @@
 # @webbuf/sig-ed25519-mldsa
 
+## WebBuf 4 byte access
+
+These APIs continue to accept and return WebBuf/FixedBuf values. WebBuf now
+contains a native array rather than inheriting from it: use `.bytes` (or
+`.buf.bytes` for FixedBuf) for native APIs and indexed byte access. Ciphertext,
+signature and key formats are unchanged. `slice` copies; `subarray` shares
+selected bytes. See the core WebBuf documentation for the complete contract.
+
 Composite Ed25519 + ML-DSA-65 signatures: two independent signatures over the
 raw message bytes, both required to verify. An attacker must forge **both** the
 classical Ed25519 signature **and** the post-quantum ML-DSA-65 signature to

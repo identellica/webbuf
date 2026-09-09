@@ -70,7 +70,7 @@ describe("aesgcm-x25519dh-mlkem round-trip", () => {
     const s = freshSetup();
     const plaintext = WebBuf.alloc(64 * 1024);
     for (let i = 0; i < plaintext.length; i++) {
-      plaintext[i] = i & 0xff;
+      plaintext.bytes[i] = i & 0xff;
     }
 
     const ciphertext = aesgcmX25519dhMlkemEncrypt(
@@ -119,9 +119,7 @@ describe("aesgcm-x25519dh-mlkem round-trip", () => {
         s.encapKey,
         plaintext,
       );
-      expect(ciphertext.length).toBe(
-        AESGCM_X25519DH_MLKEM.fixedOverhead + len,
-      );
+      expect(ciphertext.length).toBe(AESGCM_X25519DH_MLKEM.fixedOverhead + len);
     }
   });
 
@@ -133,8 +131,8 @@ describe("aesgcm-x25519dh-mlkem round-trip", () => {
       s.encapKey,
       WebBuf.fromUtf8("x"),
     );
-    expect(ciphertext[0]).toBe(AESGCM_X25519DH_MLKEM.versionByte);
-    expect(ciphertext[0]).toBe(0x03);
+    expect(ciphertext.bytes[0]).toBe(AESGCM_X25519DH_MLKEM.versionByte);
+    expect(ciphertext.bytes[0]).toBe(0x03);
   });
 });
 
@@ -214,8 +212,8 @@ describe("aesgcm-x25519dh-mlkem rejection paths", () => {
       s.encapKey,
       WebBuf.fromUtf8("tamper me"),
     );
-    const tampered = WebBuf.fromUint8Array(ciphertext);
-    tampered[500] = ((tampered[500] ?? 0) ^ 0xff) & 0xff;
+    const tampered = WebBuf.fromUint8Array(ciphertext.bytes);
+    tampered.bytes[500] = ((tampered.bytes[500] ?? 0) ^ 0xff) & 0xff;
 
     expect(() =>
       aesgcmX25519dhMlkemDecrypt(
@@ -235,12 +233,13 @@ describe("aesgcm-x25519dh-mlkem rejection paths", () => {
       s.encapKey,
       WebBuf.fromUtf8("tamper body"),
     );
-    const tampered = WebBuf.fromUint8Array(ciphertext);
+    const tampered = WebBuf.fromUint8Array(ciphertext.bytes);
     const aesBodyStart =
       1 +
       AESGCM_X25519DH_MLKEM.kemCiphertextSize +
       AESGCM_X25519DH_MLKEM.ivSize;
-    tampered[aesBodyStart] = ((tampered[aesBodyStart] ?? 0) ^ 0xff) & 0xff;
+    tampered.bytes[aesBodyStart] =
+      ((tampered.bytes[aesBodyStart] ?? 0) ^ 0xff) & 0xff;
 
     expect(() =>
       aesgcmX25519dhMlkemDecrypt(
@@ -260,9 +259,9 @@ describe("aesgcm-x25519dh-mlkem rejection paths", () => {
       s.encapKey,
       WebBuf.fromUtf8("tamper IV"),
     );
-    const tampered = WebBuf.fromUint8Array(ciphertext);
+    const tampered = WebBuf.fromUint8Array(ciphertext.bytes);
     const ivStart = 1 + AESGCM_X25519DH_MLKEM.kemCiphertextSize;
-    tampered[ivStart] = ((tampered[ivStart] ?? 0) ^ 0xff) & 0xff;
+    tampered.bytes[ivStart] = ((tampered.bytes[ivStart] ?? 0) ^ 0xff) & 0xff;
 
     expect(() =>
       aesgcmX25519dhMlkemDecrypt(
@@ -282,8 +281,8 @@ describe("aesgcm-x25519dh-mlkem rejection paths", () => {
       s.encapKey,
       WebBuf.fromUtf8("x"),
     );
-    const wrongVersion = WebBuf.fromUint8Array(ciphertext);
-    wrongVersion[0] = 0x01;
+    const wrongVersion = WebBuf.fromUint8Array(ciphertext.bytes);
+    wrongVersion.bytes[0] = 0x01;
 
     expect(() =>
       aesgcmX25519dhMlkemDecrypt(
@@ -303,8 +302,8 @@ describe("aesgcm-x25519dh-mlkem rejection paths", () => {
       s.encapKey,
       WebBuf.fromUtf8("x"),
     );
-    const wrongVersion = WebBuf.fromUint8Array(ciphertext);
-    wrongVersion[0] = 0x02;
+    const wrongVersion = WebBuf.fromUint8Array(ciphertext.bytes);
+    wrongVersion.bytes[0] = 0x02;
 
     expect(() =>
       aesgcmX25519dhMlkemDecrypt(
@@ -491,12 +490,7 @@ describe("aesgcm-x25519dh-mlkem AAD support", () => {
       aad,
     );
     expect(() =>
-      aesgcmX25519dhMlkemDecrypt(
-        s.recipientPriv,
-        s.senderPub,
-        s.decapKey,
-        ct,
-      ),
+      aesgcmX25519dhMlkemDecrypt(s.recipientPriv, s.senderPub, s.decapKey, ct),
     ).toThrow();
   });
 

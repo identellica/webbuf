@@ -7,9 +7,7 @@ import {
   mlDsa44KeyPairDeterministic,
   mlDsa44Sign,
   mlDsa44SignDeterministic,
-  mlDsa44SignInternal,
   mlDsa44Verify,
-  mlDsa44VerifyInternal,
   mlDsa65KeyPair,
   mlDsa65KeyPairDeterministic,
   mlDsa65Sign,
@@ -21,9 +19,7 @@ import {
   mlDsa87KeyPairDeterministic,
   mlDsa87Sign,
   mlDsa87SignDeterministic,
-  mlDsa87SignInternal,
   mlDsa87Verify,
-  mlDsa87VerifyInternal,
 } from "../src/index.js";
 import { WebBuf } from "@webbuf/webbuf";
 import { FixedBuf } from "@webbuf/fixedbuf";
@@ -188,7 +184,9 @@ describe("ML-DSA round-trip", () => {
 
     const tamperedBytes = WebBuf.alloc(ML_DSA_65.signatureSize);
     tamperedBytes.set(sig.buf);
-    tamperedBytes[0] = (tamperedBytes[0]! ^ 0xff) & 0xff;
+    const first = tamperedBytes.bytes[0];
+    if (first === undefined) throw new Error("missing signature byte");
+    tamperedBytes.bytes[0] = (first ^ 0xff) & 0xff;
     const tampered = FixedBuf.fromBuf(ML_DSA_65.signatureSize, tamperedBytes);
 
     expect(mlDsa65Verify(verifyingKey, message, tampered)).toBe(false);

@@ -54,8 +54,68 @@ function verifyOffset(offset: number, ext: number, length: number) {
   }
 }
 
-export class WebBuf extends Uint8Array {
-  static concat(list: Uint8Array[]) {
+// Intrinsic getters validate internal slots across realms, unlike instanceof.
+function isArrayBuffer(value: unknown): value is ArrayBuffer {
+  try {
+    Reflect.get(ArrayBuffer.prototype, "byteLength", value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function isSharedArrayBuffer(value: unknown): boolean {
+  if (typeof SharedArrayBuffer === "undefined") return false;
+  try {
+    Reflect.get(SharedArrayBuffer.prototype, "byteLength", value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export class WebBuf implements Iterable<number> {
+  readonly bytes: Uint8Array<ArrayBuffer>;
+
+  constructor(
+    source: number | ArrayBuffer | ArrayLike<number> | Iterable<number> = 0,
+    byteOffset?: number,
+    length?: number,
+  ) {
+    if (typeof source === "number") {
+      this.bytes = new Uint8Array(source);
+    } else if (isArrayBuffer(source)) {
+      this.bytes = new Uint8Array(source, byteOffset, length);
+    } else if (isSharedArrayBuffer(source)) {
+      throw new TypeError(
+        "SharedArrayBuffer storage requires an explicit copy",
+      );
+    } else {
+      this.bytes = Uint8Array.from(Array.from(source));
+    }
+  }
+
+  get length(): number {
+    return this.bytes.length;
+  }
+  get byteLength(): number {
+    return this.bytes.byteLength;
+  }
+  get byteOffset(): number {
+    return this.bytes.byteOffset;
+  }
+  get buffer(): ArrayBuffer {
+    return this.bytes.buffer;
+  }
+  [Symbol.iterator](): IterableIterator<number> {
+    return this.bytes.values();
+  }
+
+  set(source: ArrayLike<number> | WebBuf, offset = 0): void {
+    this.bytes.set(source instanceof WebBuf ? source.bytes : source, offset);
+  }
+
+  static concat(list: (Uint8Array | WebBuf)[]) {
     const size = list.reduce((acc, buf) => acc + buf.length, 0);
     const result = new WebBuf(size);
     let offset = 0;
@@ -75,15 +135,13 @@ export class WebBuf extends Uint8Array {
   }
 
   fill(value: number, start = 0, end = this.length) {
-    for (let i = start; i < end; i++) {
-      this[i] = value;
-    }
+    this.bytes.fill(value, start, end);
     return this;
   }
 
-  // Override slice method to return WebBuf instead of Uint8Array
+  // slice copies; subarray shares the selected storage.
   slice(start?: number, end?: number): WebBuf {
-    const slicedArray = super.slice(start, end); // Create a slice using Uint8Array's slice method
+    const slicedArray = this.bytes.slice(start, end);
     return new WebBuf(
       slicedArray.buffer,
       slicedArray.byteOffset,
@@ -92,7 +150,7 @@ export class WebBuf extends Uint8Array {
   }
 
   subarray(start?: number, end?: number): WebBuf {
-    const subArray = super.subarray(start, end);
+    const subArray = this.bytes.subarray(start, end);
     return new WebBuf(
       subArray.buffer,
       subArray.byteOffset,
@@ -105,7 +163,7 @@ export class WebBuf extends Uint8Array {
    * @returns webbuf
    */
   reverse(): this {
-    super.reverse();
+    this.bytes.reverse();
     return this;
   }
 
@@ -148,12 +206,13 @@ export class WebBuf extends Uint8Array {
    * @param buffer
    * @returns WebBuf
    */
-  static view(buffer: Uint8Array): WebBuf {
-    return new WebBuf(
-      buffer.buffer as ArrayBuffer,
-      buffer.byteOffset,
-      buffer.byteLength,
-    );
+  static view(buffer: Uint8Array | WebBuf): WebBuf {
+    if (!isArrayBuffer(buffer.buffer)) {
+      throw new TypeError(
+        "SharedArrayBuffer storage requires an explicit copy",
+      );
+    }
+    return new WebBuf(buffer.buffer, buffer.byteOffset, buffer.byteLength);
   }
 
   /**
@@ -201,18 +260,14 @@ export class WebBuf extends Uint8Array {
   static fromHexPureJs(hex: string): WebBuf {
     const result = new WebBuf(hex.length / 2);
     for (let i = 0; i < hex.length; i += 2) {
-      result[i / 2] = Number.parseInt(hex.slice(i, i + 2), 16);
+      result.bytes[i / 2] = Number.parseInt(hex.slice(i, i + 2), 16);
     }
     return result;
   }
 
   static fromHexWasm(hex: string): WebBuf {
     const uint8array = decode_hex(hex);
-    return new WebBuf(
-      uint8array.buffer as ArrayBuffer,
-      uint8array.byteOffset,
-      uint8array.byteLength,
-    );
+    return WebBuf.view(uint8array);
   }
 
   static fromHex(hex: string): WebBuf {
@@ -232,7 +287,7 @@ export class WebBuf extends Uint8Array {
   }
 
   toHexWasm(): string {
-    return encode_hex(this);
+    return encode_hex(this.bytes);
   }
 
   toHex(): string {
@@ -249,22 +304,14 @@ export class WebBuf extends Uint8Array {
         .split("")
         .map((c) => c.charCodeAt(0)),
     );
-    return new WebBuf(
-      uint8array.buffer,
-      uint8array.byteOffset,
-      uint8array.byteLength,
-    );
+    return WebBuf.view(uint8array);
   }
 
   static fromBase64Wasm(b64: string, stripWhitespace = false): WebBuf {
     const uint8array = stripWhitespace
       ? decode_base64_strip_whitespace(b64)
       : decode_base64(b64);
-    return new WebBuf(
-      uint8array.buffer as ArrayBuffer,
-      uint8array.byteOffset,
-      uint8array.byteLength,
-    );
+    return WebBuf.view(uint8array);
   }
 
   /**
@@ -284,11 +331,11 @@ export class WebBuf extends Uint8Array {
   }
 
   toBase64PureJs(): string {
-    return btoa(String.fromCharCode(...new Uint8Array(this)));
+    return btoa(String.fromCharCode(...this.bytes));
   }
 
   toBase64Wasm(): string {
-    return encode_base64(this);
+    return encode_base64(this.bytes);
   }
 
   toBase64() {
@@ -313,17 +360,17 @@ export class WebBuf extends Uint8Array {
 
     switch (alphabet) {
       case "Crockford":
-        return encode_base32_crockford(this);
+        return encode_base32_crockford(this.bytes);
       case "Rfc4648":
-        return encode_base32_rfc4648(this, padding);
+        return encode_base32_rfc4648(this.bytes, padding);
       case "Rfc4648Lower":
-        return encode_base32_rfc4648_lower(this, padding);
+        return encode_base32_rfc4648_lower(this.bytes, padding);
       case "Rfc4648Hex":
-        return encode_base32_rfc4648_hex(this, padding);
+        return encode_base32_rfc4648_hex(this.bytes, padding);
       case "Rfc4648HexLower":
-        return encode_base32_rfc4648_hex_lower(this, padding);
+        return encode_base32_rfc4648_hex_lower(this.bytes, padding);
       case "Z":
-        return encode_base32_z(this);
+        return encode_base32_z(this.bytes);
     }
   }
 
@@ -361,15 +408,11 @@ export class WebBuf extends Uint8Array {
         uint8array = decode_base32_z(str);
         break;
     }
-    return new WebBuf(
-      uint8array.buffer as ArrayBuffer,
-      uint8array.byteOffset,
-      uint8array.byteLength,
-    );
+    return WebBuf.view(uint8array);
   }
 
   /**
-   * Override Uint8Array.from to return a WebBuf
+   * Wrap native arrays/WebBuf without a mapper; otherwise create a copy.
    *
    * @param source An array-like or iterable object to convert to WebBuf
    * @param mapFn Optional map function to call on every element of the array
@@ -399,12 +442,14 @@ export class WebBuf extends Uint8Array {
     if (typeof source === "string") {
       return WebBuf.fromUtf8(source);
     }
-    if (source instanceof Uint8Array) {
+    if (
+      (source instanceof Uint8Array || source instanceof WebBuf) &&
+      mapFn === undefined
+    ) {
       return WebBuf.view(source);
     }
     const sourceArray = Array.from(source);
-    // biome-ignore lint:
-    const uint8Array = super.from(sourceArray, mapFn, thisArg);
+    const uint8Array = Uint8Array.from(sourceArray, mapFn, thisArg);
     return new WebBuf(
       uint8Array.buffer,
       uint8Array.byteOffset,
@@ -414,7 +459,7 @@ export class WebBuf extends Uint8Array {
 
   toUtf8(): string {
     const decoder = new TextDecoder();
-    return decoder.decode(this);
+    return decoder.decode(this.bytes);
   }
 
   toString(encoding?: "utf8" | "hex" | "base64") {
@@ -426,7 +471,7 @@ export class WebBuf extends Uint8Array {
     }
     if (encoding === "utf8") {
       const decoder = new TextDecoder();
-      return decoder.decode(this);
+      return decoder.decode(this.bytes);
     }
     return this.toUtf8();
   }
@@ -444,9 +489,9 @@ export class WebBuf extends Uint8Array {
 
     for (let i = 0; i < len; i++) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const a = this[i]!;
+      const a = this.bytes[i]!;
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const b = other[i]!;
+      const b = other.bytes[i]!;
       if (a !== b) {
         return a < b ? -1 : 1;
       }

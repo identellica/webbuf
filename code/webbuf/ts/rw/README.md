@@ -2,6 +2,15 @@
 
 Buffer reader and writer for sequential binary I/O.
 
+## WebBuf 4
+
+Reader/writer APIs accept WebBuf wrappers; use `.bytes` at native-array edges.
+`read`, `readFixed` and `readRemainder` return copies. Numeric reads retain
+selected input views, so later input mutation changes those numeric values.
+The writer constructor and `write` retain input bytes; each `toBuf` concatenates
+into an independent copy. Wire encodings, including the existing big-endian
+CompactSize variant, are unchanged.
+
 ## Installation
 
 ```bash
@@ -20,17 +29,17 @@ import { FixedBuf } from "@webbuf/fixedbuf";
 const writer = new BufWriter();
 
 // Write numbers
-writer.writeU8(new U8(255));
-writer.writeU16BE(new U16BE(1000));
-writer.writeU32BE(new U32BE(123456));
-writer.writeU64BE(new U64BE(0x123456789abcdef0n));
+writer.writeU8(U8.fromN(255));
+writer.writeU16BE(U16BE.fromN(1000));
+writer.writeU32BE(U32BE.fromN(123456));
+writer.writeU64BE(U64BE.fromBn(0x123456789abcdef0n));
 
 // Write fixed buffers
 const hash = FixedBuf.fromRandom<32>(32);
-writer.writeFixed(hash);
+writer.write(hash.buf);
 
 // Write variable-length data
-writer.writeVarIntU64BE(new U64BE(1000n));
+writer.writeVarIntU64BE(U64BE.fromBn(1000n));
 
 // Get result
 const buf = writer.toBuf();

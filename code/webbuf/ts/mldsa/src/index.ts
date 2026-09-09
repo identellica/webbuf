@@ -67,8 +67,6 @@ function defaultContext(context?: WebBuf): WebBuf {
 
 // ML-DSA-44
 
-export function mlDsa44KeyPair(): MlDsaKeyPair<1312, 2560>;
-export function mlDsa44KeyPair(seed: FixedBuf<32>): MlDsaKeyPair<1312, 2560>;
 export function mlDsa44KeyPair(seed?: FixedBuf<32>): MlDsaKeyPair<1312, 2560> {
   return mlDsa44KeyPairDeterministic(seed ?? randomSeed());
 }
@@ -76,7 +74,7 @@ export function mlDsa44KeyPair(seed?: FixedBuf<32>): MlDsaKeyPair<1312, 2560> {
 export function mlDsa44KeyPairDeterministic(
   seed: FixedBuf<32>,
 ): MlDsaKeyPair<1312, 2560> {
-  const out = ml_dsa_44_keypair(seed.buf);
+  const out = ml_dsa_44_keypair(seed.buf.bytes);
   return splitKeypair(out, 1312, 2560);
 }
 
@@ -86,10 +84,10 @@ export function mlDsa44Sign(
   context?: WebBuf,
 ): FixedBuf<2420> {
   const out = ml_dsa_44_sign_hedged(
-    signingKey.buf,
-    message,
-    defaultContext(context),
-    randomSeed().buf,
+    signingKey.buf.bytes,
+    message.bytes,
+    defaultContext(context).bytes,
+    randomSeed().buf.bytes,
   );
   return FixedBuf.fromBuf(2420, WebBuf.fromUint8Array(out));
 }
@@ -99,7 +97,11 @@ export function mlDsa44SignDeterministic(
   message: WebBuf,
   context?: WebBuf,
 ): FixedBuf<2420> {
-  const out = ml_dsa_44_sign(signingKey.buf, message, defaultContext(context));
+  const out = ml_dsa_44_sign(
+    signingKey.buf.bytes,
+    message.bytes,
+    defaultContext(context).bytes,
+  );
   return FixedBuf.fromBuf(2420, WebBuf.fromUint8Array(out));
 }
 
@@ -110,10 +112,10 @@ export function mlDsa44Verify(
   context?: WebBuf,
 ): boolean {
   return ml_dsa_44_verify(
-    verifyingKey.buf,
-    message,
-    signature.buf,
-    defaultContext(context),
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
+    defaultContext(context).bytes,
   );
 }
 
@@ -122,7 +124,11 @@ export function mlDsa44SignInternal(
   message: WebBuf,
   rnd: FixedBuf<32>,
 ): FixedBuf<2420> {
-  const out = ml_dsa_44_sign_internal(signingKey.buf, message, rnd.buf);
+  const out = ml_dsa_44_sign_internal(
+    signingKey.buf.bytes,
+    message.bytes,
+    rnd.buf.bytes,
+  );
   return FixedBuf.fromBuf(2420, WebBuf.fromUint8Array(out));
 }
 
@@ -131,13 +137,15 @@ export function mlDsa44VerifyInternal(
   message: WebBuf,
   signature: FixedBuf<2420>,
 ): boolean {
-  return ml_dsa_44_verify_internal(verifyingKey.buf, message, signature.buf);
+  return ml_dsa_44_verify_internal(
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
+  );
 }
 
 // ML-DSA-65
 
-export function mlDsa65KeyPair(): MlDsaKeyPair<1952, 4032>;
-export function mlDsa65KeyPair(seed: FixedBuf<32>): MlDsaKeyPair<1952, 4032>;
 export function mlDsa65KeyPair(seed?: FixedBuf<32>): MlDsaKeyPair<1952, 4032> {
   return mlDsa65KeyPairDeterministic(seed ?? randomSeed());
 }
@@ -145,7 +153,7 @@ export function mlDsa65KeyPair(seed?: FixedBuf<32>): MlDsaKeyPair<1952, 4032> {
 export function mlDsa65KeyPairDeterministic(
   seed: FixedBuf<32>,
 ): MlDsaKeyPair<1952, 4032> {
-  const out = ml_dsa_65_keypair(seed.buf);
+  const out = ml_dsa_65_keypair(seed.buf.bytes);
   return splitKeypair(out, 1952, 4032);
 }
 
@@ -155,10 +163,10 @@ export function mlDsa65Sign(
   context?: WebBuf,
 ): FixedBuf<3309> {
   const out = ml_dsa_65_sign_hedged(
-    signingKey.buf,
-    message,
-    defaultContext(context),
-    randomSeed().buf,
+    signingKey.buf.bytes,
+    message.bytes,
+    defaultContext(context).bytes,
+    randomSeed().buf.bytes,
   );
   return FixedBuf.fromBuf(3309, WebBuf.fromUint8Array(out));
 }
@@ -168,7 +176,11 @@ export function mlDsa65SignDeterministic(
   message: WebBuf,
   context?: WebBuf,
 ): FixedBuf<3309> {
-  const out = ml_dsa_65_sign(signingKey.buf, message, defaultContext(context));
+  const out = ml_dsa_65_sign(
+    signingKey.buf.bytes,
+    message.bytes,
+    defaultContext(context).bytes,
+  );
   return FixedBuf.fromBuf(3309, WebBuf.fromUint8Array(out));
 }
 
@@ -179,10 +191,10 @@ export function mlDsa65Verify(
   context?: WebBuf,
 ): boolean {
   return ml_dsa_65_verify(
-    verifyingKey.buf,
-    message,
-    signature.buf,
-    defaultContext(context),
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
+    defaultContext(context).bytes,
   );
 }
 
@@ -191,7 +203,11 @@ export function mlDsa65SignInternal(
   message: WebBuf,
   rnd: FixedBuf<32>,
 ): FixedBuf<3309> {
-  const out = ml_dsa_65_sign_internal(signingKey.buf, message, rnd.buf);
+  const out = ml_dsa_65_sign_internal(
+    signingKey.buf.bytes,
+    message.bytes,
+    rnd.buf.bytes,
+  );
   return FixedBuf.fromBuf(3309, WebBuf.fromUint8Array(out));
 }
 
@@ -200,13 +216,15 @@ export function mlDsa65VerifyInternal(
   message: WebBuf,
   signature: FixedBuf<3309>,
 ): boolean {
-  return ml_dsa_65_verify_internal(verifyingKey.buf, message, signature.buf);
+  return ml_dsa_65_verify_internal(
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
+  );
 }
 
 // ML-DSA-87
 
-export function mlDsa87KeyPair(): MlDsaKeyPair<2592, 4896>;
-export function mlDsa87KeyPair(seed: FixedBuf<32>): MlDsaKeyPair<2592, 4896>;
 export function mlDsa87KeyPair(seed?: FixedBuf<32>): MlDsaKeyPair<2592, 4896> {
   return mlDsa87KeyPairDeterministic(seed ?? randomSeed());
 }
@@ -214,7 +232,7 @@ export function mlDsa87KeyPair(seed?: FixedBuf<32>): MlDsaKeyPair<2592, 4896> {
 export function mlDsa87KeyPairDeterministic(
   seed: FixedBuf<32>,
 ): MlDsaKeyPair<2592, 4896> {
-  const out = ml_dsa_87_keypair(seed.buf);
+  const out = ml_dsa_87_keypair(seed.buf.bytes);
   return splitKeypair(out, 2592, 4896);
 }
 
@@ -224,10 +242,10 @@ export function mlDsa87Sign(
   context?: WebBuf,
 ): FixedBuf<4627> {
   const out = ml_dsa_87_sign_hedged(
-    signingKey.buf,
-    message,
-    defaultContext(context),
-    randomSeed().buf,
+    signingKey.buf.bytes,
+    message.bytes,
+    defaultContext(context).bytes,
+    randomSeed().buf.bytes,
   );
   return FixedBuf.fromBuf(4627, WebBuf.fromUint8Array(out));
 }
@@ -237,7 +255,11 @@ export function mlDsa87SignDeterministic(
   message: WebBuf,
   context?: WebBuf,
 ): FixedBuf<4627> {
-  const out = ml_dsa_87_sign(signingKey.buf, message, defaultContext(context));
+  const out = ml_dsa_87_sign(
+    signingKey.buf.bytes,
+    message.bytes,
+    defaultContext(context).bytes,
+  );
   return FixedBuf.fromBuf(4627, WebBuf.fromUint8Array(out));
 }
 
@@ -248,10 +270,10 @@ export function mlDsa87Verify(
   context?: WebBuf,
 ): boolean {
   return ml_dsa_87_verify(
-    verifyingKey.buf,
-    message,
-    signature.buf,
-    defaultContext(context),
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
+    defaultContext(context).bytes,
   );
 }
 
@@ -260,7 +282,11 @@ export function mlDsa87SignInternal(
   message: WebBuf,
   rnd: FixedBuf<32>,
 ): FixedBuf<4627> {
-  const out = ml_dsa_87_sign_internal(signingKey.buf, message, rnd.buf);
+  const out = ml_dsa_87_sign_internal(
+    signingKey.buf.bytes,
+    message.bytes,
+    rnd.buf.bytes,
+  );
   return FixedBuf.fromBuf(4627, WebBuf.fromUint8Array(out));
 }
 
@@ -269,5 +295,9 @@ export function mlDsa87VerifyInternal(
   message: WebBuf,
   signature: FixedBuf<4627>,
 ): boolean {
-  return ml_dsa_87_verify_internal(verifyingKey.buf, message, signature.buf);
+  return ml_dsa_87_verify_internal(
+    verifyingKey.buf.bytes,
+    message.bytes,
+    signature.buf.bytes,
+  );
 }

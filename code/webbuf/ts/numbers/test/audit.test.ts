@@ -47,7 +47,7 @@ describe("Audit: U8 boundary values", () => {
       const u8 = U8.fromN(i);
       const buf = new Uint8Array(1);
       buf[0] = i;
-      expect(u8.buf.buf[0]).toBe(buf[0]);
+      expect(u8.buf.buf.bytes[0]).toBe(buf[0]);
     }
   });
 });
@@ -75,15 +75,15 @@ describe("Audit: U16 endianness verification", () => {
         const view = new DataView(buf);
         view.setUint16(0, value, false); // false = big-endian
 
-        expect(u16.buf.buf[0]).toBe(new Uint8Array(buf)[0]);
-        expect(u16.buf.buf[1]).toBe(new Uint8Array(buf)[1]);
+        expect(u16.buf.buf.bytes[0]).toBe(new Uint8Array(buf)[0]);
+        expect(u16.buf.buf.bytes[1]).toBe(new Uint8Array(buf)[1]);
       }
     });
 
     it("should encode 0x0102 as [01, 02]", () => {
       const u16 = U16BE.fromN(0x0102);
-      expect(u16.buf.buf[0]).toBe(0x01);
-      expect(u16.buf.buf[1]).toBe(0x02);
+      expect(u16.buf.buf.bytes[0]).toBe(0x01);
+      expect(u16.buf.buf.bytes[1]).toBe(0x02);
     });
   });
 
@@ -109,15 +109,15 @@ describe("Audit: U16 endianness verification", () => {
         const view = new DataView(buf);
         view.setUint16(0, value, true); // true = little-endian
 
-        expect(u16.buf.buf[0]).toBe(new Uint8Array(buf)[0]);
-        expect(u16.buf.buf[1]).toBe(new Uint8Array(buf)[1]);
+        expect(u16.buf.buf.bytes[0]).toBe(new Uint8Array(buf)[0]);
+        expect(u16.buf.buf.bytes[1]).toBe(new Uint8Array(buf)[1]);
       }
     });
 
     it("should encode 0x0102 as [02, 01]", () => {
       const u16 = U16LE.fromN(0x0102);
-      expect(u16.buf.buf[0]).toBe(0x02);
-      expect(u16.buf.buf[1]).toBe(0x01);
+      expect(u16.buf.buf.bytes[0]).toBe(0x02);
+      expect(u16.buf.buf.bytes[1]).toBe(0x01);
     });
   });
 
@@ -128,10 +128,10 @@ describe("Audit: U16 endianness verification", () => {
       const le = U16LE.fromN(value);
 
       // BE: [12, 34], LE: [34, 12]
-      expect(be.buf.buf[0]).toBe(0x12);
-      expect(be.buf.buf[1]).toBe(0x34);
-      expect(le.buf.buf[0]).toBe(0x34);
-      expect(le.buf.buf[1]).toBe(0x12);
+      expect(be.buf.buf.bytes[0]).toBe(0x12);
+      expect(be.buf.buf.bytes[1]).toBe(0x34);
+      expect(le.buf.buf.bytes[0]).toBe(0x34);
+      expect(le.buf.buf.bytes[1]).toBe(0x12);
     });
   });
 });
@@ -152,15 +152,7 @@ describe("Audit: U32 endianness verification", () => {
 
     it("should match DataView big-endian byte ordering", () => {
       const testValues = [
-        0,
-        1,
-        255,
-        256,
-        65535,
-        65536,
-        0x01020304,
-        0x12345678,
-        0xdeadbeef,
+        0, 1, 255, 256, 65535, 65536, 0x01020304, 0x12345678, 0xdeadbeef,
         4294967295,
       ];
 
@@ -171,19 +163,19 @@ describe("Audit: U32 endianness verification", () => {
         view.setUint32(0, value, false); // false = big-endian
 
         const expected = new Uint8Array(buf);
-        expect(u32.buf.buf[0]).toBe(expected[0]);
-        expect(u32.buf.buf[1]).toBe(expected[1]);
-        expect(u32.buf.buf[2]).toBe(expected[2]);
-        expect(u32.buf.buf[3]).toBe(expected[3]);
+        expect(u32.buf.buf.bytes[0]).toBe(expected[0]);
+        expect(u32.buf.buf.bytes[1]).toBe(expected[1]);
+        expect(u32.buf.buf.bytes[2]).toBe(expected[2]);
+        expect(u32.buf.buf.bytes[3]).toBe(expected[3]);
       }
     });
 
     it("should encode 0x01020304 as [01, 02, 03, 04]", () => {
       const u32 = U32BE.fromN(0x01020304);
-      expect(u32.buf.buf[0]).toBe(0x01);
-      expect(u32.buf.buf[1]).toBe(0x02);
-      expect(u32.buf.buf[2]).toBe(0x03);
-      expect(u32.buf.buf[3]).toBe(0x04);
+      expect(u32.buf.buf.bytes[0]).toBe(0x01);
+      expect(u32.buf.buf.bytes[1]).toBe(0x02);
+      expect(u32.buf.buf.bytes[2]).toBe(0x03);
+      expect(u32.buf.buf.bytes[3]).toBe(0x04);
     });
   });
 
@@ -202,15 +194,7 @@ describe("Audit: U32 endianness verification", () => {
 
     it("should match DataView little-endian byte ordering", () => {
       const testValues = [
-        0,
-        1,
-        255,
-        256,
-        65535,
-        65536,
-        0x01020304,
-        0x12345678,
-        0xdeadbeef,
+        0, 1, 255, 256, 65535, 65536, 0x01020304, 0x12345678, 0xdeadbeef,
         4294967295,
       ];
 
@@ -221,19 +205,19 @@ describe("Audit: U32 endianness verification", () => {
         view.setUint32(0, value, true); // true = little-endian
 
         const expected = new Uint8Array(buf);
-        expect(u32.buf.buf[0]).toBe(expected[0]);
-        expect(u32.buf.buf[1]).toBe(expected[1]);
-        expect(u32.buf.buf[2]).toBe(expected[2]);
-        expect(u32.buf.buf[3]).toBe(expected[3]);
+        expect(u32.buf.buf.bytes[0]).toBe(expected[0]);
+        expect(u32.buf.buf.bytes[1]).toBe(expected[1]);
+        expect(u32.buf.buf.bytes[2]).toBe(expected[2]);
+        expect(u32.buf.buf.bytes[3]).toBe(expected[3]);
       }
     });
 
     it("should encode 0x01020304 as [04, 03, 02, 01]", () => {
       const u32 = U32LE.fromN(0x01020304);
-      expect(u32.buf.buf[0]).toBe(0x04);
-      expect(u32.buf.buf[1]).toBe(0x03);
-      expect(u32.buf.buf[2]).toBe(0x02);
-      expect(u32.buf.buf[3]).toBe(0x01);
+      expect(u32.buf.buf.bytes[0]).toBe(0x04);
+      expect(u32.buf.buf.bytes[1]).toBe(0x03);
+      expect(u32.buf.buf.bytes[2]).toBe(0x02);
+      expect(u32.buf.buf.bytes[3]).toBe(0x01);
     });
   });
 
@@ -244,14 +228,14 @@ describe("Audit: U32 endianness verification", () => {
       const le = U32LE.fromN(value);
 
       // BE: [12, 34, 56, 78], LE: [78, 56, 34, 12]
-      expect(be.buf.buf[0]).toBe(0x12);
-      expect(be.buf.buf[1]).toBe(0x34);
-      expect(be.buf.buf[2]).toBe(0x56);
-      expect(be.buf.buf[3]).toBe(0x78);
-      expect(le.buf.buf[0]).toBe(0x78);
-      expect(le.buf.buf[1]).toBe(0x56);
-      expect(le.buf.buf[2]).toBe(0x34);
-      expect(le.buf.buf[3]).toBe(0x12);
+      expect(be.buf.buf.bytes[0]).toBe(0x12);
+      expect(be.buf.buf.bytes[1]).toBe(0x34);
+      expect(be.buf.buf.bytes[2]).toBe(0x56);
+      expect(be.buf.buf.bytes[3]).toBe(0x78);
+      expect(le.buf.buf.bytes[0]).toBe(0x78);
+      expect(le.buf.buf.bytes[1]).toBe(0x56);
+      expect(le.buf.buf.bytes[2]).toBe(0x34);
+      expect(le.buf.buf.bytes[3]).toBe(0x12);
     });
   });
 });
@@ -292,21 +276,21 @@ describe("Audit: U64 endianness verification", () => {
 
         const expected = new Uint8Array(buf);
         for (let i = 0; i < 8; i++) {
-          expect(u64.buf.buf[i]).toBe(expected[i]);
+          expect(u64.buf.buf.bytes[i]).toBe(expected[i]);
         }
       }
     });
 
     it("should encode 0x0102030405060708 correctly", () => {
       const u64 = U64BE.fromBn(0x0102030405060708n);
-      expect(u64.buf.buf[0]).toBe(0x01);
-      expect(u64.buf.buf[1]).toBe(0x02);
-      expect(u64.buf.buf[2]).toBe(0x03);
-      expect(u64.buf.buf[3]).toBe(0x04);
-      expect(u64.buf.buf[4]).toBe(0x05);
-      expect(u64.buf.buf[5]).toBe(0x06);
-      expect(u64.buf.buf[6]).toBe(0x07);
-      expect(u64.buf.buf[7]).toBe(0x08);
+      expect(u64.buf.buf.bytes[0]).toBe(0x01);
+      expect(u64.buf.buf.bytes[1]).toBe(0x02);
+      expect(u64.buf.buf.bytes[2]).toBe(0x03);
+      expect(u64.buf.buf.bytes[3]).toBe(0x04);
+      expect(u64.buf.buf.bytes[4]).toBe(0x05);
+      expect(u64.buf.buf.bytes[5]).toBe(0x06);
+      expect(u64.buf.buf.bytes[6]).toBe(0x07);
+      expect(u64.buf.buf.bytes[7]).toBe(0x08);
     });
   });
 
@@ -345,21 +329,21 @@ describe("Audit: U64 endianness verification", () => {
 
         const expected = new Uint8Array(buf);
         for (let i = 0; i < 8; i++) {
-          expect(u64.buf.buf[i]).toBe(expected[i]);
+          expect(u64.buf.buf.bytes[i]).toBe(expected[i]);
         }
       }
     });
 
     it("should encode 0x0102030405060708 correctly", () => {
       const u64 = U64LE.fromBn(0x0102030405060708n);
-      expect(u64.buf.buf[0]).toBe(0x08);
-      expect(u64.buf.buf[1]).toBe(0x07);
-      expect(u64.buf.buf[2]).toBe(0x06);
-      expect(u64.buf.buf[3]).toBe(0x05);
-      expect(u64.buf.buf[4]).toBe(0x04);
-      expect(u64.buf.buf[5]).toBe(0x03);
-      expect(u64.buf.buf[6]).toBe(0x02);
-      expect(u64.buf.buf[7]).toBe(0x01);
+      expect(u64.buf.buf.bytes[0]).toBe(0x08);
+      expect(u64.buf.buf.bytes[1]).toBe(0x07);
+      expect(u64.buf.buf.bytes[2]).toBe(0x06);
+      expect(u64.buf.buf.bytes[3]).toBe(0x05);
+      expect(u64.buf.buf.bytes[4]).toBe(0x04);
+      expect(u64.buf.buf.bytes[5]).toBe(0x03);
+      expect(u64.buf.buf.bytes[6]).toBe(0x02);
+      expect(u64.buf.buf.bytes[7]).toBe(0x01);
     });
   });
 
@@ -371,7 +355,7 @@ describe("Audit: U64 endianness verification", () => {
 
       // Bytes should be reversed
       for (let i = 0; i < 8; i++) {
-        expect(be.buf.buf[i]).toBe(le.buf.buf[7 - i]);
+        expect(be.buf.buf.bytes[i]).toBe(le.buf.buf.bytes[7 - i]);
       }
     });
   });
@@ -397,22 +381,22 @@ describe("Audit: U128 endianness verification", () => {
       const value = 0x0102030405060708090a0b0c0d0e0f10n;
       const u128 = U128BE.fromBn(value);
 
-      expect(u128.buf.buf[0]).toBe(0x01);
-      expect(u128.buf.buf[1]).toBe(0x02);
-      expect(u128.buf.buf[2]).toBe(0x03);
-      expect(u128.buf.buf[3]).toBe(0x04);
-      expect(u128.buf.buf[4]).toBe(0x05);
-      expect(u128.buf.buf[5]).toBe(0x06);
-      expect(u128.buf.buf[6]).toBe(0x07);
-      expect(u128.buf.buf[7]).toBe(0x08);
-      expect(u128.buf.buf[8]).toBe(0x09);
-      expect(u128.buf.buf[9]).toBe(0x0a);
-      expect(u128.buf.buf[10]).toBe(0x0b);
-      expect(u128.buf.buf[11]).toBe(0x0c);
-      expect(u128.buf.buf[12]).toBe(0x0d);
-      expect(u128.buf.buf[13]).toBe(0x0e);
-      expect(u128.buf.buf[14]).toBe(0x0f);
-      expect(u128.buf.buf[15]).toBe(0x10);
+      expect(u128.buf.buf.bytes[0]).toBe(0x01);
+      expect(u128.buf.buf.bytes[1]).toBe(0x02);
+      expect(u128.buf.buf.bytes[2]).toBe(0x03);
+      expect(u128.buf.buf.bytes[3]).toBe(0x04);
+      expect(u128.buf.buf.bytes[4]).toBe(0x05);
+      expect(u128.buf.buf.bytes[5]).toBe(0x06);
+      expect(u128.buf.buf.bytes[6]).toBe(0x07);
+      expect(u128.buf.buf.bytes[7]).toBe(0x08);
+      expect(u128.buf.buf.bytes[8]).toBe(0x09);
+      expect(u128.buf.buf.bytes[9]).toBe(0x0a);
+      expect(u128.buf.buf.bytes[10]).toBe(0x0b);
+      expect(u128.buf.buf.bytes[11]).toBe(0x0c);
+      expect(u128.buf.buf.bytes[12]).toBe(0x0d);
+      expect(u128.buf.buf.bytes[13]).toBe(0x0e);
+      expect(u128.buf.buf.bytes[14]).toBe(0x0f);
+      expect(u128.buf.buf.bytes[15]).toBe(0x10);
     });
 
     it("should round-trip through hex encoding", () => {
@@ -454,22 +438,22 @@ describe("Audit: U128 endianness verification", () => {
       const u128 = U128LE.fromBn(value);
 
       // Little-endian: least significant byte first
-      expect(u128.buf.buf[0]).toBe(0x10);
-      expect(u128.buf.buf[1]).toBe(0x0f);
-      expect(u128.buf.buf[2]).toBe(0x0e);
-      expect(u128.buf.buf[3]).toBe(0x0d);
-      expect(u128.buf.buf[4]).toBe(0x0c);
-      expect(u128.buf.buf[5]).toBe(0x0b);
-      expect(u128.buf.buf[6]).toBe(0x0a);
-      expect(u128.buf.buf[7]).toBe(0x09);
-      expect(u128.buf.buf[8]).toBe(0x08);
-      expect(u128.buf.buf[9]).toBe(0x07);
-      expect(u128.buf.buf[10]).toBe(0x06);
-      expect(u128.buf.buf[11]).toBe(0x05);
-      expect(u128.buf.buf[12]).toBe(0x04);
-      expect(u128.buf.buf[13]).toBe(0x03);
-      expect(u128.buf.buf[14]).toBe(0x02);
-      expect(u128.buf.buf[15]).toBe(0x01);
+      expect(u128.buf.buf.bytes[0]).toBe(0x10);
+      expect(u128.buf.buf.bytes[1]).toBe(0x0f);
+      expect(u128.buf.buf.bytes[2]).toBe(0x0e);
+      expect(u128.buf.buf.bytes[3]).toBe(0x0d);
+      expect(u128.buf.buf.bytes[4]).toBe(0x0c);
+      expect(u128.buf.buf.bytes[5]).toBe(0x0b);
+      expect(u128.buf.buf.bytes[6]).toBe(0x0a);
+      expect(u128.buf.buf.bytes[7]).toBe(0x09);
+      expect(u128.buf.buf.bytes[8]).toBe(0x08);
+      expect(u128.buf.buf.bytes[9]).toBe(0x07);
+      expect(u128.buf.buf.bytes[10]).toBe(0x06);
+      expect(u128.buf.buf.bytes[11]).toBe(0x05);
+      expect(u128.buf.buf.bytes[12]).toBe(0x04);
+      expect(u128.buf.buf.bytes[13]).toBe(0x03);
+      expect(u128.buf.buf.bytes[14]).toBe(0x02);
+      expect(u128.buf.buf.bytes[15]).toBe(0x01);
     });
 
     it("should round-trip through hex encoding", () => {
@@ -499,7 +483,7 @@ describe("Audit: U128 endianness verification", () => {
 
       // Bytes should be reversed
       for (let i = 0; i < 16; i++) {
-        expect(be.buf.buf[i]).toBe(le.buf.buf[15 - i]);
+        expect(be.buf.buf.bytes[i]).toBe(le.buf.buf.bytes[15 - i]);
       }
     });
   });
@@ -534,7 +518,7 @@ describe("Audit: U256 endianness verification", () => {
       const u256 = U256BE.fromBn(value);
 
       for (let i = 0; i < 32; i++) {
-        expect(u256.buf.buf[i]).toBe(i + 1);
+        expect(u256.buf.buf.bytes[i]).toBe(i + 1);
       }
     });
 
@@ -603,7 +587,7 @@ describe("Audit: U256 endianness verification", () => {
 
       // Little-endian: bytes should be reversed
       for (let i = 0; i < 32; i++) {
-        expect(u256.buf.buf[i]).toBe(32 - i);
+        expect(u256.buf.buf.bytes[i]).toBe(32 - i);
       }
     });
 
@@ -639,7 +623,7 @@ describe("Audit: U256 endianness verification", () => {
 
       // Bytes should be reversed
       for (let i = 0; i < 32; i++) {
-        expect(be.buf.buf[i]).toBe(le.buf.buf[31 - i]);
+        expect(be.buf.buf.bytes[i]).toBe(le.buf.buf.bytes[31 - i]);
       }
     });
   });
@@ -657,19 +641,19 @@ describe("Audit: Cross-type consistency", () => {
     const u256be = U256BE.fromBn(value);
 
     // All should encode 0x12 in the least significant byte
-    expect(u8.buf.buf[0]).toBe(0x12);
-    expect(u16be.buf.buf[1]).toBe(0x12); // Big-endian: value in last byte
-    expect(u32be.buf.buf[3]).toBe(0x12);
-    expect(u64be.buf.buf[7]).toBe(0x12);
-    expect(u128be.buf.buf[15]).toBe(0x12);
-    expect(u256be.buf.buf[31]).toBe(0x12);
+    expect(u8.buf.buf.bytes[0]).toBe(0x12);
+    expect(u16be.buf.buf.bytes[1]).toBe(0x12); // Big-endian: value in last byte
+    expect(u32be.buf.buf.bytes[3]).toBe(0x12);
+    expect(u64be.buf.buf.bytes[7]).toBe(0x12);
+    expect(u128be.buf.buf.bytes[15]).toBe(0x12);
+    expect(u256be.buf.buf.bytes[31]).toBe(0x12);
 
     // Leading bytes should be zero
-    expect(u16be.buf.buf[0]).toBe(0x00);
-    expect(u32be.buf.buf[0]).toBe(0x00);
-    expect(u64be.buf.buf[0]).toBe(0x00);
-    expect(u128be.buf.buf[0]).toBe(0x00);
-    expect(u256be.buf.buf[0]).toBe(0x00);
+    expect(u16be.buf.buf.bytes[0]).toBe(0x00);
+    expect(u32be.buf.buf.bytes[0]).toBe(0x00);
+    expect(u64be.buf.buf.bytes[0]).toBe(0x00);
+    expect(u128be.buf.buf.bytes[0]).toBe(0x00);
+    expect(u256be.buf.buf.bytes[0]).toBe(0x00);
   });
 
   it("should produce consistent little-endian encoding across sizes", () => {
@@ -682,18 +666,18 @@ describe("Audit: Cross-type consistency", () => {
     const u256le = U256LE.fromBn(value);
 
     // Little-endian: value in first byte
-    expect(u16le.buf.buf[0]).toBe(0x12);
-    expect(u32le.buf.buf[0]).toBe(0x12);
-    expect(u64le.buf.buf[0]).toBe(0x12);
-    expect(u128le.buf.buf[0]).toBe(0x12);
-    expect(u256le.buf.buf[0]).toBe(0x12);
+    expect(u16le.buf.buf.bytes[0]).toBe(0x12);
+    expect(u32le.buf.buf.bytes[0]).toBe(0x12);
+    expect(u64le.buf.buf.bytes[0]).toBe(0x12);
+    expect(u128le.buf.buf.bytes[0]).toBe(0x12);
+    expect(u256le.buf.buf.bytes[0]).toBe(0x12);
 
     // Trailing bytes should be zero
-    expect(u16le.buf.buf[1]).toBe(0x00);
-    expect(u32le.buf.buf[3]).toBe(0x00);
-    expect(u64le.buf.buf[7]).toBe(0x00);
-    expect(u128le.buf.buf[15]).toBe(0x00);
-    expect(u256le.buf.buf[31]).toBe(0x00);
+    expect(u16le.buf.buf.bytes[1]).toBe(0x00);
+    expect(u32le.buf.buf.bytes[3]).toBe(0x00);
+    expect(u64le.buf.buf.bytes[7]).toBe(0x00);
+    expect(u128le.buf.buf.bytes[15]).toBe(0x00);
+    expect(u256le.buf.buf.bytes[31]).toBe(0x00);
   });
 });
 
@@ -756,20 +740,20 @@ describe("Audit: Known test vectors", () => {
       // Verify the numeric value round-trips correctly
       expect(timestamp.n).toBe(1231006505);
       // Verify byte order: 0x495FAB29 -> LE storage [0x29, 0xAB, 0x5F, 0x49]
-      expect(timestamp.buf.buf[0]).toBe(0x29);
-      expect(timestamp.buf.buf[1]).toBe(0xab);
-      expect(timestamp.buf.buf[2]).toBe(0x5f);
-      expect(timestamp.buf.buf[3]).toBe(0x49);
+      expect(timestamp.buf.buf.bytes[0]).toBe(0x29);
+      expect(timestamp.buf.buf.bytes[1]).toBe(0xab);
+      expect(timestamp.buf.buf.bytes[2]).toBe(0x5f);
+      expect(timestamp.buf.buf.bytes[3]).toBe(0x49);
     });
 
     it("should correctly encode common satoshi amounts (U64LE)", () => {
       // 1 BTC = 100,000,000 satoshis
       const oneBtc = U64LE.fromBn(100000000n);
       // 100000000 = 0x05F5E100, little-endian
-      expect(oneBtc.buf.buf[0]).toBe(0x00);
-      expect(oneBtc.buf.buf[1]).toBe(0xe1);
-      expect(oneBtc.buf.buf[2]).toBe(0xf5);
-      expect(oneBtc.buf.buf[3]).toBe(0x05);
+      expect(oneBtc.buf.buf.bytes[0]).toBe(0x00);
+      expect(oneBtc.buf.buf.bytes[1]).toBe(0xe1);
+      expect(oneBtc.buf.buf.bytes[2]).toBe(0xf5);
+      expect(oneBtc.buf.buf.bytes[3]).toBe(0x05);
 
       // 21 million BTC cap = 2,100,000,000,000,000 satoshis
       const maxBtc = U64LE.fromBn(2100000000000000n);
@@ -799,8 +783,8 @@ describe("Audit: Buffer conversion consistency", () => {
 
     // BE buffer: [12, 34]
     // LE buffer should be: [34, 12]
-    expect(leBuf.buf[0]).toBe(0x34);
-    expect(leBuf.buf[1]).toBe(0x12);
+    expect(leBuf.buf.bytes[0]).toBe(0x34);
+    expect(leBuf.buf.bytes[1]).toBe(0x12);
   });
 
   it("should convert LE to BE buffer correctly for U16", () => {
@@ -810,8 +794,8 @@ describe("Audit: Buffer conversion consistency", () => {
 
     // LE buffer: [34, 12]
     // BE buffer should be: [12, 34]
-    expect(beBuf.buf[0]).toBe(0x12);
-    expect(beBuf.buf[1]).toBe(0x34);
+    expect(beBuf.buf.bytes[0]).toBe(0x12);
+    expect(beBuf.buf.bytes[1]).toBe(0x34);
   });
 
   it("should convert BE to LE buffer correctly for U32", () => {
@@ -819,10 +803,10 @@ describe("Audit: Buffer conversion consistency", () => {
     const be = U32BE.fromN(value);
     const leBuf = be.toLEBuf();
 
-    expect(leBuf.buf[0]).toBe(0x78);
-    expect(leBuf.buf[1]).toBe(0x56);
-    expect(leBuf.buf[2]).toBe(0x34);
-    expect(leBuf.buf[3]).toBe(0x12);
+    expect(leBuf.buf.bytes[0]).toBe(0x78);
+    expect(leBuf.buf.bytes[1]).toBe(0x56);
+    expect(leBuf.buf.bytes[2]).toBe(0x34);
+    expect(leBuf.buf.bytes[3]).toBe(0x12);
   });
 
   it("should convert LE to BE buffer correctly for U32", () => {
@@ -830,10 +814,10 @@ describe("Audit: Buffer conversion consistency", () => {
     const le = U32LE.fromN(value);
     const beBuf = le.toBEBuf();
 
-    expect(beBuf.buf[0]).toBe(0x12);
-    expect(beBuf.buf[1]).toBe(0x34);
-    expect(beBuf.buf[2]).toBe(0x56);
-    expect(beBuf.buf[3]).toBe(0x78);
+    expect(beBuf.buf.bytes[0]).toBe(0x12);
+    expect(beBuf.buf.bytes[1]).toBe(0x34);
+    expect(beBuf.buf.bytes[2]).toBe(0x56);
+    expect(beBuf.buf.bytes[3]).toBe(0x78);
   });
 
   it("should convert BE to LE buffer correctly for U64", () => {
@@ -842,7 +826,7 @@ describe("Audit: Buffer conversion consistency", () => {
     const leBuf = be.toLEBuf();
 
     for (let i = 0; i < 8; i++) {
-      expect(leBuf.buf[i]).toBe(8 - i);
+      expect(leBuf.buf.bytes[i]).toBe(8 - i);
     }
   });
 
@@ -852,7 +836,7 @@ describe("Audit: Buffer conversion consistency", () => {
     const beBuf = le.toBEBuf();
 
     for (let i = 0; i < 8; i++) {
-      expect(beBuf.buf[i]).toBe(i + 1);
+      expect(beBuf.buf.bytes[i]).toBe(i + 1);
     }
   });
 });

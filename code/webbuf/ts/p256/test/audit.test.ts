@@ -27,7 +27,7 @@ import {
   p256PublicKeyFromJwk,
 } from "../src/index.js";
 import { blake3Hash } from "@webbuf/blake3";
-import { p256 as noble } from "@noble/curves/p256";
+import { p256 as noble } from "@noble/curves/nist.js";
 import { webcrypto } from "node:crypto";
 
 describe("Audit: Known test vectors", () => {
@@ -44,7 +44,7 @@ describe("Audit: Known test vectors", () => {
       // G.x = 6B17D1F2E12C4247F8BCE6E563A440F277037D812DEB33A0F4A13945D898C296
       // G.y ends in F5 (odd) so prefix is 03
       expect(pubKey.buf.length).toBe(33);
-      expect(pubKey.buf[0]).toBe(0x03); // Odd y coordinate
+      expect(pubKey.buf.bytes[0]).toBe(0x03); // Odd y coordinate
       expect(pubKey.toHex().substring(2)).toBe(
         "6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296",
       );
@@ -59,7 +59,7 @@ describe("Audit: Known test vectors", () => {
 
       expect(pubKey.buf.length).toBe(33);
       // Verify against noble
-      const noblePubKey = noble.getPublicKey(privKey.buf, true);
+      const noblePubKey = noble.getPublicKey(privKey.buf.bytes, true);
       expect(pubKey.toHex()).toBe(WebBuf.fromUint8Array(noblePubKey).toHex());
     });
 
@@ -71,7 +71,7 @@ describe("Audit: Known test vectors", () => {
       const pubKey = p256PublicKeyCreate(privKey);
 
       // Verify against noble
-      const noblePubKey = noble.getPublicKey(privKey.buf, true);
+      const noblePubKey = noble.getPublicKey(privKey.buf.bytes, true);
       expect(pubKey.toHex()).toBe(WebBuf.fromUint8Array(noblePubKey).toHex());
     });
 
@@ -82,7 +82,7 @@ describe("Audit: Known test vectors", () => {
       );
       const pubKey = p256PublicKeyCreate(privKey);
 
-      const noblePubKey = noble.getPublicKey(privKey.buf, true);
+      const noblePubKey = noble.getPublicKey(privKey.buf.bytes, true);
       expect(pubKey.toHex()).toBe(WebBuf.fromUint8Array(noblePubKey).toHex());
     });
   });
@@ -97,7 +97,7 @@ describe("Audit: Cross-implementation verification with @noble/curves/p256", () 
         if (!p256PrivateKeyVerify(privKey)) continue;
 
         const webbufPubKey = p256PublicKeyCreate(privKey);
-        const noblePubKey = noble.getPublicKey(privKey.buf, true);
+        const noblePubKey = noble.getPublicKey(privKey.buf.bytes, true);
 
         expect(webbufPubKey.toHex()).toBe(
           WebBuf.fromUint8Array(noblePubKey).toHex(),
@@ -117,7 +117,7 @@ describe("Audit: Cross-implementation verification with @noble/curves/p256", () 
       for (const keyHex of testKeys) {
         const privKey = FixedBuf.fromHex(32, keyHex);
         const webbufPubKey = p256PublicKeyCreate(privKey);
-        const noblePubKey = noble.getPublicKey(privKey.buf, true);
+        const noblePubKey = noble.getPublicKey(privKey.buf.bytes, true);
 
         expect(webbufPubKey.toHex()).toBe(
           WebBuf.fromUint8Array(noblePubKey).toHex(),
@@ -149,8 +149,8 @@ describe("Audit: Cross-implementation verification with @noble/curves/p256", () 
 
         // Compare with noble
         const nobleShared = noble.getSharedSecret(
-          privKey1.buf,
-          pubKey2.buf,
+          privKey1.buf.bytes,
+          pubKey2.buf.bytes,
           true,
         );
         expect(shared1.toHex()).toBe(
@@ -247,7 +247,7 @@ describe("Audit: Signature correctness", () => {
 
     const tamperedBytes = WebBuf.alloc(64);
     tamperedBytes.set(signature.buf);
-    tamperedBytes[0]! ^= 0x01;
+    tamperedBytes.bytes[0]! ^= 0x01;
     const tamperedSig = FixedBuf.fromBuf(64, tamperedBytes);
 
     expect(p256Verify(tamperedSig, digest, pubKey)).toBe(false);
@@ -317,7 +317,7 @@ describe("Audit: Public key validation", () => {
     const privKey = FixedBuf.fromRandom(32);
     const pubKey = p256PublicKeyCreate(privKey);
     const invalidPubKey = pubKey.clone();
-    invalidPubKey.buf[0] = 0x04; // Invalid for compressed key
+    invalidPubKey.buf.bytes[0] = 0x04; // Invalid for compressed key
 
     expect(p256PublicKeyVerify(invalidPubKey)).toBe(false);
   });
@@ -471,7 +471,7 @@ describe("Audit: ECDH (Diffie-Hellman)", () => {
     const shared = p256SharedSecret(alicePriv, bobPub);
 
     expect(shared.buf.length).toBe(33);
-    expect([0x02, 0x03]).toContain(shared.buf[0]);
+    expect([0x02, 0x03]).toContain(shared.buf.bytes[0]);
   });
 });
 
@@ -568,7 +568,7 @@ describe("Audit: Web Crypto interop", () => {
         const compressed = p256PublicKeyCreate(privKey);
         const uncompressed = p256PublicKeyDecompress(compressed);
         expect(uncompressed.buf.length).toBe(65);
-        expect(uncompressed.buf[0]).toBe(0x04);
+        expect(uncompressed.buf.bytes[0]).toBe(0x04);
         const recompressed = p256PublicKeyCompress(uncompressed);
         expect(recompressed.toHex()).toBe(compressed.toHex());
       }
@@ -582,9 +582,9 @@ describe("Audit: Web Crypto interop", () => {
       const compressed = p256PublicKeyCreate(privKey);
       const uncompressed = p256PublicKeyDecompress(compressed);
       // bytes 1..33 of both should match
-      expect(WebBuf.fromUint8Array(uncompressed.buf.slice(1, 33)).toHex()).toBe(
-        WebBuf.fromUint8Array(compressed.buf.slice(1, 33)).toHex(),
-      );
+      expect(
+        WebBuf.fromUint8Array(uncompressed.buf.slice(1, 33).bytes).toHex(),
+      ).toBe(WebBuf.fromUint8Array(compressed.buf.slice(1, 33).bytes).toHex());
     });
   });
 
@@ -676,14 +676,14 @@ describe("Audit: Web Crypto interop", () => {
       const uncompressed = p256PublicKeyDecompress(compressed);
       const tampered = WebBuf.alloc(65);
       tampered.set(uncompressed.buf);
-      tampered[0] = 0x05; // invalid prefix
+      tampered.bytes[0] = 0x05; // invalid prefix
       const tamperedFixed = FixedBuf.fromBuf(65, tampered);
       expect(() => p256PublicKeyCompress(tamperedFixed)).toThrow();
     });
 
     it("should reject compressed key with wrong prefix", () => {
       const badCompressed = WebBuf.alloc(33);
-      badCompressed[0] = 0x04; // invalid for compressed
+      badCompressed.bytes[0] = 0x04; // invalid for compressed
       const fixedBad = FixedBuf.fromBuf(33, badCompressed);
       expect(() => p256PublicKeyDecompress(fixedBad)).toThrow();
     });
@@ -697,7 +697,7 @@ describe("Audit: Web Crypto interop", () => {
       const message = WebBuf.fromUtf8("cross-check message");
       // Hash with SHA-256 (what Web Crypto will use internally)
       const msgHash = new Uint8Array(
-        await webcrypto.subtle.digest("SHA-256", message),
+        await webcrypto.subtle.digest("SHA-256", message.bytes),
       );
       const digest = FixedBuf.fromBuf(32, WebBuf.fromUint8Array(msgHash));
 
@@ -719,8 +719,8 @@ describe("Audit: Web Crypto interop", () => {
       const valid = await webcrypto.subtle.verify(
         { name: "ECDSA", hash: "SHA-256" },
         cryptoKey,
-        signature.buf,
-        message,
+        signature.buf.bytes,
+        message.bytes,
       );
       expect(valid).toBe(true);
     });
@@ -741,7 +741,7 @@ describe("Audit: Web Crypto interop", () => {
 
       const message = WebBuf.fromUtf8("cross-check message");
       const msgHash = new Uint8Array(
-        await webcrypto.subtle.digest("SHA-256", message),
+        await webcrypto.subtle.digest("SHA-256", message.bytes),
       );
       const digest = FixedBuf.fromBuf(32, WebBuf.fromUint8Array(msgHash));
 
@@ -749,7 +749,7 @@ describe("Audit: Web Crypto interop", () => {
       const sigBuf = await webcrypto.subtle.sign(
         { name: "ECDSA", hash: "SHA-256" },
         cryptoKey,
-        message,
+        message.bytes,
       );
       const signature = FixedBuf.fromBuf(
         64,
@@ -759,7 +759,11 @@ describe("Audit: Web Crypto interop", () => {
       // webbuf's verify handles low-S, but Web Crypto may produce high-S
       // signatures. Our verify does not normalize, so we cross-check with noble
       // instead, which accepts both forms.
-      const sigValid = noble.verify(signature.buf, digest.buf, pub.buf);
+      const sigValid = noble.verify(
+        signature.buf.bytes,
+        digest.buf.bytes,
+        pub.buf.bytes,
+      );
       expect(sigValid).toBe(true);
     });
 
@@ -771,8 +775,11 @@ describe("Audit: Web Crypto interop", () => {
 
       // webbuf's shared secret: 33-byte compressed point. X is bytes 1..33.
       const webbufShared = p256SharedSecret(alicePriv, bobPub);
+      expect(p256SharedSecret(bobPriv, alicePub).toHex()).toBe(
+        webbufShared.toHex(),
+      );
       const webbufSharedX = WebBuf.fromUint8Array(
-        webbufShared.buf.slice(1, 33),
+        webbufShared.buf.slice(1, 33).bytes,
       ).toHex();
 
       // Web Crypto: import Alice's private key and Bob's public key as ECDH,
@@ -829,9 +836,7 @@ describe("Audit: Web Crypto interop", () => {
       const dBuf = (() => {
         const padding = (4 - (privJwk.d.length % 4)) % 4;
         const padded = privJwk.d + "=".repeat(padding);
-        return WebBuf.fromBase64(
-          padded.replace(/-/g, "+").replace(/_/g, "/"),
-        );
+        return WebBuf.fromBase64(padded.replace(/-/g, "+").replace(/_/g, "/"));
       })();
       const privFixed = FixedBuf.fromBuf(32, dBuf);
       const compressedFromPriv = p256PublicKeyCreate(privFixed);

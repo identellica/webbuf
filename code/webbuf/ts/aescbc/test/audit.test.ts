@@ -101,13 +101,22 @@ describe("Audit: NIST CAVP AES-CBC test vectors", () => {
       const encrypted = aescbcEncrypt(plaintext, key, iv);
       const ciphertext = encrypted.slice(16);
 
-      const webCryptoCiphertext = await webCryptoEncrypt(plaintext, key.buf, iv.buf);
-      expect(ciphertext.toHex()).toBe(WebBuf.fromUint8Array(webCryptoCiphertext).toHex());
+      const webCryptoCiphertext = await webCryptoEncrypt(
+        plaintext.bytes,
+        key.buf.bytes,
+        iv.buf.bytes,
+      );
+      expect(ciphertext.toHex()).toBe(
+        WebBuf.fromUint8Array(webCryptoCiphertext).toHex(),
+      );
     });
   });
 
   describe("AES-192-CBC", () => {
-    const key = FixedBuf.fromHex(24, "8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b");
+    const key = FixedBuf.fromHex(
+      24,
+      "8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b",
+    );
     const iv = FixedBuf.fromHex(16, "000102030405060708090a0b0c0d0e0f");
     const plaintext = WebBuf.fromHex(
       "6bc1bee22e409f96e93d7e117393172a" +
@@ -139,8 +148,14 @@ describe("Audit: NIST CAVP AES-CBC test vectors", () => {
       const encrypted = aescbcEncrypt(plaintext, key, iv);
       const ciphertext = encrypted.slice(16);
 
-      const webCryptoCiphertext = await webCryptoEncrypt(plaintext, key.buf, iv.buf);
-      expect(ciphertext.toHex()).toBe(WebBuf.fromUint8Array(webCryptoCiphertext).toHex());
+      const webCryptoCiphertext = await webCryptoEncrypt(
+        plaintext.bytes,
+        key.buf.bytes,
+        iv.buf.bytes,
+      );
+      expect(ciphertext.toHex()).toBe(
+        WebBuf.fromUint8Array(webCryptoCiphertext).toHex(),
+      );
     });
   });
 
@@ -180,8 +195,14 @@ describe("Audit: NIST CAVP AES-CBC test vectors", () => {
       const encrypted = aescbcEncrypt(plaintext, key, iv);
       const ciphertext = encrypted.slice(16);
 
-      const webCryptoCiphertext = await webCryptoEncrypt(plaintext, key.buf, iv.buf);
-      expect(ciphertext.toHex()).toBe(WebBuf.fromUint8Array(webCryptoCiphertext).toHex());
+      const webCryptoCiphertext = await webCryptoEncrypt(
+        plaintext.bytes,
+        key.buf.bytes,
+        iv.buf.bytes,
+      );
+      expect(ciphertext.toHex()).toBe(
+        WebBuf.fromUint8Array(webCryptoCiphertext).toHex(),
+      );
     });
   });
 });
@@ -198,8 +219,14 @@ describe("Audit: Web Crypto interoperability", () => {
       const extractedIv = encrypted.slice(0, 16);
       const ciphertext = encrypted.slice(16);
 
-      const decrypted = await webCryptoDecrypt(ciphertext, key.buf, extractedIv);
-      expect(WebBuf.fromUint8Array(decrypted).toUtf8()).toBe("Hello, Web Crypto!");
+      const decrypted = await webCryptoDecrypt(
+        ciphertext.bytes,
+        key.buf.bytes,
+        extractedIv.bytes,
+      );
+      expect(WebBuf.fromUint8Array(decrypted).toUtf8()).toBe(
+        "Hello, Web Crypto!",
+      );
     });
 
     it("should work with AES-256", async () => {
@@ -211,7 +238,11 @@ describe("Audit: Web Crypto interoperability", () => {
       const extractedIv = encrypted.slice(0, 16);
       const ciphertext = encrypted.slice(16);
 
-      const decrypted = await webCryptoDecrypt(ciphertext, key.buf, extractedIv);
+      const decrypted = await webCryptoDecrypt(
+        ciphertext.bytes,
+        key.buf.bytes,
+        extractedIv.bytes,
+      );
       expect(WebBuf.fromUint8Array(decrypted).toUtf8()).toBe(
         "Hello, Web Crypto with AES-256!",
       );
@@ -224,7 +255,11 @@ describe("Audit: Web Crypto interoperability", () => {
       const iv = FixedBuf.fromRandom(16);
       const plaintext = WebBuf.fromUtf8("Hello from Web Crypto!");
 
-      const ciphertext = await webCryptoEncrypt(plaintext, key.buf, iv.buf);
+      const ciphertext = await webCryptoEncrypt(
+        plaintext.bytes,
+        key.buf.bytes,
+        iv.buf.bytes,
+      );
       const ciphertextWithIv = WebBuf.concat([
         iv.buf,
         WebBuf.fromUint8Array(ciphertext),
@@ -239,7 +274,11 @@ describe("Audit: Web Crypto interoperability", () => {
       const iv = FixedBuf.fromRandom(16);
       const plaintext = WebBuf.fromUtf8("Hello from Web Crypto AES-256!");
 
-      const ciphertext = await webCryptoEncrypt(plaintext, key.buf, iv.buf);
+      const ciphertext = await webCryptoEncrypt(
+        plaintext.bytes,
+        key.buf.bytes,
+        iv.buf.bytes,
+      );
       const ciphertextWithIv = WebBuf.concat([
         iv.buf,
         WebBuf.fromUint8Array(ciphertext),
@@ -259,7 +298,11 @@ describe("Audit: Web Crypto interoperability", () => {
       const webbufEncrypted = aescbcEncrypt(plaintext, key, iv);
       const webbufCiphertext = webbufEncrypted.slice(16);
 
-      const webCryptoCiphertext = await webCryptoEncrypt(plaintext, key.buf, iv.buf);
+      const webCryptoCiphertext = await webCryptoEncrypt(
+        plaintext.bytes,
+        key.buf.bytes,
+        iv.buf.bytes,
+      );
 
       expect(webbufCiphertext.toHex()).toBe(
         WebBuf.fromUint8Array(webCryptoCiphertext).toHex(),
@@ -274,7 +317,11 @@ describe("Audit: Web Crypto interoperability", () => {
       const webbufEncrypted = aescbcEncrypt(plaintext, key, iv);
       const webbufCiphertext = webbufEncrypted.slice(16);
 
-      const webCryptoCiphertext = await webCryptoEncrypt(plaintext, key.buf, iv.buf);
+      const webCryptoCiphertext = await webCryptoEncrypt(
+        plaintext.bytes,
+        key.buf.bytes,
+        iv.buf.bytes,
+      );
 
       expect(webbufCiphertext.toHex()).toBe(
         WebBuf.fromUint8Array(webCryptoCiphertext).toHex(),
@@ -353,7 +400,9 @@ describe("Audit: IV handling", () => {
     const encrypted = aescbcEncrypt(plaintext, key, iv);
 
     // First 16 bytes should be the IV
-    expect(encrypted.slice(0, 16).toHex()).toBe("00112233445566778899aabbccddeeff");
+    expect(encrypted.slice(0, 16).toHex()).toBe(
+      "00112233445566778899aabbccddeeff",
+    );
   });
 
   it("should extract IV from ciphertext during decryption", () => {
@@ -418,7 +467,7 @@ describe("Audit: Error handling", () => {
     );
   });
 
-  it("should accept ciphertext that is exactly 16 bytes (IV only, empty plaintext)", () => {
+  it("should round-trip padded empty plaintext", () => {
     const key = FixedBuf.fromRandom(32);
     const iv = FixedBuf.fromRandom(16);
     const plaintext = WebBuf.alloc(0);
@@ -465,7 +514,7 @@ describe("Audit: Round-trip tests", () => {
 
     for (const size of sizes) {
       const plaintext = WebBuf.alloc(size);
-      crypto.getRandomValues(plaintext);
+      crypto.getRandomValues(plaintext.bytes);
 
       const encrypted = aescbcEncrypt(plaintext, key);
       const decrypted = aescbcDecrypt(encrypted, key);
@@ -479,7 +528,8 @@ describe("Audit: Round-trip tests", () => {
     const plaintext = WebBuf.fromUtf8("Test all key sizes");
 
     for (const keySize of keySizes) {
-      const key = FixedBuf.fromRandom(keySize) as FixedBuf<16> | FixedBuf<24> | FixedBuf<32>;
+      const key = FixedBuf.fromRandom(keySize) as
+        FixedBuf<16> | FixedBuf<24> | FixedBuf<32>;
       const encrypted = aescbcEncrypt(plaintext, key);
       const decrypted = aescbcDecrypt(encrypted, key);
       expect(decrypted.toUtf8()).toBe("Test all key sizes");

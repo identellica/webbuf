@@ -2,6 +2,14 @@
 
 Fixed-size unsigned integers with big-endian and little-endian support.
 
+## WebBuf 4
+
+Numeric wire bytes remain unchanged. Access native bytes through
+`number.buf.buf.bytes`: FixedNum owns a FixedBuf, which owns a WebBuf.
+Same-endian buffer factories retain their input selection; opposite-endian
+factories reverse a copy. Buffer output conversions return independent copies.
+Existing BE/LE support is preserved; this migration adds no reader/writer APIs.
+
 ## Installation
 
 ```bash

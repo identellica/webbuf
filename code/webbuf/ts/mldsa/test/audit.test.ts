@@ -90,7 +90,10 @@ function fixed32(hex: string): FixedBuf<32> {
   return FixedBuf.fromHex(32, hex);
 }
 
-function runKeyGen(param: ParamSet, seed: FixedBuf<32>): { pk: string; sk: string } {
+function runKeyGen(
+  param: ParamSet,
+  seed: FixedBuf<32>,
+): { pk: string; sk: string } {
   switch (param) {
     case "ML-DSA-44": {
       const kp = mlDsa44KeyPair(seed);
@@ -116,24 +119,15 @@ function runSign(
   const message = WebBuf.fromHex(messageHex);
   switch (param) {
     case "ML-DSA-44": {
-      const sk = FixedBuf.fromHex(
-        ML_DSA_44.signingKeySize,
-        skHex,
-      ) as FixedBuf<2560>;
+      const sk = FixedBuf.fromHex(ML_DSA_44.signingKeySize, skHex);
       return mlDsa44SignInternal(sk, message, rnd).toHex();
     }
     case "ML-DSA-65": {
-      const sk = FixedBuf.fromHex(
-        ML_DSA_65.signingKeySize,
-        skHex,
-      ) as FixedBuf<4032>;
+      const sk = FixedBuf.fromHex(ML_DSA_65.signingKeySize, skHex);
       return mlDsa65SignInternal(sk, message, rnd).toHex();
     }
     case "ML-DSA-87": {
-      const sk = FixedBuf.fromHex(
-        ML_DSA_87.signingKeySize,
-        skHex,
-      ) as FixedBuf<4896>;
+      const sk = FixedBuf.fromHex(ML_DSA_87.signingKeySize, skHex);
       return mlDsa87SignInternal(sk, message, rnd).toHex();
     }
   }
@@ -148,36 +142,18 @@ function runVerify(
   const message = WebBuf.fromHex(messageHex);
   switch (param) {
     case "ML-DSA-44": {
-      const pk = FixedBuf.fromHex(
-        ML_DSA_44.verifyingKeySize,
-        pkHex,
-      ) as FixedBuf<1312>;
-      const sig = FixedBuf.fromHex(
-        ML_DSA_44.signatureSize,
-        signatureHex,
-      ) as FixedBuf<2420>;
+      const pk = FixedBuf.fromHex(ML_DSA_44.verifyingKeySize, pkHex);
+      const sig = FixedBuf.fromHex(ML_DSA_44.signatureSize, signatureHex);
       return mlDsa44VerifyInternal(pk, message, sig);
     }
     case "ML-DSA-65": {
-      const pk = FixedBuf.fromHex(
-        ML_DSA_65.verifyingKeySize,
-        pkHex,
-      ) as FixedBuf<1952>;
-      const sig = FixedBuf.fromHex(
-        ML_DSA_65.signatureSize,
-        signatureHex,
-      ) as FixedBuf<3309>;
+      const pk = FixedBuf.fromHex(ML_DSA_65.verifyingKeySize, pkHex);
+      const sig = FixedBuf.fromHex(ML_DSA_65.signatureSize, signatureHex);
       return mlDsa65VerifyInternal(pk, message, sig);
     }
     case "ML-DSA-87": {
-      const pk = FixedBuf.fromHex(
-        ML_DSA_87.verifyingKeySize,
-        pkHex,
-      ) as FixedBuf<2592>;
-      const sig = FixedBuf.fromHex(
-        ML_DSA_87.signatureSize,
-        signatureHex,
-      ) as FixedBuf<4627>;
+      const pk = FixedBuf.fromHex(ML_DSA_87.verifyingKeySize, pkHex);
+      const sig = FixedBuf.fromHex(ML_DSA_87.signatureSize, signatureHex);
       return mlDsa87VerifyInternal(pk, message, sig);
     }
   }
@@ -203,7 +179,10 @@ describe("Audit: NIST ACVP sigGen test vectors (FIPS 204)", () => {
     describe(`${group.parameterSet} (${variant})`, () => {
       for (const t of group.tests) {
         it(`tcId ${String(t.tcId)}: sign_internal matches expected signature`, () => {
-          const rnd = group.deterministic ? ZERO_RND : fixed32(t.rnd!);
+          if (!group.deterministic && t.rnd === undefined) {
+            throw new Error("hedged vector is missing randomness");
+          }
+          const rnd = group.deterministic ? ZERO_RND : fixed32(t.rnd ?? "");
           const sig = runSign(group.parameterSet, t.sk, t.message, rnd);
           expect(sig.toLowerCase()).toBe(t.signature.toLowerCase());
         });

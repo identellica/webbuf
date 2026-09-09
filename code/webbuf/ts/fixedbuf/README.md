@@ -2,6 +2,13 @@
 
 Fixed-size buffer wrapper with compile-time size enforcement.
 
+## WebBuf 4
+
+`fixed.buf` remains a WebBuf; native byte access is `fixed.buf.bytes`.
+`fromBuf` retains the supplied WebBuf and its selected storage. `clone` copies;
+`wipe` clears only the selected bytes, including shared views. `fromRandom`
+fills native bytes with Web Crypto and returns a FixedBuf, not a typed array.
+
 ## Installation
 
 ```bash
@@ -21,7 +28,7 @@ const random = FixedBuf.fromRandom<32>(32); // 32 random bytes
 
 // Create from encoded strings
 const fromHex = FixedBuf.fromHex<4>(4, "deadbeef");
-const fromB64 = FixedBuf.fromBase64(16, "SGVsbG8gV29ybGQhISE=");
+const fromB64 = FixedBuf.fromBase64(14, "SGVsbG8gV29ybGQhISE=");
 
 // Create from WebBuf
 const webBuf = WebBuf.alloc(32);

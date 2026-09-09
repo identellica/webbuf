@@ -7,16 +7,16 @@ import { WebBuf } from "@webbuf/webbuf";
 import { FixedBuf } from "@webbuf/fixedbuf";
 
 export function sha256Hash(buf: WebBuf): FixedBuf<32> {
-  const hash = sha256_hash(buf);
+  const hash = sha256_hash(buf.bytes);
   return FixedBuf.fromBuf(32, WebBuf.fromUint8Array(hash));
 }
 
 export function doubleSha256Hash(buf: WebBuf): FixedBuf<32> {
-  const hash = double_sha256_hash(buf);
+  const hash = double_sha256_hash(buf.bytes);
   return FixedBuf.fromBuf(32, WebBuf.fromUint8Array(hash));
 }
 
 export function sha256Hmac(key: WebBuf, message: WebBuf): FixedBuf<32> {
-  const mac = sha256_hmac(key, message);
+  const mac = sha256_hmac(key.bytes, message.bytes);
   return FixedBuf.fromBuf(32, WebBuf.fromUint8Array(mac));
 }

@@ -113,7 +113,7 @@ describe("aesgcm AAD support", () => {
     const plaintext = WebBuf.fromUtf8("hi");
     const aad = WebBuf.alloc(4096);
     for (let i = 0; i < aad.length; i++) {
-      aad[i] = i & 0xff;
+      aad.bytes[i] = i & 0xff;
     }
 
     const ct = aesgcmEncrypt(plaintext, key, undefined, aad);
@@ -123,7 +123,9 @@ describe("aesgcm AAD support", () => {
     // Tampering with one byte of AAD on the recipient side must fail.
     const tampered = WebBuf.alloc(4096);
     tampered.set(aad);
-    tampered[2000] = (tampered[2000]! ^ 0x01) & 0xff;
+    const byte = tampered.bytes[2000];
+    if (byte === undefined) throw new Error("missing AAD byte");
+    tampered.bytes[2000] = (byte ^ 0x01) & 0xff;
     expect(() => aesgcmDecrypt(ct, key, tampered)).toThrow();
   });
 

@@ -417,7 +417,7 @@
     "npm": "@webbuf/fixedbuf",
     "dir": "fixedbuf",
     "description": "Fixed-sized buffers optimized with Rust/WASM for the web, node.js, deno, and bun.",
-    "usage": "import { FixedBuf } from \"@webbuf/fixedbuf\";\nimport { WebBuf } from \"@webbuf/webbuf\";\n\n// Create fixed-size buffers\nconst buf32 = FixedBuf.alloc<32>(32); // 32-byte buffer\nconst buf16 = FixedBuf.alloc<16>(16, 0xff); // 16 bytes filled with 0xff\nconst random = FixedBuf.fromRandom<32>(32); // 32 random bytes\n\n// Create from encoded strings\nconst fromHex = FixedBuf.fromHex<4>(4, \"deadbeef\");\nconst fromB64 = FixedBuf.fromBase64(16, \"SGVsbG8gV29ybGQhISE=\");\n\n// Create from WebBuf\nconst webBuf = WebBuf.alloc(32);\nconst fixed = FixedBuf.fromBuf<32>(32, webBuf);\n\n// Access underlying buffer\nconst underlying: WebBuf = fixed.buf;\n\n// Convert to strings\nfromHex.toHex(); // \"deadbeef\"\nfromB64.toBase64(); // \"SGVsbG8gV29ybGQhISE=\"\n\n// Clone and reverse\nconst cloned = fixed.clone();\nconst reversed = fixed.toReverse();",
+    "usage": "import { FixedBuf } from \"@webbuf/fixedbuf\";\nimport { WebBuf } from \"@webbuf/webbuf\";\n\n// Create fixed-size buffers\nconst buf32 = FixedBuf.alloc<32>(32); // 32-byte buffer\nconst buf16 = FixedBuf.alloc<16>(16, 0xff); // 16 bytes filled with 0xff\nconst random = FixedBuf.fromRandom<32>(32); // 32 random bytes\n\n// Create from encoded strings\nconst fromHex = FixedBuf.fromHex<4>(4, \"deadbeef\");\nconst fromB64 = FixedBuf.fromBase64(14, \"SGVsbG8gV29ybGQhISE=\");\n\n// Create from WebBuf\nconst webBuf = WebBuf.alloc(32);\nconst fixed = FixedBuf.fromBuf<32>(32, webBuf);\n\n// Access underlying buffer\nconst underlying: WebBuf = fixed.buf;\n\n// Convert to strings\nfromHex.toHex(); // \"deadbeef\"\nfromB64.toBase64(); // \"SGVsbG8gV29ybGQhISE=\"\n\n// Clone and reverse\nconst cloned = fixed.clone();\nconst reversed = fixed.toReverse();",
     "usageLang": "ts",
     "exports": [
       {
@@ -431,7 +431,7 @@
           "static fromBase64(size: number, base64: string): FixedBuf<number>",
           "static fromBase32<N extends number>(size: N, str: string, options?: Base32Options): FixedBuf<N>",
           "static fromRandom<N extends number>(size: N): FixedBuf<N>",
-          "buf: WebBuf",
+          "readonly buf: WebBuf",
           "toHex(): string",
           "toBase64(): string",
           "toBase32(options?: Base32Options): string",
@@ -447,7 +447,7 @@
     "npm": "@webbuf/mldsa",
     "dir": "mldsa",
     "description": "Rust/wasm ML-DSA (FIPS 204) post-quantum digital signatures for the web, node.js, deno, and bun.",
-    "usage": "const { verifyingKey, signingKey } = mlDsa65KeyPair();\nconst signature = mlDsa65Sign(signingKey, message, context);\nconst ok = mlDsa65Verify(verifyingKey, message, signature, context);",
+    "usage": "import { mlDsa65KeyPair, mlDsa65Sign, mlDsa65Verify } from \"@webbuf/mldsa\";\nimport { WebBuf } from \"@webbuf/webbuf\";\n\nconst message = WebBuf.fromUtf8(\"Signed message\");\nconst context = WebBuf.fromUtf8(\"example\");\nconst { verifyingKey, signingKey } = mlDsa65KeyPair();\nconst signature = mlDsa65Sign(signingKey, message, context);\nconst ok = mlDsa65Verify(verifyingKey, message, signature, context);",
     "usageLang": "ts",
     "exports": [
       {
@@ -478,8 +478,7 @@
         "name": "mlDsa44KeyPair",
         "kind": "function",
         "signatures": [
-          "mlDsa44KeyPair(): MlDsaKeyPair<1312, 2560>",
-          "mlDsa44KeyPair(seed: FixedBuf<32>): MlDsaKeyPair<1312, 2560>"
+          "mlDsa44KeyPair(seed?: FixedBuf<32>): MlDsaKeyPair<1312, 2560>"
         ],
         "doc": ""
       },
@@ -535,8 +534,7 @@
         "name": "mlDsa65KeyPair",
         "kind": "function",
         "signatures": [
-          "mlDsa65KeyPair(): MlDsaKeyPair<1952, 4032>",
-          "mlDsa65KeyPair(seed: FixedBuf<32>): MlDsaKeyPair<1952, 4032>"
+          "mlDsa65KeyPair(seed?: FixedBuf<32>): MlDsaKeyPair<1952, 4032>"
         ],
         "doc": ""
       },
@@ -592,8 +590,7 @@
         "name": "mlDsa87KeyPair",
         "kind": "function",
         "signatures": [
-          "mlDsa87KeyPair(): MlDsaKeyPair<2592, 4896>",
-          "mlDsa87KeyPair(seed: FixedBuf<32>): MlDsaKeyPair<2592, 4896>"
+          "mlDsa87KeyPair(seed?: FixedBuf<32>): MlDsaKeyPair<2592, 4896>"
         ],
         "doc": ""
       },
@@ -660,7 +657,7 @@
     "npm": "@webbuf/mlkem",
     "dir": "mlkem",
     "description": "Rust/wasm ML-KEM (FIPS 203) post-quantum key encapsulation for the web, node.js, deno, and bun.",
-    "usage": "const { encapsulationKey, decapsulationKey } = mlKem768KeyPair();\nconst { ciphertext, sharedSecret } = mlKem768Encapsulate(encapsulationKey);\nconst recovered = mlKem768Decapsulate(decapsulationKey, ciphertext);",
+    "usage": "import {\n  mlKem768KeyPair,\n  mlKem768Encapsulate,\n  mlKem768Decapsulate,\n} from \"@webbuf/mlkem\";\n\nconst { encapsulationKey, decapsulationKey } = mlKem768KeyPair();\nconst { ciphertext, sharedSecret } = mlKem768Encapsulate(encapsulationKey);\nconst recovered = mlKem768Decapsulate(decapsulationKey, ciphertext);",
     "usageLang": "ts",
     "exports": [
       {
@@ -699,8 +696,7 @@
         "name": "mlKem1024Encapsulate",
         "kind": "function",
         "signatures": [
-          "mlKem1024Encapsulate(encapsulationKey: FixedBuf<1568>): MlKemEncapResult<1568, 32>",
-          "mlKem1024Encapsulate(encapsulationKey: FixedBuf<1568>, m: FixedBuf<32>): MlKemEncapResult<1568, 32>"
+          "mlKem1024Encapsulate(encapsulationKey: FixedBuf<1568>, m?: FixedBuf<32>): MlKemEncapResult<1568, 32>"
         ],
         "doc": ""
       },
@@ -741,8 +737,7 @@
         "name": "mlKem512Encapsulate",
         "kind": "function",
         "signatures": [
-          "mlKem512Encapsulate(encapsulationKey: FixedBuf<800>): MlKemEncapResult<768, 32>",
-          "mlKem512Encapsulate(encapsulationKey: FixedBuf<800>, m: FixedBuf<32>): MlKemEncapResult<768, 32>"
+          "mlKem512Encapsulate(encapsulationKey: FixedBuf<800>, m?: FixedBuf<32>): MlKemEncapResult<768, 32>"
         ],
         "doc": ""
       },
@@ -783,8 +778,7 @@
         "name": "mlKem768Encapsulate",
         "kind": "function",
         "signatures": [
-          "mlKem768Encapsulate(encapsulationKey: FixedBuf<1184>): MlKemEncapResult<1088, 32>",
-          "mlKem768Encapsulate(encapsulationKey: FixedBuf<1184>, m: FixedBuf<32>): MlKemEncapResult<1088, 32>"
+          "mlKem768Encapsulate(encapsulationKey: FixedBuf<1184>, m?: FixedBuf<32>): MlKemEncapResult<1088, 32>"
         ],
         "doc": ""
       },
@@ -854,8 +848,8 @@
           "toBEBuf(): FixedBuf<N>",
           "toLEBuf(): FixedBuf<N>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint"
+          "readonly n: number",
+          "readonly bn: bigint"
         ],
         "doc": ""
       },
@@ -877,8 +871,8 @@
           "toBEBuf(): FixedBuf<16>",
           "toLEBuf(): FixedBuf<16>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<16>"
         ],
         "doc": ""
@@ -901,8 +895,8 @@
           "toBEBuf(): FixedBuf<16>",
           "toLEBuf(): FixedBuf<16>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<16>"
         ],
         "doc": ""
@@ -925,8 +919,8 @@
           "toBEBuf(): FixedBuf<2>",
           "toLEBuf(): FixedBuf<2>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<2>"
         ],
         "doc": ""
@@ -949,8 +943,8 @@
           "toBEBuf(): FixedBuf<2>",
           "toLEBuf(): FixedBuf<2>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<2>"
         ],
         "doc": ""
@@ -973,8 +967,8 @@
           "toBEBuf(): FixedBuf<32>",
           "toLEBuf(): FixedBuf<32>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<32>"
         ],
         "doc": ""
@@ -997,8 +991,8 @@
           "toBEBuf(): FixedBuf<32>",
           "toLEBuf(): FixedBuf<32>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<32>"
         ],
         "doc": ""
@@ -1021,8 +1015,8 @@
           "toBEBuf(): FixedBuf<4>",
           "toLEBuf(): FixedBuf<4>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<4>"
         ],
         "doc": ""
@@ -1045,8 +1039,8 @@
           "toBEBuf(): FixedBuf<4>",
           "toLEBuf(): FixedBuf<4>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<4>"
         ],
         "doc": ""
@@ -1069,8 +1063,8 @@
           "toBEBuf(): FixedBuf<8>",
           "toLEBuf(): FixedBuf<8>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<8>"
         ],
         "doc": ""
@@ -1093,8 +1087,8 @@
           "toBEBuf(): FixedBuf<8>",
           "toLEBuf(): FixedBuf<8>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<8>"
         ],
         "doc": ""
@@ -1117,8 +1111,8 @@
           "toBEBuf(): FixedBuf<1>",
           "toLEBuf(): FixedBuf<1>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<1>"
         ],
         "doc": ""
@@ -1315,7 +1309,7 @@
     "npm": "@webbuf/rw",
     "dir": "rw",
     "description": "Read and write buffers, optimized with Rust/WASM for the web, node.js, deno, and bun.",
-    "usage": "import { BufWriter } from \"@webbuf/rw\";\nimport { U8, U16BE, U32BE, U64BE } from \"@webbuf/numbers\";\nimport { FixedBuf } from \"@webbuf/fixedbuf\";\n\nconst writer = new BufWriter();\n\n// Write numbers\nwriter.writeU8(new U8(255));\nwriter.writeU16BE(new U16BE(1000));\nwriter.writeU32BE(new U32BE(123456));\nwriter.writeU64BE(new U64BE(0x123456789abcdef0n));\n\n// Write fixed buffers\nconst hash = FixedBuf.fromRandom<32>(32);\nwriter.writeFixed(hash);\n\n// Write variable-length data\nwriter.writeVarIntU64BE(new U64BE(1000n));\n\n// Get result\nconst buf = writer.toBuf();",
+    "usage": "import { BufWriter } from \"@webbuf/rw\";\nimport { U8, U16BE, U32BE, U64BE } from \"@webbuf/numbers\";\nimport { FixedBuf } from \"@webbuf/fixedbuf\";\n\nconst writer = new BufWriter();\n\n// Write numbers\nwriter.writeU8(U8.fromN(255));\nwriter.writeU16BE(U16BE.fromN(1000));\nwriter.writeU32BE(U32BE.fromN(123456));\nwriter.writeU64BE(U64BE.fromBn(0x123456789abcdef0n));\n\n// Write fixed buffers\nconst hash = FixedBuf.fromRandom<32>(32);\nwriter.write(hash.buf);\n\n// Write variable-length data\nwriter.writeVarIntU64BE(U64BE.fromBn(1000n));\n\n// Get result\nconst buf = writer.toBuf();",
     "usageLang": "ts",
     "exports": [
       {
@@ -1513,7 +1507,7 @@
     "npm": "@webbuf/slhdsa",
     "dir": "slhdsa",
     "description": "Rust/wasm SLH-DSA (FIPS 205) post-quantum hash-based digital signatures for the web, node.js, deno, and bun.",
-    "usage": "const { verifyingKey, signingKey } = slhDsaSha2_128fKeyPair();\nconst signature = slhDsaSha2_128fSign(signingKey, message, context);\nconst ok = slhDsaSha2_128fVerify(verifyingKey, message, signature, context);",
+    "usage": "import {\n  slhDsaSha2_128fKeyPair,\n  slhDsaSha2_128fSign,\n  slhDsaSha2_128fVerify,\n} from \"@webbuf/slhdsa\";\nimport { WebBuf } from \"@webbuf/webbuf\";\n\nconst message = WebBuf.fromUtf8(\"Signed message\");\nconst context = WebBuf.fromUtf8(\"example\");\nconst { verifyingKey, signingKey } = slhDsaSha2_128fKeyPair();\nconst signature = slhDsaSha2_128fSign(signingKey, message, context);\nconst ok = slhDsaSha2_128fVerify(verifyingKey, message, signature, context);",
     "usageLang": "ts",
     "exports": [
       {
@@ -2311,14 +2305,14 @@
     "npm": "@webbuf/webbuf",
     "dir": "webbuf",
     "description": "Rust/WASM optimized buffers for the web, node.js, deno, and bun.",
-    "usage": "import { WebBuf } from \"@webbuf/webbuf\";\n\n// Create from various sources\nconst buf1 = WebBuf.alloc(32);\nconst buf2 = WebBuf.fromHex(\"deadbeef\");\nconst buf3 = WebBuf.fromBase64(\"SGVsbG8=\");\nconst buf4 = WebBuf.fromUtf8(\"Hello, world!\");\nconst buf5 = WebBuf.fromArray([1, 2, 3, 4]);\n\n// Convert to strings\nbuf2.toHex(); // \"deadbeef\"\nbuf3.toBase64(); // \"SGVsbG8=\"\nbuf4.toUtf8(); // \"Hello, world!\"\n\n// Buffer operations\nconst combined = WebBuf.concat([buf1, buf2]);\nconst cloned = buf1.clone();\nconst reversed = buf1.toReverse();\n\n// Comparison\nbuf1.equals(buf2); // false\nbuf1.compare(buf2); // -1, 0, or 1",
+    "usage": "import { WebBuf } from \"@webbuf/webbuf\";\n\n// Create from various sources\nconst backing = new Uint8Array([0xee, 72, 105, 0xff]);\nconst selected = WebBuf.view(backing.subarray(1, 3));\nnew TextDecoder().decode(selected.bytes); // \"Hi\", not the sentinels\nconst shared = selected.subarray(0, 1);\nconst copied = selected.slice(0, 1);\nshared.bytes[0] = 66;\nselected.toUtf8(); // \"Bi\": subarray shares storage\ncopied.toUtf8(); // \"H\": slice owns a copy\nselected instanceof Uint8Array; // false\nArrayBuffer.isView(selected); // false\n\nconst buf1 = WebBuf.alloc(32);\nconst buf2 = WebBuf.fromHex(\"deadbeef\");\nconst buf3 = WebBuf.fromBase64(\"SGVsbG8=\");\nconst buf4 = WebBuf.fromUtf8(\"Hello, world!\");\nconst buf5 = WebBuf.fromArray([1, 2, 3, 4]);\n\n// Convert to strings\nbuf2.toHex(); // \"deadbeef\"\nbuf3.toBase64(); // \"SGVsbG8=\"\nbuf4.toUtf8(); // \"Hello, world!\"\n\n// Buffer operations\nconst combined = WebBuf.concat([buf1, buf2]);\nconst cloned = buf1.clone();\nconst reversed = buf1.toReverse();\n\n// Comparison\nbuf1.equals(buf2); // false\nbuf1.compare(buf2); // -1, 0, or 1",
     "usageLang": "ts",
     "exports": [
       {
         "name": "Base32Alphabet",
         "kind": "type",
         "signatures": [
-          "type Base32Alphabet = any"
+          "type Base32Alphabet = \"Crockford\" | \"Rfc4648\" | \"Rfc4648Lower\" | \"Rfc4648Hex\" | \"Rfc4648HexLower\" | \"Z\""
         ],
         "doc": "Base32 alphabet types matching the Rust base32 crate"
       },
@@ -2326,8 +2320,8 @@
         "name": "Base32Options",
         "kind": "interface",
         "signatures": [
-          "alphabet: Base32Alphabet",
-          "padding: boolean"
+          "alphabet?: Base32Alphabet",
+          "padding?: boolean"
         ],
         "doc": "Options for base32 encoding/decoding"
       },
@@ -2335,16 +2329,10 @@
         "name": "WebBuf",
         "kind": "class",
         "signatures": [
-          "constructor(length: number): WebBuf",
-          "constructor(array: ArrayLike<number>): WebBuf",
-          "constructor(buffer: ArrayBuffer, byteOffset?: number, length?: number): WebBuf",
-          "constructor(buffer: ArrayBuffer, byteOffset?: number, length?: number): WebBuf",
-          "constructor(array: ArrayLike<number> | ArrayBuffer): WebBuf",
-          "constructor(elements: Iterable<number>): WebBuf",
-          "constructor(): WebBuf",
-          "static concat(list: Uint8Array[]): WebBuf",
+          "constructor(source?: number | ArrayBuffer | ArrayLike<number> | Iterable<number>, byteOffset?: number, length?: number): WebBuf",
+          "static concat(list: (Uint8Array | WebBuf)[]): WebBuf",
           "static alloc(size: number, fill?: number): WebBuf",
-          "static view(buffer: Uint8Array): WebBuf",
+          "static view(buffer: Uint8Array | WebBuf): WebBuf",
           "static fromUint8Array(buffer: Uint8Array): WebBuf",
           "static fromArray(array: number[]): WebBuf",
           "static fromUtf8(str: string): WebBuf",
@@ -2362,6 +2350,12 @@
           "static fromBase32(str: string, options?: Base32Options): WebBuf",
           "static from(source: ArrayLike<number> | Iterable<number> | string, mapFn?: ((v: number, k: number) => number) | string, thisArg?: unknown): WebBuf",
           "static compare(buf1: WebBuf, buf2: WebBuf): number",
+          "readonly bytes: Uint8Array<ArrayBuffer>",
+          "readonly length: number",
+          "readonly byteLength: number",
+          "readonly byteOffset: number",
+          "readonly buffer: ArrayBuffer",
+          "set(source: ArrayLike<number> | WebBuf, offset?: number): void",
           "fill(value: number, start?: number, end?: number): WebBuf",
           "slice(start?: number, end?: number): WebBuf",
           "subarray(start?: number, end?: number): WebBuf",
@@ -2384,7 +2378,8 @@
           "equals(other: WebBuf): boolean",
           "write(buf: WebBuf, offset?: number): number",
           "read(offset: number, ext: number): WebBuf",
-          "wipe(): void"
+          "wipe(): void",
+          "[Symbol.iterator](): IterableIterator<number>"
         ],
         "doc": ""
       }
@@ -2674,7 +2669,7 @@
         "name": "Base32Alphabet",
         "kind": "type",
         "signatures": [
-          "type Base32Alphabet = any"
+          "type Base32Alphabet = \"Crockford\" | \"Rfc4648\" | \"Rfc4648Lower\" | \"Rfc4648Hex\" | \"Rfc4648HexLower\" | \"Z\""
         ],
         "doc": "Base32 alphabet types matching the Rust base32 crate"
       },
@@ -2682,8 +2677,8 @@
         "name": "Base32Options",
         "kind": "interface",
         "signatures": [
-          "alphabet: Base32Alphabet",
-          "padding: boolean"
+          "alphabet?: Base32Alphabet",
+          "padding?: boolean"
         ],
         "doc": "Options for base32 encoding/decoding"
       },
@@ -2804,7 +2799,7 @@
           "static fromBase64(size: number, base64: string): FixedBuf<number>",
           "static fromBase32<N extends number>(size: N, str: string, options?: Base32Options): FixedBuf<N>",
           "static fromRandom<N extends number>(size: N): FixedBuf<N>",
-          "buf: WebBuf",
+          "readonly buf: WebBuf",
           "toHex(): string",
           "toBase64(): string",
           "toBase32(options?: Base32Options): string",
@@ -2828,8 +2823,8 @@
           "toBEBuf(): FixedBuf<N>",
           "toLEBuf(): FixedBuf<N>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint"
+          "readonly n: number",
+          "readonly bn: bigint"
         ],
         "doc": ""
       },
@@ -2885,8 +2880,7 @@
         "name": "mlDsa44KeyPair",
         "kind": "function",
         "signatures": [
-          "mlDsa44KeyPair(): MlDsaKeyPair<1312, 2560>",
-          "mlDsa44KeyPair(seed: FixedBuf<32>): MlDsaKeyPair<1312, 2560>"
+          "mlDsa44KeyPair(seed?: FixedBuf<32>): MlDsaKeyPair<1312, 2560>"
         ],
         "doc": ""
       },
@@ -2942,8 +2936,7 @@
         "name": "mlDsa65KeyPair",
         "kind": "function",
         "signatures": [
-          "mlDsa65KeyPair(): MlDsaKeyPair<1952, 4032>",
-          "mlDsa65KeyPair(seed: FixedBuf<32>): MlDsaKeyPair<1952, 4032>"
+          "mlDsa65KeyPair(seed?: FixedBuf<32>): MlDsaKeyPair<1952, 4032>"
         ],
         "doc": ""
       },
@@ -2999,8 +2992,7 @@
         "name": "mlDsa87KeyPair",
         "kind": "function",
         "signatures": [
-          "mlDsa87KeyPair(): MlDsaKeyPair<2592, 4896>",
-          "mlDsa87KeyPair(seed: FixedBuf<32>): MlDsaKeyPair<2592, 4896>"
+          "mlDsa87KeyPair(seed?: FixedBuf<32>): MlDsaKeyPair<2592, 4896>"
         ],
         "doc": ""
       },
@@ -3073,8 +3065,7 @@
         "name": "mlKem1024Encapsulate",
         "kind": "function",
         "signatures": [
-          "mlKem1024Encapsulate(encapsulationKey: FixedBuf<1568>): MlKemEncapResult<1568, 32>",
-          "mlKem1024Encapsulate(encapsulationKey: FixedBuf<1568>, m: FixedBuf<32>): MlKemEncapResult<1568, 32>"
+          "mlKem1024Encapsulate(encapsulationKey: FixedBuf<1568>, m?: FixedBuf<32>): MlKemEncapResult<1568, 32>"
         ],
         "doc": ""
       },
@@ -3115,8 +3106,7 @@
         "name": "mlKem512Encapsulate",
         "kind": "function",
         "signatures": [
-          "mlKem512Encapsulate(encapsulationKey: FixedBuf<800>): MlKemEncapResult<768, 32>",
-          "mlKem512Encapsulate(encapsulationKey: FixedBuf<800>, m: FixedBuf<32>): MlKemEncapResult<768, 32>"
+          "mlKem512Encapsulate(encapsulationKey: FixedBuf<800>, m?: FixedBuf<32>): MlKemEncapResult<768, 32>"
         ],
         "doc": ""
       },
@@ -3157,8 +3147,7 @@
         "name": "mlKem768Encapsulate",
         "kind": "function",
         "signatures": [
-          "mlKem768Encapsulate(encapsulationKey: FixedBuf<1184>): MlKemEncapResult<1088, 32>",
-          "mlKem768Encapsulate(encapsulationKey: FixedBuf<1184>, m: FixedBuf<32>): MlKemEncapResult<1088, 32>"
+          "mlKem768Encapsulate(encapsulationKey: FixedBuf<1184>, m?: FixedBuf<32>): MlKemEncapResult<1088, 32>"
         ],
         "doc": ""
       },
@@ -4259,8 +4248,8 @@
           "toBEBuf(): FixedBuf<16>",
           "toLEBuf(): FixedBuf<16>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<16>"
         ],
         "doc": ""
@@ -4283,8 +4272,8 @@
           "toBEBuf(): FixedBuf<16>",
           "toLEBuf(): FixedBuf<16>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<16>"
         ],
         "doc": ""
@@ -4307,8 +4296,8 @@
           "toBEBuf(): FixedBuf<2>",
           "toLEBuf(): FixedBuf<2>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<2>"
         ],
         "doc": ""
@@ -4331,8 +4320,8 @@
           "toBEBuf(): FixedBuf<2>",
           "toLEBuf(): FixedBuf<2>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<2>"
         ],
         "doc": ""
@@ -4355,8 +4344,8 @@
           "toBEBuf(): FixedBuf<32>",
           "toLEBuf(): FixedBuf<32>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<32>"
         ],
         "doc": ""
@@ -4379,8 +4368,8 @@
           "toBEBuf(): FixedBuf<32>",
           "toLEBuf(): FixedBuf<32>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<32>"
         ],
         "doc": ""
@@ -4403,8 +4392,8 @@
           "toBEBuf(): FixedBuf<4>",
           "toLEBuf(): FixedBuf<4>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<4>"
         ],
         "doc": ""
@@ -4427,8 +4416,8 @@
           "toBEBuf(): FixedBuf<4>",
           "toLEBuf(): FixedBuf<4>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<4>"
         ],
         "doc": ""
@@ -4451,8 +4440,8 @@
           "toBEBuf(): FixedBuf<8>",
           "toLEBuf(): FixedBuf<8>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<8>"
         ],
         "doc": ""
@@ -4475,8 +4464,8 @@
           "toBEBuf(): FixedBuf<8>",
           "toLEBuf(): FixedBuf<8>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<8>"
         ],
         "doc": ""
@@ -4499,8 +4488,8 @@
           "toBEBuf(): FixedBuf<1>",
           "toLEBuf(): FixedBuf<1>",
           "toHex(): string",
-          "n: number",
-          "bn: bigint",
+          "readonly n: number",
+          "readonly bn: bigint",
           "buf: FixedBuf<1>"
         ],
         "doc": ""
@@ -4517,16 +4506,10 @@
         "name": "WebBuf",
         "kind": "class",
         "signatures": [
-          "constructor(length: number): WebBuf",
-          "constructor(array: ArrayLike<number>): WebBuf",
-          "constructor(buffer: ArrayBuffer, byteOffset?: number, length?: number): WebBuf",
-          "constructor(buffer: ArrayBuffer, byteOffset?: number, length?: number): WebBuf",
-          "constructor(array: ArrayLike<number> | ArrayBuffer): WebBuf",
-          "constructor(elements: Iterable<number>): WebBuf",
-          "constructor(): WebBuf",
-          "static concat(list: Uint8Array[]): WebBuf",
+          "constructor(source?: number | ArrayBuffer | ArrayLike<number> | Iterable<number>, byteOffset?: number, length?: number): WebBuf",
+          "static concat(list: (Uint8Array | WebBuf)[]): WebBuf",
           "static alloc(size: number, fill?: number): WebBuf",
-          "static view(buffer: Uint8Array): WebBuf",
+          "static view(buffer: Uint8Array | WebBuf): WebBuf",
           "static fromUint8Array(buffer: Uint8Array): WebBuf",
           "static fromArray(array: number[]): WebBuf",
           "static fromUtf8(str: string): WebBuf",
@@ -4544,6 +4527,12 @@
           "static fromBase32(str: string, options?: Base32Options): WebBuf",
           "static from(source: ArrayLike<number> | Iterable<number> | string, mapFn?: ((v: number, k: number) => number) | string, thisArg?: unknown): WebBuf",
           "static compare(buf1: WebBuf, buf2: WebBuf): number",
+          "readonly bytes: Uint8Array<ArrayBuffer>",
+          "readonly length: number",
+          "readonly byteLength: number",
+          "readonly byteOffset: number",
+          "readonly buffer: ArrayBuffer",
+          "set(source: ArrayLike<number> | WebBuf, offset?: number): void",
           "fill(value: number, start?: number, end?: number): WebBuf",
           "slice(start?: number, end?: number): WebBuf",
           "subarray(start?: number, end?: number): WebBuf",
@@ -4566,7 +4555,8 @@
           "equals(other: WebBuf): boolean",
           "write(buf: WebBuf, offset?: number): number",
           "read(offset: number, ext: number): WebBuf",
-          "wipe(): void"
+          "wipe(): void",
+          "[Symbol.iterator](): IterableIterator<number>"
         ],
         "doc": ""
       },

@@ -19,7 +19,11 @@ export function aescbcEncrypt(
   aesKey: FixedBuf<16> | FixedBuf<24> | FixedBuf<32>,
   iv: FixedBuf<16> = FixedBuf.fromRandom(16),
 ): WebBuf {
-  const encrypted = aescbc_encrypt(plaintext, aesKey.buf, iv.buf);
+  const encrypted = aescbc_encrypt(
+    plaintext.bytes,
+    aesKey.buf.bytes,
+    iv.buf.bytes,
+  );
   return WebBuf.concat([iv.buf, WebBuf.fromUint8Array(encrypted)]);
 }
 
@@ -46,5 +50,7 @@ export function aescbcDecrypt(
     throw new Error("Data length must be a multiple of 16");
   }
 
-  return WebBuf.fromUint8Array(aescbc_decrypt(ciphertext, aesKey.buf, iv.buf));
+  return WebBuf.fromUint8Array(
+    aescbc_decrypt(ciphertext.bytes, aesKey.buf.bytes, iv.buf.bytes),
+  );
 }

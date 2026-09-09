@@ -66,7 +66,11 @@ const encap_pure = mlKem768EncapsulateDeterministic(
 );
 
 const info_pure = WebBuf.fromUtf8("webbuf:aesgcm-mlkem v1");
-const aesKey_pure = hkdfSha256L32(ZERO_SALT, encap_pure.sharedSecret.buf, info_pure);
+const aesKey_pure = hkdfSha256L32(
+  ZERO_SALT,
+  encap_pure.sharedSecret.buf,
+  info_pure,
+);
 
 // aesgcmEncrypt prepends iv to its output: result = iv || ct || tag
 const aesPart_pure = aesgcmEncrypt(plaintext_pure, aesKey_pure, iv_pure);
@@ -85,10 +89,7 @@ console.log("m (encap rand)    :", m_pure.toHex());
 console.log("plaintext (utf8)  : 'hello, post-quantum'");
 console.log("plaintext (hex)   :", plaintext_pure.toHex());
 console.log("AES-GCM IV        :", iv_pure.toHex());
-console.log(
-  "ML-KEM sharedSecret:",
-  encap_pure.sharedSecret.toHex(),
-);
+console.log("ML-KEM sharedSecret:", encap_pure.sharedSecret.toHex());
 console.log("derived AES key   :", aesKey_pure.toHex());
 console.log("ciphertext length :", ciphertext_pure.length, "bytes");
 console.log("ciphertext (hex)  :");
@@ -131,10 +132,7 @@ const encap_hyb = mlKem768EncapsulateDeterministic(
 );
 
 const ecdhSecret_hyb = p256SharedSecretRaw(senderPriv_hyb, recipientPub_hyb);
-const ikm_hyb = WebBuf.concat([
-  ecdhSecret_hyb.buf,
-  encap_hyb.sharedSecret.buf,
-]);
+const ikm_hyb = WebBuf.concat([ecdhSecret_hyb.buf, encap_hyb.sharedSecret.buf]);
 
 const info_hyb = WebBuf.fromUtf8("webbuf:aesgcm-p256dh-mlkem v1");
 const aesKey_hyb = hkdfSha256L32(ZERO_SALT, ikm_hyb, info_hyb);
@@ -160,10 +158,7 @@ console.log("plaintext (utf8)  : 'hybrid'");
 console.log("plaintext (hex)   :", plaintext_hyb.toHex());
 console.log("AES-GCM IV        :", iv_hyb.toHex());
 console.log("ECDH raw X-coord  :", ecdhSecret_hyb.toHex());
-console.log(
-  "ML-KEM sharedSecret:",
-  encap_hyb.sharedSecret.toHex(),
-);
+console.log("ML-KEM sharedSecret:", encap_hyb.sharedSecret.toHex());
 console.log("derived AES key   :", aesKey_hyb.toHex());
 console.log("ciphertext length :", ciphertext_hyb.length, "bytes");
 console.log("ciphertext (hex)  :");

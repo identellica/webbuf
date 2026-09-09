@@ -15,9 +15,7 @@
  */
 import { WebBuf } from "@webbuf/webbuf";
 import { FixedBuf } from "@webbuf/fixedbuf";
-import {
-  mlKem768KeyPairDeterministic,
-} from "@webbuf/mlkem";
+import { mlKem768KeyPairDeterministic } from "@webbuf/mlkem";
 import { p256PublicKeyCreate } from "@webbuf/p256";
 import { sha256Hash } from "@webbuf/sha256";
 import { _aesgcmMlkemEncryptDeterministic } from "@webbuf/aesgcm-mlkem";

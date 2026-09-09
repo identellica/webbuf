@@ -95,7 +95,7 @@ describe("Audit: issue 0004 Experiment 1 hybrid KAT", () => {
     );
 
     // Version byte
-    expect(ciphertext[0]).toBe(0x02);
+    expect(ciphertext.bytes[0]).toBe(0x02);
     // KEM ciphertext prefix from the captured KAT
     expect(ciphertext.toHex().slice(2, 18)).toBe("dbfdf2752836f809");
     // IV is at offset 1089 (1 version + 1088 KEM ct)

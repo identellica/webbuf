@@ -42,7 +42,7 @@ describe("Audit: Hex Encoding", () => {
 
       // Verify each byte
       for (let i = 0; i < 256; i++) {
-        expect(decoded[i]).toBe(i);
+        expect(decoded.bytes[i]).toBe(i);
       }
     });
 
@@ -76,7 +76,10 @@ describe("Audit: Hex Encoding", () => {
       { bytes: [0xca, 0xfe, 0xba, 0xbe], hex: "cafebabe" },
       { bytes: [1, 2, 3, 4, 5], hex: "0102030405" },
       {
-        bytes: [0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff],
+        bytes: [
+          0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa,
+          0xbb, 0xcc, 0xdd, 0xee, 0xff,
+        ],
         hex: "00112233445566778899aabbccddeeff",
       },
     ];
@@ -109,7 +112,7 @@ describe("Audit: Hex Encoding", () => {
       const size = 1024 * 1024; // 1MB
       const buf = WebBuf.alloc(size);
       for (let i = 0; i < size; i++) {
-        buf[i] = i % 256;
+        buf.bytes[i] = i % 256;
       }
 
       const hex = buf.toHex();
@@ -123,11 +126,13 @@ describe("Audit: Hex Encoding", () => {
 
   describe("round-trip verification", () => {
     it("should round-trip random data of various sizes", () => {
-      const sizes = [0, 1, 2, 3, 15, 16, 17, 31, 32, 33, 63, 64, 65, 100, 1000, 10000];
+      const sizes = [
+        0, 1, 2, 3, 15, 16, 17, 31, 32, 33, 63, 64, 65, 100, 1000, 10000,
+      ];
 
       for (const size of sizes) {
         const original = WebBuf.alloc(size);
-        crypto.getRandomValues(original);
+        crypto.getRandomValues(original.bytes);
 
         const hex = original.toHex();
         const decoded = WebBuf.fromHex(hex);
@@ -188,7 +193,7 @@ describe("Audit: Base64 Encoding", () => {
       // btoa only works with Latin-1, but WebBuf should handle any bytes
       const binaryData = WebBuf.alloc(256);
       for (let i = 0; i < 256; i++) {
-        binaryData[i] = i;
+        binaryData.bytes[i] = i;
       }
 
       const base64 = binaryData.toBase64();
@@ -251,7 +256,7 @@ describe("Audit: Base64 Encoding", () => {
       const size = 1024 * 1024; // 1MB
       const buf = WebBuf.alloc(size);
       for (let i = 0; i < size; i++) {
-        buf[i] = i % 256;
+        buf.bytes[i] = i % 256;
       }
 
       const base64 = buf.toBase64();
@@ -274,7 +279,7 @@ describe("Audit: Base64 Encoding", () => {
 
       for (const size of sizes) {
         const original = WebBuf.alloc(size);
-        crypto.getRandomValues(original);
+        crypto.getRandomValues(original.bytes);
 
         const base64 = original.toBase64();
         const decoded = WebBuf.fromBase64(base64);
@@ -308,7 +313,7 @@ describe("Audit: UTF-8 Encoding", () => {
 
         expect(webBufEncoded.length).toBe(standardEncoded.length);
         for (let i = 0; i < webBufEncoded.length; i++) {
-          expect(webBufEncoded[i]).toBe(standardEncoded[i]);
+          expect(webBufEncoded.bytes[i]).toBe(standardEncoded[i]);
         }
       }
     });
@@ -452,7 +457,7 @@ describe("Audit: Additional WebBuf Methods", () => {
       const buf = WebBuf.alloc(10);
       expect(buf.length).toBe(10);
       for (let i = 0; i < 10; i++) {
-        expect(buf[i]).toBe(0);
+        expect(buf.bytes[i]).toBe(0);
       }
     });
 
@@ -460,7 +465,7 @@ describe("Audit: Additional WebBuf Methods", () => {
       const buf = WebBuf.alloc(10, 0xff);
       expect(buf.length).toBe(10);
       for (let i = 0; i < 10; i++) {
-        expect(buf[i]).toBe(0xff);
+        expect(buf.bytes[i]).toBe(0xff);
       }
     });
 
@@ -468,7 +473,7 @@ describe("Audit: Additional WebBuf Methods", () => {
       const buf = WebBuf.alloc(10);
       buf.fill(0xab);
       for (let i = 0; i < 10; i++) {
-        expect(buf[i]).toBe(0xab);
+        expect(buf.bytes[i]).toBe(0xab);
       }
     });
 
@@ -518,8 +523,8 @@ describe("Audit: Additional WebBuf Methods", () => {
       expect(cloned.equals(original)).toBe(true);
 
       // Modify original, clone should be unaffected
-      original[0] = 0x00;
-      expect(cloned[0]).toBe(0xde);
+      original.bytes[0] = 0x00;
+      expect(cloned.bytes[0]).toBe(0xde);
     });
 
     it("should copy data correctly", () => {

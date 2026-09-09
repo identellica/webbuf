@@ -133,12 +133,22 @@ describe("Audit: Output length", () => {
 
 describe("Audit: Edge cases", () => {
   it("should handle empty password", () => {
-    const result = pbkdf2Sha256(WebBuf.alloc(0), WebBuf.fromUtf8("salt"), 1, 32);
+    const result = pbkdf2Sha256(
+      WebBuf.alloc(0),
+      WebBuf.fromUtf8("salt"),
+      1,
+      32,
+    );
     expect(result.buf.length).toBe(32);
   });
 
   it("should handle empty salt", () => {
-    const result = pbkdf2Sha256(WebBuf.fromUtf8("password"), WebBuf.alloc(0), 1, 32);
+    const result = pbkdf2Sha256(
+      WebBuf.fromUtf8("password"),
+      WebBuf.alloc(0),
+      1,
+      32,
+    );
     expect(result.buf.length).toBe(32);
   });
 
@@ -186,7 +196,12 @@ describe("Audit: Edge cases", () => {
 
   it("should reject key length > 128", () => {
     expect(() =>
-      pbkdf2Sha256(WebBuf.fromUtf8("password"), WebBuf.fromUtf8("salt"), 1, 129),
+      pbkdf2Sha256(
+        WebBuf.fromUtf8("password"),
+        WebBuf.fromUtf8("salt"),
+        1,
+        129,
+      ),
     ).toThrow();
   });
 

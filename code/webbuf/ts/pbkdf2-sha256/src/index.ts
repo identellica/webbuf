@@ -8,5 +8,10 @@ export function pbkdf2Sha256<N extends number>(
   iterations: number,
   keyLen: N,
 ): FixedBuf<N> {
-  return FixedBuf.fromBuf(keyLen, WebBuf.fromUint8Array(pbkdf2_sha256(password, salt, iterations, keyLen)));
+  return FixedBuf.fromBuf(
+    keyLen,
+    WebBuf.fromUint8Array(
+      pbkdf2_sha256(password.bytes, salt.bytes, iterations, keyLen),
+    ),
+  );
 }

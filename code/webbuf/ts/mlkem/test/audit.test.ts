@@ -76,11 +76,11 @@ const encapDecapVectors = JSON.parse(
   readFileSync(join(__dirname, "vectors", "encap-decap.json"), "utf-8"),
 ) as { testGroups: (EncapGroup | DecapGroup)[] };
 
-type ParamSetSizes = {
+interface ParamSetSizes {
   ek: number;
   dk: number;
   ct: number;
-};
+}
 
 const PARAMS: Record<KeyGenGroup["parameterSet"], ParamSetSizes> = {
   "ML-KEM-512": {
@@ -139,21 +139,15 @@ function runEncap(
   const ekBuf = FixedBuf.fromHex(sizes.ek as 800, ek);
   switch (param) {
     case "ML-KEM-512": {
-      const r = mlKem512Encapsulate(ekBuf as FixedBuf<800>, m);
+      const r = mlKem512Encapsulate(ekBuf, m);
       return { c: r.ciphertext.toHex(), k: r.sharedSecret.toHex() };
     }
     case "ML-KEM-768": {
-      const r = mlKem768Encapsulate(
-        FixedBuf.fromHex(1184, ek) as FixedBuf<1184>,
-        m,
-      );
+      const r = mlKem768Encapsulate(FixedBuf.fromHex(1184, ek), m);
       return { c: r.ciphertext.toHex(), k: r.sharedSecret.toHex() };
     }
     case "ML-KEM-1024": {
-      const r = mlKem1024Encapsulate(
-        FixedBuf.fromHex(1568, ek) as FixedBuf<1568>,
-        m,
-      );
+      const r = mlKem1024Encapsulate(FixedBuf.fromHex(1568, ek), m);
       return { c: r.ciphertext.toHex(), k: r.sharedSecret.toHex() };
     }
   }
@@ -167,20 +161,20 @@ function runDecap(
   switch (param) {
     case "ML-KEM-512": {
       return mlKem512Decapsulate(
-        FixedBuf.fromHex(1632, dk) as FixedBuf<1632>,
-        FixedBuf.fromHex(768, c) as FixedBuf<768>,
+        FixedBuf.fromHex(1632, dk),
+        FixedBuf.fromHex(768, c),
       ).toHex();
     }
     case "ML-KEM-768": {
       return mlKem768Decapsulate(
-        FixedBuf.fromHex(2400, dk) as FixedBuf<2400>,
-        FixedBuf.fromHex(1088, c) as FixedBuf<1088>,
+        FixedBuf.fromHex(2400, dk),
+        FixedBuf.fromHex(1088, c),
       ).toHex();
     }
     case "ML-KEM-1024": {
       return mlKem1024Decapsulate(
-        FixedBuf.fromHex(3168, dk) as FixedBuf<3168>,
-        FixedBuf.fromHex(1568, c) as FixedBuf<1568>,
+        FixedBuf.fromHex(3168, dk),
+        FixedBuf.fromHex(1568, c),
       ).toHex();
     }
   }

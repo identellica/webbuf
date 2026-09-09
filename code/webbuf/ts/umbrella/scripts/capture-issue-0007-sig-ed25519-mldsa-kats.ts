@@ -51,20 +51,21 @@ console.log(
 );
 console.log("Message (utf8)       : 'composite signature'");
 console.log("Signature length     :", signature.buf.length, "bytes");
-console.log("Signature[0]         : 0x" + signature.buf[0]!.toString(16).padStart(2, "0"));
+const version = signature.buf.bytes[0];
+if (version === undefined) throw new Error("Missing signature version byte");
 console.log(
-  "Ed25519 sig (bytes 1..65)  :",
-  signature.buf.slice(1, 65).toHex(),
+  "Signature[0]         : 0x" + version.toString(16).padStart(2, "0"),
 );
+console.log("Ed25519 sig (bytes 1..65)  :", signature.buf.slice(1, 65).toHex());
 console.log(
   "ML-DSA sig prefix 16B (bytes 65..81) :",
   signature.buf.slice(65, 81).toHex(),
 );
 console.log(
   "SHA-256(verifyingKey):",
-  sha256Hash(WebBuf.fromUint8Array(verifyingKey.buf)).toHex(),
+  sha256Hash(WebBuf.fromUint8Array(verifyingKey.buf.bytes)).toHex(),
 );
 console.log(
   "SHA-256(signature)   :",
-  sha256Hash(WebBuf.fromUint8Array(signature.buf)).toHex(),
+  sha256Hash(WebBuf.fromUint8Array(signature.buf.bytes)).toHex(),
 );

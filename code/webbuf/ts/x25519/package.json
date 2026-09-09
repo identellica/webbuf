@@ -1,6 +1,6 @@
 {
   "name": "@webbuf/x25519",
-  "version": "3.8.1",
+  "version": "4.0.0",
   "description": "Rust/wasm X25519 ECDH (RFC 7748) for the web, node.js, deno, and bun.",
   "repository": {
     "type": "git",

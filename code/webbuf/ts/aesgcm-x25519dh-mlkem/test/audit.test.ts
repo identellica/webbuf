@@ -103,7 +103,7 @@ describe("Audit: issue 0007 Experiment 4 hybrid X25519 KAT", () => {
     );
 
     // Version byte 0x03.
-    expect(ciphertext[0]).toBe(0x03);
+    expect(ciphertext.bytes[0]).toBe(0x03);
     // KEM ciphertext prefix from the captured KAT (same ML-KEM seeds as
     // the P-256 hybrid KAT, so the KEM prefix matches).
     expect(ciphertext.toHex().slice(2, 18)).toBe("dbfdf2752836f809");

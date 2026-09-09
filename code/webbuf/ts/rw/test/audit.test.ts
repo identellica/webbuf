@@ -8,14 +8,7 @@
 
 import { describe, it, expect } from "vitest";
 import { WebBuf } from "@webbuf/webbuf";
-import {
-  U8,
-  U16BE,
-  U32BE,
-  U64BE,
-  U128BE,
-  U256BE,
-} from "@webbuf/numbers";
+import { U8, U16BE, U32BE, U64BE, U128BE, U256BE } from "@webbuf/numbers";
 import { BufReader } from "../src/buf-reader.js";
 import { BufWriter } from "../src/buf-writer.js";
 
@@ -94,15 +87,7 @@ describe("Audit: Round-trip tests", () => {
 
     it("should round-trip various values", () => {
       const testValues = [
-        0,
-        1,
-        255,
-        256,
-        65535,
-        65536,
-        0x01020304,
-        0x12345678,
-        0xdeadbeef,
+        0, 1, 255, 256, 65535, 65536, 0x01020304, 0x12345678, 0xdeadbeef,
         4294967295,
       ];
       const writer = new BufWriter();
@@ -359,7 +344,7 @@ describe("Audit: VarInt encoding", () => {
         writer.writeVarIntU64BE(U64BE.fromBn(value));
         const buf = writer.toBuf();
         expect(buf.length).toBe(1); // Single byte encoding
-        expect(buf[0]).toBe(Number(value));
+        expect(buf.bytes[0]).toBe(Number(value));
 
         const reader = new BufReader(buf);
         expect(reader.readVarIntU64BE().bn).toBe(value);
@@ -373,7 +358,7 @@ describe("Audit: VarInt encoding", () => {
         writer.writeVarIntU64BE(U64BE.fromBn(value));
         const buf = writer.toBuf();
         expect(buf.length).toBe(3); // 0xFD prefix + 2 bytes
-        expect(buf[0]).toBe(0xfd);
+        expect(buf.bytes[0]).toBe(0xfd);
 
         const reader = new BufReader(buf);
         expect(reader.readVarIntU64BE().bn).toBe(value);
@@ -387,7 +372,7 @@ describe("Audit: VarInt encoding", () => {
         writer.writeVarIntU64BE(U64BE.fromBn(value));
         const buf = writer.toBuf();
         expect(buf.length).toBe(5); // 0xFE prefix + 4 bytes
-        expect(buf[0]).toBe(0xfe);
+        expect(buf.bytes[0]).toBe(0xfe);
 
         const reader = new BufReader(buf);
         expect(reader.readVarIntU64BE().bn).toBe(value);
@@ -401,7 +386,7 @@ describe("Audit: VarInt encoding", () => {
         writer.writeVarIntU64BE(U64BE.fromBn(value));
         const buf = writer.toBuf();
         expect(buf.length).toBe(9); // 0xFF prefix + 8 bytes
-        expect(buf[0]).toBe(0xff);
+        expect(buf.bytes[0]).toBe(0xff);
 
         const reader = new BufReader(buf);
         expect(reader.readVarIntU64BE().bn).toBe(value);
@@ -426,7 +411,9 @@ describe("Audit: VarInt encoding", () => {
 
     it("should reject non-minimal 9-byte encoding", () => {
       // Value 0xFFFFFFFF encoded as 0xFF followed by 8 bytes is non-minimal
-      const buf = WebBuf.from([0xff, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff]);
+      const buf = WebBuf.from([
+        0xff, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
+      ]);
       const reader = new BufReader(buf);
       expect(() => reader.readVarIntU64BE()).toThrow("non-minimal");
     });
@@ -526,7 +513,9 @@ describe("Audit: Mixed type serialization", () => {
 describe("Audit: readFixed and readRemainder", () => {
   describe("readFixed", () => {
     it("should read fixed-size buffer", () => {
-      const data = WebBuf.from([0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08]);
+      const data = WebBuf.from([
+        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+      ]);
       const reader = new BufReader(data);
 
       const fixed = reader.readFixed(4);
@@ -613,10 +602,7 @@ describe("Audit: BufWriter behavior", () => {
 
   describe("constructor with initial buffers", () => {
     it("should accept initial buffers array", () => {
-      const initial = [
-        WebBuf.from([0x01, 0x02]),
-        WebBuf.from([0x03, 0x04]),
-      ];
+      const initial = [WebBuf.from([0x01, 0x02]), WebBuf.from([0x03, 0x04])];
       const writer = new BufWriter(initial);
       expect(writer.getLength()).toBe(4);
       expect(writer.toBuf().toHex()).toBe("01020304");
@@ -641,15 +627,15 @@ describe("Audit: Data integrity", () => {
     const reader = new BufReader(data);
 
     const chunk1 = reader.read(2);
-    chunk1[0] = 0xff; // Modify the returned chunk
+    chunk1.bytes[0] = 0xff; // Modify the returned chunk
 
     // Original data should be unchanged
-    expect(data[0]).toBe(0x01);
+    expect(data.bytes[0]).toBe(0x01);
 
     // Reading again should get original values
     const reader2 = new BufReader(data);
     const chunk2 = reader2.read(2);
-    expect(chunk2[0]).toBe(0x01);
+    expect(chunk2.bytes[0]).toBe(0x01);
   });
 });
 

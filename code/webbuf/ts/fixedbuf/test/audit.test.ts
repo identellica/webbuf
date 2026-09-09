@@ -191,7 +191,7 @@ describe("Audit: alloc", () => {
       const fixed = FixedBuf.alloc(16);
       expect(fixed.buf.length).toBe(16);
       for (let i = 0; i < 16; i++) {
-        expect(fixed.buf[i]).toBe(0);
+        expect(fixed.buf.bytes[i]).toBe(0);
       }
     });
 
@@ -199,7 +199,7 @@ describe("Audit: alloc", () => {
       const fixed = FixedBuf.alloc(16, 0xff);
       expect(fixed.buf.length).toBe(16);
       for (let i = 0; i < 16; i++) {
-        expect(fixed.buf[i]).toBe(0xff);
+        expect(fixed.buf.bytes[i]).toBe(0xff);
       }
     });
 
@@ -220,9 +220,9 @@ describe("Audit: clone and toReverse", () => {
       expect(cloned._size).toBe(4);
 
       // Modify original, clone should be unaffected
-      original.buf[0] = 0x00;
-      expect(cloned.buf[0]).toBe(0xde); // Clone is independent
-      expect(original.buf[0]).toBe(0x00); // Original was modified
+      original.buf.bytes[0] = 0x00;
+      expect(cloned.buf.bytes[0]).toBe(0xde); // Clone is independent
+      expect(original.buf.bytes[0]).toBe(0x00); // Original was modified
     });
 
     it("should preserve size type", () => {
@@ -275,7 +275,7 @@ describe("Audit: Encoding round-trips", () => {
       // Create buffer with all possible byte values (for first 32)
       const buf = WebBuf.alloc(32);
       for (let i = 0; i < 32; i++) {
-        buf[i] = i * 8; // 0, 8, 16, ... 248
+        buf.bytes[i] = i * 8; // 0, 8, 16, ... 248
       }
       const fixed = FixedBuf.fromBuf(32, buf);
 
@@ -283,7 +283,7 @@ describe("Audit: Encoding round-trips", () => {
       const restored = FixedBuf.fromHex(32, hex);
 
       for (let i = 0; i < 32; i++) {
-        expect(restored.buf[i]).toBe(i * 8);
+        expect(restored.buf.bytes[i]).toBe(i * 8);
       }
     });
   });
@@ -324,15 +324,15 @@ describe("Audit: buf property access", () => {
   it("should allow reading individual bytes", () => {
     const fixed = FixedBuf.fromHex(4, "01020304");
 
-    expect(fixed.buf[0]).toBe(0x01);
-    expect(fixed.buf[1]).toBe(0x02);
-    expect(fixed.buf[2]).toBe(0x03);
-    expect(fixed.buf[3]).toBe(0x04);
+    expect(fixed.buf.bytes[0]).toBe(0x01);
+    expect(fixed.buf.bytes[1]).toBe(0x02);
+    expect(fixed.buf.bytes[2]).toBe(0x03);
+    expect(fixed.buf.bytes[3]).toBe(0x04);
   });
 
   it("should allow modifying underlying buffer", () => {
     const fixed = FixedBuf.fromHex(4, "deadbeef");
-    fixed.buf[0] = 0x00;
+    fixed.buf.bytes[0] = 0x00;
 
     expect(fixed.toHex()).toBe("00adbeef");
   });

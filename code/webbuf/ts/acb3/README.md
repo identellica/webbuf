@@ -1,5 +1,13 @@
 # @webbuf/acb3
 
+## WebBuf 4 byte access
+
+These APIs continue to accept and return WebBuf/FixedBuf values. WebBuf now
+contains a native array rather than inheriting from it: use `.bytes` (or
+`.buf.bytes` for FixedBuf) for native APIs and indexed byte access. Ciphertext,
+signature and key formats are unchanged. `slice` copies; `subarray` shares
+selected bytes. See the core WebBuf documentation for the complete contract.
+
 Authenticated encryption using AES-CBC with BLAKE3 MAC.
 
 ACB3 = **A**ES + **C**BC + **B**lake**3** MAC

@@ -79,7 +79,8 @@ export class FixedBuf<N extends number> {
   }
 
   static fromRandom<N extends number>(size: N): FixedBuf<N> {
-    const buf = crypto.getRandomValues(WebBuf.alloc(size));
+    const buf = WebBuf.alloc(size);
+    crypto.getRandomValues(buf.bytes);
     return FixedBuf.fromBuf(size, buf);
   }
 

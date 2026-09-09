@@ -139,17 +139,19 @@ export function aesgcmP256dhMlkemDecrypt(
       `aesgcm-p256dh-mlkem ciphertext too short: ${String(ciphertext.length)} < ${String(FIXED_OVERHEAD)}`,
     );
   }
-  const versionByte = ciphertext[0];
+  const versionByte = ciphertext.bytes[0] ?? 0;
   if (versionByte !== VERSION) {
     throw new Error(
-      `aesgcm-p256dh-mlkem unexpected version byte: 0x${versionByte!.toString(16).padStart(2, "0")} (expected 0x02)`,
+      `aesgcm-p256dh-mlkem unexpected version byte: 0x${versionByte.toString(16).padStart(2, "0")} (expected 0x02)`,
     );
   }
   const kemCt = FixedBuf.fromBuf(
     KEM_CT_SIZE,
-    WebBuf.fromUint8Array(ciphertext.subarray(1, 1 + KEM_CT_SIZE)),
+    WebBuf.fromUint8Array(ciphertext.subarray(1, 1 + KEM_CT_SIZE).bytes),
   );
-  const aesPart = WebBuf.fromUint8Array(ciphertext.subarray(1 + KEM_CT_SIZE));
+  const aesPart = WebBuf.fromUint8Array(
+    ciphertext.subarray(1 + KEM_CT_SIZE).bytes,
+  );
   const ecdhRaw = p256SharedSecretRaw(recipientPrivKey, senderPubKey);
   const kemSS = mlKem768Decapsulate(decapKey, kemCt);
   const ikm = WebBuf.concat([ecdhRaw.buf, kemSS.buf]);

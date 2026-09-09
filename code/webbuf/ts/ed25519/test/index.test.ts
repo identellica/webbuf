@@ -61,7 +61,7 @@ describe("@webbuf/ed25519 round-trip", () => {
     const pub = ed25519PublicKeyCreate(priv);
     const big = WebBuf.alloc(64 * 1024);
     for (let i = 0; i < big.length; i++) {
-      big[i] = i & 0xff;
+      big.bytes[i] = i & 0xff;
     }
 
     const sig = ed25519Sign(priv, big);
@@ -76,8 +76,8 @@ describe("@webbuf/ed25519 verification rejection paths", () => {
     const message = WebBuf.fromUtf8("original message");
     const sig = ed25519Sign(priv, message);
 
-    const tampered = WebBuf.fromUint8Array(message);
-    tampered[0] = ((tampered[0] ?? 0) ^ 0xff) & 0xff;
+    const tampered = WebBuf.fromUint8Array(message.bytes);
+    tampered.bytes[0] = ((tampered.bytes[0] ?? 0) ^ 0xff) & 0xff;
     expect(ed25519Verify(pub, tampered, sig)).toBe(false);
   });
 
@@ -87,8 +87,8 @@ describe("@webbuf/ed25519 verification rejection paths", () => {
     const message = WebBuf.fromUtf8("flip a bit");
     const sig = ed25519Sign(priv, message);
 
-    const tamperedBuf = WebBuf.fromUint8Array(sig.buf);
-    tamperedBuf[0] = ((tamperedBuf[0] ?? 0) ^ 0x01) & 0xff;
+    const tamperedBuf = WebBuf.fromUint8Array(sig.buf.bytes);
+    tamperedBuf.bytes[0] = ((tamperedBuf.bytes[0] ?? 0) ^ 0x01) & 0xff;
     const tampered = FixedBuf.fromBuf(64, tamperedBuf);
     expect(ed25519Verify(pub, message, tampered)).toBe(false);
   });
@@ -99,8 +99,8 @@ describe("@webbuf/ed25519 verification rejection paths", () => {
     const message = WebBuf.fromUtf8("flip another bit");
     const sig = ed25519Sign(priv, message);
 
-    const tamperedBuf = WebBuf.fromUint8Array(sig.buf);
-    tamperedBuf[40] = ((tamperedBuf[40] ?? 0) ^ 0x01) & 0xff;
+    const tamperedBuf = WebBuf.fromUint8Array(sig.buf.bytes);
+    tamperedBuf.bytes[40] = ((tamperedBuf.bytes[40] ?? 0) ^ 0x01) & 0xff;
     const tampered = FixedBuf.fromBuf(64, tamperedBuf);
     expect(ed25519Verify(pub, message, tampered)).toBe(false);
   });
@@ -142,9 +142,9 @@ describe("@webbuf/ed25519 verification rejection paths", () => {
     );
 
     for (const message of ["", "hello", "forged"]) {
-      expect(
-        ed25519Verify(weakPub, WebBuf.fromUtf8(message), forgerySig),
-      ).toBe(false);
+      expect(ed25519Verify(weakPub, WebBuf.fromUtf8(message), forgerySig)).toBe(
+        false,
+      );
     }
   });
 

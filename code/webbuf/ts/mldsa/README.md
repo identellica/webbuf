@@ -1,5 +1,13 @@
 # @webbuf/mldsa
 
+## WebBuf 4 byte access
+
+Public APIs keep WebBuf and FixedBuf wrappers. For native APIs use
+`value.bytes` or `fixed.buf.bytes`. This package unwraps selected native
+views at its WASM boundary; key/signature/secret formats and cryptographic
+behavior are unchanged. Inputs are not mutated and outputs retain their
+existing independent storage. Nonzero-offset selections are supported.
+
 ML-DSA (FIPS 204) post-quantum digital signatures for WebBuf.
 
 ## Preferred API
@@ -9,6 +17,11 @@ and context separation rules and default to hedged signing by generating
 randomness with the platform CSPRNG through `FixedBuf.fromRandom`.
 
 ```typescript
+import { mlDsa65KeyPair, mlDsa65Sign, mlDsa65Verify } from "@webbuf/mldsa";
+import { WebBuf } from "@webbuf/webbuf";
+
+const message = WebBuf.fromUtf8("Signed message");
+const context = WebBuf.fromUtf8("example");
 const { verifyingKey, signingKey } = mlDsa65KeyPair();
 const signature = mlDsa65Sign(signingKey, message, context);
 const ok = mlDsa65Verify(verifyingKey, message, signature, context);

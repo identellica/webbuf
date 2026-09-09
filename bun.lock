@@ -26,7 +26,7 @@
     },
     "code/webbuf/ts/acb3": {
       "name": "@webbuf/acb3",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -52,7 +52,7 @@
     },
     "code/webbuf/ts/acb3dh": {
       "name": "@webbuf/acb3dh",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -82,7 +82,7 @@
     },
     "code/webbuf/ts/acb3p256dh": {
       "name": "@webbuf/acb3p256dh",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -112,7 +112,7 @@
     },
     "code/webbuf/ts/acs2": {
       "name": "@webbuf/acs2",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -138,7 +138,7 @@
     },
     "code/webbuf/ts/acs2dh": {
       "name": "@webbuf/acs2dh",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -168,7 +168,7 @@
     },
     "code/webbuf/ts/acs2p256dh": {
       "name": "@webbuf/acs2p256dh",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -198,7 +198,7 @@
     },
     "code/webbuf/ts/aescbc": {
       "name": "@webbuf/aescbc",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -222,7 +222,7 @@
     },
     "code/webbuf/ts/aesgcm": {
       "name": "@webbuf/aesgcm",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -245,7 +245,7 @@
     },
     "code/webbuf/ts/aesgcm-mlkem": {
       "name": "@webbuf/aesgcm-mlkem",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -273,7 +273,7 @@
     },
     "code/webbuf/ts/aesgcm-p256dh": {
       "name": "@webbuf/aesgcm-p256dh",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -301,7 +301,7 @@
     },
     "code/webbuf/ts/aesgcm-p256dh-mlkem": {
       "name": "@webbuf/aesgcm-p256dh-mlkem",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -331,7 +331,7 @@
     },
     "code/webbuf/ts/aesgcm-x25519dh-mlkem": {
       "name": "@webbuf/aesgcm-x25519dh-mlkem",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -361,7 +361,7 @@
     },
     "code/webbuf/ts/blake3": {
       "name": "@webbuf/blake3",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -384,7 +384,7 @@
     },
     "code/webbuf/ts/ed25519": {
       "name": "@webbuf/ed25519",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -407,7 +407,7 @@
     },
     "code/webbuf/ts/fixedbuf": {
       "name": "@webbuf/fixedbuf",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -427,7 +427,7 @@
     },
     "code/webbuf/ts/mldsa": {
       "name": "@webbuf/mldsa",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -450,7 +450,7 @@
     },
     "code/webbuf/ts/mlkem": {
       "name": "@webbuf/mlkem",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -473,7 +473,7 @@
     },
     "code/webbuf/ts/numbers": {
       "name": "@webbuf/numbers",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -495,7 +495,7 @@
     },
     "code/webbuf/ts/p256": {
       "name": "@webbuf/p256",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@noble/curves": "^1.8.0",
@@ -520,7 +520,7 @@
     },
     "code/webbuf/ts/pbkdf2-sha256": {
       "name": "@webbuf/pbkdf2-sha256",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -543,7 +543,7 @@
     },
     "code/webbuf/ts/ripemd160": {
       "name": "@webbuf/ripemd160",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -567,7 +567,7 @@
     },
     "code/webbuf/ts/rw": {
       "name": "@webbuf/rw",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -591,7 +591,7 @@
     },
     "code/webbuf/ts/secp256k1": {
       "name": "@webbuf/secp256k1",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@noble/secp256k1": "^3.0.0",
@@ -616,7 +616,7 @@
     },
     "code/webbuf/ts/sha256": {
       "name": "@webbuf/sha256",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -639,7 +639,7 @@
     },
     "code/webbuf/ts/sig-ed25519-mldsa": {
       "name": "@webbuf/sig-ed25519-mldsa",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -666,7 +666,7 @@
     },
     "code/webbuf/ts/slhdsa": {
       "name": "@webbuf/slhdsa",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -689,7 +689,7 @@
     },
     "code/webbuf/ts/umbrella": {
       "name": "webbuf",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "dependencies": {
         "@webbuf/acb3": "workspace:^",
         "@webbuf/acb3dh": "workspace:^",
@@ -770,7 +770,7 @@
     },
     "code/webbuf/ts/webbuf": {
       "name": "@webbuf/webbuf",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
@@ -787,7 +787,7 @@
     },
     "code/webbuf/ts/x25519": {
       "name": "@webbuf/x25519",
-      "version": "3.8.1",
+      "version": "4.0.0",
       "devDependencies": {
         "@eslint/js": "^9.18.0",
         "@types/node": "^22.13.2",
