@@ -1,0 +1,33 @@
+{
+  "name": "@astrohacker/ui",
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "radix-ui": "^1.6.7",
+    "tailwind-merge": "^3.3.1"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.0"
+  },
+  "exports": {
+    "./utils": "./src/utils.ts",
+    "./surfaces": "./src/surfaces.ts",
+    "./styles.css": "./src/styles/styles.css",
+    "./package.json": "./package.json",
+    "./badge": "./src/components/badge.tsx",
+    "./button": "./src/components/button.tsx",
+    "./card": "./src/components/card.tsx",
+    "./sheet": "./src/components/sheet.tsx",
+    "./space-rain": "./src/components/space-rain.tsx"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5"
+  },
+  "private": true,
+  "license": "MIT"
+}

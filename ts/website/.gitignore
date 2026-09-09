@@ -1,9 +1,0 @@
-# build output
-dist/
-# generated types
-.astro/
-# dependencies
-node_modules/
-# environment
-.env
-.env.production

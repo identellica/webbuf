@@ -1,0 +1,11 @@
+# build output
+dist/
+build/
+.react-router/
+# generated types
+.astro/
+# dependencies
+node_modules/
+# environment
+.env
+.env.production

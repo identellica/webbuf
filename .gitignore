@@ -1,3 +1,15 @@
 node_modules
 dist
 target
+
+# WebBuf public build outputs (managed)
+**/node_modules/
+**/target/
+**/dist/
+**/.react-router/
+**/.wrangler/
+/code/webbuf/ts/wbcom/build/
+.env
+.env.*
+.npmrc
+.DS_Store

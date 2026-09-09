@@ -1,0 +1,60 @@
+[workspace]
+members = [
+    "code/webbuf/rs/webbuf",
+    "code/webbuf/rs/sha256",
+    "code/webbuf/rs/aescbc",
+    "code/webbuf/rs/x25519",
+    "code/webbuf/rs/secp256k1",
+    "code/webbuf/rs/ripemd160",
+    "code/webbuf/rs/mldsa",
+    "code/webbuf/rs/mlkem",
+    "code/webbuf/rs/pbkdf2_sha256",
+    "code/webbuf/rs/blake3",
+    "code/webbuf/rs/slhdsa",
+    "code/webbuf/rs/ed25519",
+    "code/webbuf/rs/p256",
+    "code/webbuf/rs/aesgcm",
+]
+resolver = "2"
+
+[patch.crates-io.webbuf]
+path = "code/webbuf/rs/webbuf"
+
+[patch.crates-io.webbuf_aescbc]
+path = "code/webbuf/rs/aescbc"
+
+[patch.crates-io.webbuf_aesgcm]
+path = "code/webbuf/rs/aesgcm"
+
+[patch.crates-io.webbuf_blake3]
+path = "code/webbuf/rs/blake3"
+
+[patch.crates-io.webbuf_mldsa]
+path = "code/webbuf/rs/mldsa"
+
+[patch.crates-io.webbuf_mlkem]
+path = "code/webbuf/rs/mlkem"
+
+[patch.crates-io.webbuf_p256]
+path = "code/webbuf/rs/p256"
+
+[patch.crates-io.webbuf_pbkdf2_sha256]
+path = "code/webbuf/rs/pbkdf2_sha256"
+
+[patch.crates-io.webbuf_ripemd160]
+path = "code/webbuf/rs/ripemd160"
+
+[patch.crates-io.webbuf_secp256k1]
+path = "code/webbuf/rs/secp256k1"
+
+[patch.crates-io.webbuf_sha256]
+path = "code/webbuf/rs/sha256"
+
+[patch.crates-io.webbuf_slhdsa]
+path = "code/webbuf/rs/slhdsa"
+
+[patch.crates-io.webbuf_x25519]
+path = "code/webbuf/rs/x25519"
+
+[patch.crates-io.webbuf_ed25519]
+path = "code/webbuf/rs/ed25519"

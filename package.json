@@ -1,0 +1,22 @@
+{
+  "name": "webbuf-workspace",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.4.0",
+  "trustedDependencies": [
+    "esbuild",
+    "sharp"
+  ],
+  "workspaces": [
+    "code/webbuf/ts/*",
+    "code/astrohacker/ts/ui"
+  ],
+  "scripts": {
+    "build:webbuf": "bun run --filter '@webbuf/*' --filter '!@webbuf/website' --filter webbuf build",
+    "typecheck:webbuf": "bun run --filter '@webbuf/*' --filter '!@webbuf/website' --filter webbuf typecheck",
+    "test:webbuf": "bun run --filter '@webbuf/*' --filter '!@webbuf/website' --filter webbuf test",
+    "benchmark:webbuf": "bun run --filter @webbuf/webbuf benchmark",
+    "dev:wbcom": "bun run --cwd code/webbuf/ts/wbcom dev",
+    "build:wbcom": "bun run --cwd code/webbuf/ts/wbcom build"
+  }
+}

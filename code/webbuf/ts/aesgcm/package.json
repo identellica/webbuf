@@ -1,0 +1,66 @@
+{
+  "name": "@webbuf/aesgcm",
+  "version": "3.8.1",
+  "description": "Rust/wasm optimized AES-GCM authenticated encryption for the web, node.js, deno, and bun.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/astrohackerlabs/webbuf"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "clean": "rimraf dist",
+    "test": "vitest --run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --fix",
+    "format": "prettier --write . --ignore-path ../.prettierignore",
+    "fix": "bun run typecheck && bun run lint && bun run format",
+    "sync:from-rust": "cp -r ../../rs/aesgcm/build/bundler/* src/rs-webbuf_aesgcm-bundler/",
+    "build": "bun run build:wasm && bun run build:typescript",
+    "build:bundler-to-inline-base64": "cp -r src/rs-webbuf_aesgcm-bundler/* src/rs-webbuf_aesgcm-inline-base64/",
+    "build:inline-wasm": "tsx build-inline-wasm.ts",
+    "build:wasm": "bun run build:bundler-to-inline-base64 && bun run build:inline-wasm",
+    "build:typescript": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "bun run clean && bun run build"
+  },
+  "engines": {
+    "node": ">=20.8.0"
+  },
+  "packageManager": "bun@1.4.0",
+  "keywords": [
+    "aes",
+    "gcm",
+    "aead",
+    "authenticated-encryption",
+    "nist",
+    "rust",
+    "wasm"
+  ],
+  "author": "Astrohacker",
+  "license": "MIT",
+  "peerDependencies": {
+    "@webbuf/fixedbuf": "workspace:^",
+    "@webbuf/webbuf": "workspace:^"
+  },
+  "devDependencies": {
+    "@webbuf/fixedbuf": "workspace:^",
+    "@webbuf/webbuf": "workspace:^",
+    "@eslint/js": "^9.18.0",
+    "@types/node": "^22.13.2",
+    "buffer": "^6.0.3",
+    "eslint": "^9.18.0",
+    "prettier": "^3.4.2",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.21.0",
+    "vite": "^6.1.0",
+    "vitest": "^3.0.5"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}

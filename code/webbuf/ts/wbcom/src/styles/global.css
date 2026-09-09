@@ -1,0 +1,57 @@
+@import "tailwindcss";
+@source "../../app";
+@source "../../../../../astrohacker/ts/ui/src";
+@import "@astrohacker/ui/styles.css";
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  color-scheme: dark;
+}
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+}
+p {
+  line-height: 1.75;
+}
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-mono);
+}
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+[id] {
+  scroll-margin-top: 6rem;
+}
+.code-block pre {
+  margin: 0;
+  padding: 0;
+  /* Shiki supplies an inline theme background; the shared outer panel owns fill. */
+  background: transparent !important;
+  font-size: inherit;
+  line-height: inherit;
+  overflow-x: auto;
+}
+/* The shared Sheet supplies modal behavior; tscom's docs scrim starts below
+   the header. Scope this projection to the WebBuf drawer's adjacent overlay. */
+body > div:has(+ [data-wbcom-drawer]) {
+  top: 4rem;
+  background: color-mix(in oklab, var(--background) 50%, transparent);
+}
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+}
