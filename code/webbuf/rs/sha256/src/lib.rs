@@ -21,8 +21,7 @@ pub fn double_sha256_hash(data: &[u8]) -> Result<Vec<u8>, String> {
 
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sha256_hmac(key: &[u8], data: &[u8]) -> Result<Vec<u8>, String> {
-    let mut mac =
-        HmacSha256::new_from_slice(key).map_err(|e| format!("Invalid key: {}", e))?;
+    let mut mac = HmacSha256::new_from_slice(key).map_err(|e| format!("Invalid key: {}", e))?;
     mac.update(data);
     Ok(mac.finalize().into_bytes().to_vec())
 }

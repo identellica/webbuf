@@ -1,6 +1,8 @@
+use base32::{
+    decode as lib_base32_decode, encode as lib_base32_encode, Alphabet as Base32Alphabet,
+};
 use base64::{engine::general_purpose as lib_base64, Engine};
 use hex::{decode as lib_hex_decode, encode as lib_hex_encode};
-use base32::{Alphabet as Base32Alphabet, decode as lib_base32_decode, encode as lib_base32_encode};
 use wasm_bindgen::prelude::*;
 
 /// Remove whitespace (spaces, tabs, newlines) from the input string
@@ -18,7 +20,7 @@ pub fn encode_base64(data: &[u8]) -> String {
 /// Returns an error string if decoding fails
 #[wasm_bindgen]
 pub fn decode_base64_strip_whitespace(encoded: &str) -> Result<Vec<u8>, String> {
-   let stripped_encoded = strip_whitespace(encoded);
+    let stripped_encoded = strip_whitespace(encoded);
     lib_base64::STANDARD
         .decode(&stripped_encoded)
         .map_err(|_| "invalid base64".to_string())
@@ -120,8 +122,7 @@ pub fn encode_base32_z(data: &[u8]) -> String {
 /// Decode a z-base-32 string into a byte vector
 #[wasm_bindgen]
 pub fn decode_base32_z(encoded: &str) -> Result<Vec<u8>, String> {
-    lib_base32_decode(Base32Alphabet::Z, encoded)
-        .ok_or_else(|| "invalid base32 z".to_string())
+    lib_base32_decode(Base32Alphabet::Z, encoded).ok_or_else(|| "invalid base32 z".to_string())
 }
 
 #[cfg(test)]

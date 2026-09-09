@@ -15,7 +15,8 @@
     "test:static": "bun test ./app/lib/static-docs.integration.test.ts",
     "extract:api": "tsx scripts/extract-api.ts",
     "lint": "eslint .",
-    "format": "prettier --write . --ignore-path ../.prettierignore"
+    "format": "prettier --write . --ignore-path ../.prettierignore",
+    "format:check": "prettier --check . --ignore-path ../.prettierignore"
   },
   "dependencies": {
     "@astrohacker/ui": "workspace:*",

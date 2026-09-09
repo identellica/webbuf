@@ -137,11 +137,12 @@ export default function PackagePage({ loaderData }: Route.ComponentProps) {
               WebBuf 4 byte access
             </h2>
             <p>
-              This is the in-progress WebBuf 4 source contract, not a claim that
-              version 4 is already published. WebBuf has a Uint8Array; it is not
-              a Uint8Array. Use <code>buf.bytes[i]</code> for indexed access and
-              pass <code>buf.bytes</code> to TextDecoder, Web Crypto, Node
-              Buffer and WASM. The wrapper itself is not a native BufferSource.
+              WebBuf 4.0.0 was released with this composition-based API,
+              together with all 29 WebBuf npm libraries. WebBuf has a
+              Uint8Array; it is not a Uint8Array. Use <code>buf.bytes[i]</code>{" "}
+              for indexed access and pass <code>buf.bytes</code> to TextDecoder,
+              Web Crypto, Node Buffer and WASM. The wrapper itself is not a
+              native BufferSource.
             </p>
             <p>
               The <code>bytes</code> property is readonly in TypeScript, but its

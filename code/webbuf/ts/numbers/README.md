@@ -8,7 +8,14 @@ Numeric wire bytes remain unchanged. Access native bytes through
 `number.buf.buf.bytes`: FixedNum owns a FixedBuf, which owns a WebBuf.
 Same-endian buffer factories retain their input selection; opposite-endian
 factories reverse a copy. Buffer output conversions return independent copies.
-Existing BE/LE support is preserved; this migration adds no reader/writer APIs.
+Existing BE/LE support is preserved. For sequential fields, use the matching
+`@webbuf/rw` BE/LE reader and writer methods for 16/32/64/128/256 bits.
+
+Hex is numeric display, not necessarily storage order:
+`U32LE.fromN(0x12345678).toHex()` is `12345678`, while
+`U32LE.fromN(0x12345678).toLEBuf().toHex()` is `78563412`.
+For exact integers beyond JavaScript's safe-integer range, use `fromBn()` and
+`.bn`, not `fromN()` or `.n`.
 
 ## Installation
 

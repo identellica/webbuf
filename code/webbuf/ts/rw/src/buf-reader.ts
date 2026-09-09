@@ -1,6 +1,18 @@
 import { WebBuf } from "@webbuf/webbuf";
 import { FixedBuf } from "@webbuf/fixedbuf";
-import { U8, U16BE, U32BE, U64BE, U128BE, U256BE } from "@webbuf/numbers";
+import {
+  U8,
+  U16BE,
+  U32BE,
+  U64BE,
+  U128BE,
+  U256BE,
+  U16LE,
+  U32LE,
+  U64LE,
+  U128LE,
+  U256LE,
+} from "@webbuf/numbers";
 
 export class BufReader {
   buf: WebBuf;
@@ -104,6 +116,71 @@ export class BufReader {
     let val: U256BE;
     try {
       val = U256BE.fromBEBuf(
+        FixedBuf.fromBuf(32, this.buf.subarray(this.pos, this.pos + 32)),
+      );
+    } catch {
+      throw new Error("not enough bytes in the buffer to read");
+    }
+    this.pos += 32;
+    return val;
+  }
+
+  readU16LE(): U16LE {
+    let val: U16LE;
+    try {
+      val = U16LE.fromLEBuf(
+        FixedBuf.fromBuf(2, this.buf.subarray(this.pos, this.pos + 2)),
+      );
+    } catch {
+      throw new Error("not enough bytes in the buffer to read");
+    }
+    this.pos += 2;
+    return val;
+  }
+
+  readU32LE(): U32LE {
+    let val: U32LE;
+    try {
+      val = U32LE.fromLEBuf(
+        FixedBuf.fromBuf(4, this.buf.subarray(this.pos, this.pos + 4)),
+      );
+    } catch {
+      throw new Error("not enough bytes in the buffer to read");
+    }
+    this.pos += 4;
+    return val;
+  }
+
+  readU64LE(): U64LE {
+    let val: U64LE;
+    try {
+      val = U64LE.fromLEBuf(
+        FixedBuf.fromBuf(8, this.buf.subarray(this.pos, this.pos + 8)),
+      );
+    } catch {
+      throw new Error("not enough bytes in the buffer to read");
+    }
+    this.pos += 8;
+    return val;
+  }
+
+  readU128LE(): U128LE {
+    let val: U128LE;
+    try {
+      val = U128LE.fromLEBuf(
+        FixedBuf.fromBuf(16, this.buf.subarray(this.pos, this.pos + 16)),
+      );
+    } catch {
+      throw new Error("not enough bytes in the buffer to read");
+    }
+    this.pos += 16;
+    return val;
+  }
+
+  readU256LE(): U256LE {
+    let val: U256LE;
+    try {
+      val = U256LE.fromLEBuf(
         FixedBuf.fromBuf(32, this.buf.subarray(this.pos, this.pos + 32)),
       );
     } catch {

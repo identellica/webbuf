@@ -21,7 +21,10 @@ npm install @webbuf/aesgcm-p256dh
 ## Usage
 
 ```typescript
-import { aesgcmP256dhEncrypt, aesgcmP256dhDecrypt } from "@webbuf/aesgcm-p256dh";
+import {
+  aesgcmP256dhEncrypt,
+  aesgcmP256dhDecrypt,
+} from "@webbuf/aesgcm-p256dh";
 import { p256PublicKeyCreate } from "@webbuf/p256";
 import { WebBuf } from "@webbuf/webbuf";
 import { FixedBuf } from "@webbuf/fixedbuf";
@@ -55,10 +58,10 @@ Both parties derive the same shared secret:
 
 ## API
 
-| Function | Description |
-| -------- | ----------- |
+| Function                                               | Description                   |
+| ------------------------------------------------------ | ----------------------------- |
 | `aesgcmP256dhEncrypt(privKey, pubKey, plaintext, iv?)` | Encrypt with ECDH-derived key |
-| `aesgcmP256dhDecrypt(privKey, pubKey, ciphertext)` | Decrypt with ECDH-derived key |
+| `aesgcmP256dhDecrypt(privKey, pubKey, ciphertext)`     | Decrypt with ECDH-derived key |
 
 ## License
 

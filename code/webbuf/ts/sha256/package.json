@@ -1,6 +1,6 @@
 {
   "name": "@webbuf/sha256",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Rust/wasm optimized SHA-256 hash & HMAC-SHA256 for the web, node.js, deno, and bun.",
   "repository": {
     "type": "git",
@@ -15,6 +15,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --fix",
     "format": "prettier --write . --ignore-path ../.prettierignore",
+    "format:check": "prettier --check . --ignore-path ../.prettierignore",
     "fix": "bun run typecheck && bun run lint && bun run format",
     "sync:from-rust": "cp -r ../../rs/sha256/build/bundler/* src/rs-webbuf_sha256-bundler/",
     "build": "bun run build:wasm && bun run build:typescript",

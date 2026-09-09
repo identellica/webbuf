@@ -6,7 +6,7 @@ use p256::{
         sec1::ToEncodedPoint,
         Curve, NonZeroScalar,
     },
-    FieldBytes, ProjectivePoint, PublicKey, Scalar, NistP256, SecretKey, U256,
+    FieldBytes, NistP256, ProjectivePoint, PublicKey, Scalar, SecretKey, U256,
 };
 
 #[cfg(feature = "wasm")]
@@ -136,10 +136,8 @@ pub fn sign(
     let k_uint = U256::from_be_slice(k_buf);
     let z_field_bytes = FieldBytes::from_slice(hash_buf);
 
-    let d_scalar =
-        NonZeroScalar::<NistP256>::from_uint(d_uint).expect("Failed to create d_scalar");
-    let k_scalar =
-        NonZeroScalar::<NistP256>::from_uint(k_uint).expect("Failed to create k_scalar");
+    let d_scalar = NonZeroScalar::<NistP256>::from_uint(d_uint).expect("Failed to create d_scalar");
+    let k_scalar = NonZeroScalar::<NistP256>::from_uint(k_uint).expect("Failed to create k_scalar");
 
     let z_scalar =
         <Scalar as Reduce<<p256::NistP256 as p256::elliptic_curve::Curve>::Uint>>::reduce_bytes(
@@ -150,10 +148,9 @@ pub fn sign(
 
     let R = ProjectivePoint::mul_by_generator(&k_scalar).to_affine();
 
-    let r =
-        <Scalar as Reduce<<p256::NistP256 as p256::elliptic_curve::Curve>::Uint>>::reduce_bytes(
-            &R.x(),
-        );
+    let r = <Scalar as Reduce<<p256::NistP256 as p256::elliptic_curve::Curve>::Uint>>::reduce_bytes(
+        &R.x(),
+    );
 
     let mut s = *k_inv * (z_scalar + (r * d_scalar.as_ref()));
 
@@ -209,14 +206,12 @@ pub fn verify(
 
     let z =
         <Scalar as Reduce<<p256::NistP256 as p256::elliptic_curve::Curve>::Uint>>::reduce_bytes(z);
-    let r =
-        <Scalar as Reduce<<p256::NistP256 as p256::elliptic_curve::Curve>::Uint>>::reduce_bytes(
-            r_field_bytes,
-        );
-    let s =
-        <Scalar as Reduce<<p256::NistP256 as p256::elliptic_curve::Curve>::Uint>>::reduce_bytes(
-            s_field_bytes,
-        );
+    let r = <Scalar as Reduce<<p256::NistP256 as p256::elliptic_curve::Curve>::Uint>>::reduce_bytes(
+        r_field_bytes,
+    );
+    let s = <Scalar as Reduce<<p256::NistP256 as p256::elliptic_curve::Curve>::Uint>>::reduce_bytes(
+        s_field_bytes,
+    );
     let s_inv = s.invert().expect("Failed to invert s");
     let u1 = z * s_inv;
     let u2 = r * s_inv;
@@ -293,11 +288,11 @@ pub fn shared_secret_raw(priv_key_buf: &[u8], pub_key_buf: &[u8]) -> Result<Vec<
 #[cfg(test)]
 mod tests {
     use super::*;
-    use webbuf_blake3;
     use hex_literal::hex;
     use rfc6979::consts::U32;
     use rfc6979::generate_k;
     use sha2::{Digest, Sha256};
+    use webbuf_blake3;
 
     #[test]
     fn test_private_key_verify() {
@@ -597,12 +592,8 @@ mod tests {
         let hashed_msg = Sha256::digest(RFC6979_MSG);
         let hashed_msg_bytes: [u8; 32] = hashed_msg.as_slice().try_into().unwrap();
 
-        let k = generate_k::<Sha256, U32>(
-            &RFC6979_KEY.into(),
-            &P256_MODULUS.into(),
-            &hashed_msg,
-            b"",
-        );
+        let k =
+            generate_k::<Sha256, U32>(&RFC6979_KEY.into(), &P256_MODULUS.into(), &hashed_msg, b"");
 
         assert_eq!(
             k.as_slice(),
@@ -629,23 +620,20 @@ mod tests {
         let hashed_msg = Sha256::digest(RFC6979_MSG);
         let hashed_msg_bytes: [u8; 32] = hashed_msg.as_slice().try_into().unwrap();
 
-        let k = generate_k::<Sha256, U32>(
-            &RFC6979_KEY.into(),
-            &P256_MODULUS.into(),
-            &hashed_msg,
-            b"",
-        );
+        let k =
+            generate_k::<Sha256, U32>(&RFC6979_KEY.into(), &P256_MODULUS.into(), &hashed_msg, b"");
 
         let custom_signature = sign(&hashed_msg_bytes, &RFC6979_KEY, k.as_slice()).unwrap();
 
         // Verify using p256 crate's built-in ECDSA verifier with prehashed data
         let pub_key_bytes = public_key_create(&RFC6979_KEY).unwrap();
-        let verifying_key = VerifyingKey::from_sec1_bytes(&pub_key_bytes)
-            .expect("Failed to create verifying key");
-        let sig = Signature::from_slice(&custom_signature)
-            .expect("Failed to create signature");
+        let verifying_key =
+            VerifyingKey::from_sec1_bytes(&pub_key_bytes).expect("Failed to create verifying key");
+        let sig = Signature::from_slice(&custom_signature).expect("Failed to create signature");
         assert!(
-            verifying_key.verify_prehash(&hashed_msg_bytes, &sig).is_ok(),
+            verifying_key
+                .verify_prehash(&hashed_msg_bytes, &sig)
+                .is_ok(),
             "p256 crate verification failed"
         );
 
@@ -689,14 +677,20 @@ mod tests {
             let verifying_key = VerifyingKey::from_sec1_bytes(&pub_key_bytes).unwrap();
             let sig = Signature::from_slice(&custom_signature).unwrap();
             assert!(
-                verifying_key.verify_prehash(&hashed_msg_bytes, &sig).is_ok(),
+                verifying_key
+                    .verify_prehash(&hashed_msg_bytes, &sig)
+                    .is_ok(),
                 "p256 crate verification failed for key {}",
                 i
             );
 
             // Verify with custom verify
             let custom_verified = verify(&custom_signature, &hashed_msg_bytes, &pub_key_bytes);
-            assert!(custom_verified.is_ok(), "Custom verification failed for key {}", i);
+            assert!(
+                custom_verified.is_ok(),
+                "Custom verification failed for key {}",
+                i
+            );
         }
     }
 
@@ -729,13 +723,19 @@ mod tests {
             let verifying_key = VerifyingKey::from_sec1_bytes(&pub_key_bytes).unwrap();
             let sig = Signature::from_slice(&custom_signature).unwrap();
             assert!(
-                verifying_key.verify_prehash(&hashed_msg_bytes, &sig).is_ok(),
+                verifying_key
+                    .verify_prehash(&hashed_msg_bytes, &sig)
+                    .is_ok(),
                 "p256 crate verification failed for msg {}",
                 i
             );
 
             let custom_verified = verify(&custom_signature, &hashed_msg_bytes, &pub_key_bytes);
-            assert!(custom_verified.is_ok(), "Custom verification failed for msg {}", i);
+            assert!(
+                custom_verified.is_ok(),
+                "Custom verification failed for msg {}",
+                i
+            );
         }
     }
 

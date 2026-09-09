@@ -244,7 +244,7 @@
     "npm": "@webbuf/aesgcm-p256dh",
     "dir": "aesgcm-p256dh",
     "description": "AES-GCM authenticated encryption with P-256 (NIST) Diffie-Hellman shared secret for web, node.js, deno and bun.",
-    "usage": "import { aesgcmP256dhEncrypt, aesgcmP256dhDecrypt } from \"@webbuf/aesgcm-p256dh\";\nimport { p256PublicKeyCreate } from \"@webbuf/p256\";\nimport { WebBuf } from \"@webbuf/webbuf\";\nimport { FixedBuf } from \"@webbuf/fixedbuf\";\n\n// Alice and Bob generate key pairs\nconst alicePrivKey = FixedBuf.fromRandom<32>(32);\nconst alicePubKey = p256PublicKeyCreate(alicePrivKey);\n\nconst bobPrivKey = FixedBuf.fromRandom<32>(32);\nconst bobPubKey = p256PublicKeyCreate(bobPrivKey);\n\n// Alice encrypts a message to Bob\nconst plaintext = WebBuf.fromUtf8(\"Hello Bob!\");\nconst ciphertext = aesgcmP256dhEncrypt(alicePrivKey, bobPubKey, plaintext);\n\n// Bob decrypts the message from Alice\nconst decrypted = aesgcmP256dhDecrypt(bobPrivKey, alicePubKey, ciphertext);\nconsole.log(decrypted.toUtf8()); // \"Hello Bob!\"",
+    "usage": "import {\n  aesgcmP256dhEncrypt,\n  aesgcmP256dhDecrypt,\n} from \"@webbuf/aesgcm-p256dh\";\nimport { p256PublicKeyCreate } from \"@webbuf/p256\";\nimport { WebBuf } from \"@webbuf/webbuf\";\nimport { FixedBuf } from \"@webbuf/fixedbuf\";\n\n// Alice and Bob generate key pairs\nconst alicePrivKey = FixedBuf.fromRandom<32>(32);\nconst alicePubKey = p256PublicKeyCreate(alicePrivKey);\n\nconst bobPrivKey = FixedBuf.fromRandom<32>(32);\nconst bobPubKey = p256PublicKeyCreate(bobPrivKey);\n\n// Alice encrypts a message to Bob\nconst plaintext = WebBuf.fromUtf8(\"Hello Bob!\");\nconst ciphertext = aesgcmP256dhEncrypt(alicePrivKey, bobPubKey, plaintext);\n\n// Bob decrypts the message from Alice\nconst decrypted = aesgcmP256dhDecrypt(bobPrivKey, alicePubKey, ciphertext);\nconsole.log(decrypted.toUtf8()); // \"Hello Bob!\"",
     "usageLang": "ts",
     "exports": [
       {
@@ -1267,7 +1267,7 @@
     "npm": "@webbuf/pbkdf2-sha256",
     "dir": "pbkdf2-sha256",
     "description": "Rust/wasm optimized PBKDF2-HMAC-SHA256 password-based key derivation for the web, node.js, deno, and bun.",
-    "usage": "import { pbkdf2Sha256 } from \"@webbuf/pbkdf2-sha256\";\nimport { WebBuf } from \"@webbuf/webbuf\";\n\nconst password = WebBuf.fromUtf8(\"my password\");\nconst salt = WebBuf.fromUtf8(\"random salt\");\nconst iterations = 100_000;\nconst keyLen = 32;\n\nconst derivedKey = pbkdf2Sha256(password, salt, iterations, keyLen);  // FixedBuf<32>\nconsole.log(derivedKey.toHex());",
+    "usage": "import { pbkdf2Sha256 } from \"@webbuf/pbkdf2-sha256\";\nimport { WebBuf } from \"@webbuf/webbuf\";\n\nconst password = WebBuf.fromUtf8(\"my password\");\nconst salt = WebBuf.fromUtf8(\"random salt\");\nconst iterations = 100_000;\nconst keyLen = 32;\n\nconst derivedKey = pbkdf2Sha256(password, salt, iterations, keyLen); // FixedBuf<32>\nconsole.log(derivedKey.toHex());",
     "usageLang": "ts",
     "exports": [
       {
@@ -1309,7 +1309,7 @@
     "npm": "@webbuf/rw",
     "dir": "rw",
     "description": "Read and write buffers, optimized with Rust/WASM for the web, node.js, deno, and bun.",
-    "usage": "import { BufWriter } from \"@webbuf/rw\";\nimport { U8, U16BE, U32BE, U64BE } from \"@webbuf/numbers\";\nimport { FixedBuf } from \"@webbuf/fixedbuf\";\n\nconst writer = new BufWriter();\n\n// Write numbers\nwriter.writeU8(U8.fromN(255));\nwriter.writeU16BE(U16BE.fromN(1000));\nwriter.writeU32BE(U32BE.fromN(123456));\nwriter.writeU64BE(U64BE.fromBn(0x123456789abcdef0n));\n\n// Write fixed buffers\nconst hash = FixedBuf.fromRandom<32>(32);\nwriter.write(hash.buf);\n\n// Write variable-length data\nwriter.writeVarIntU64BE(U64BE.fromBn(1000n));\n\n// Get result\nconst buf = writer.toBuf();",
+    "usage": "import { BufWriter } from \"@webbuf/rw\";\nimport {\n  U8,\n  U16BE,\n  U32BE,\n  U64BE,\n  U16LE,\n  U32LE,\n  U64LE,\n  U128LE,\n  U256LE,\n} from \"@webbuf/numbers\";\nimport { FixedBuf } from \"@webbuf/fixedbuf\";\n\nconst writer = new BufWriter();\n\n// Write numbers\nwriter.writeU8(U8.fromN(255));\nwriter.writeU16BE(U16BE.fromN(1000));\nwriter.writeU32BE(U32BE.fromN(123456));\nwriter.writeU64BE(U64BE.fromBn(0x123456789abcdef0n));\n\n// Write fixed buffers\nconst hash = FixedBuf.fromRandom<32>(32);\nwriter.write(hash.buf);\n\n// Write variable-length data\nwriter.writeVarIntU64BE(U64BE.fromBn(1000n));\n\n// Fixed-width little-endian fields (not varints)\nwriter.writeU16LE(U16LE.fromN(1000));\nwriter.writeU32LE(U32LE.fromN(123456));\nwriter.writeU64LE(U64LE.fromBn(0x123456789abcdef0n));\nwriter.writeU128LE(U128LE.fromBn(1n << 100n));\nwriter.writeU256LE(U256LE.fromBn(1n << 200n));\n\n// Get result\nconst buf = writer.toBuf();",
     "usageLang": "ts",
     "exports": [
       {
@@ -1329,6 +1329,11 @@
           "readU64BE(): U64BE",
           "readU128BE(): U128BE",
           "readU256BE(): U256BE",
+          "readU16LE(): U16LE",
+          "readU32LE(): U32LE",
+          "readU64LE(): U64LE",
+          "readU128LE(): U128LE",
+          "readU256LE(): U256LE",
           "readVarIntBEBuf(): WebBuf",
           "readVarIntU64BE(): U64BE"
         ],
@@ -1350,6 +1355,11 @@
           "writeU64BE(u64: U64BE): BufWriter",
           "writeU128BE(u128: U128BE): BufWriter",
           "writeU256BE(u256: U256BE): BufWriter",
+          "writeU16LE(value: U16LE): BufWriter",
+          "writeU32LE(value: U32LE): BufWriter",
+          "writeU64LE(value: U64LE): BufWriter",
+          "writeU128LE(value: U128LE): BufWriter",
+          "writeU256LE(value: U256LE): BufWriter",
           "writeVarIntU64BE(u64: U64BE): BufWriter"
         ],
         "doc": ""
@@ -2715,6 +2725,11 @@
           "readU64BE(): U64BE",
           "readU128BE(): U128BE",
           "readU256BE(): U256BE",
+          "readU16LE(): U16LE",
+          "readU32LE(): U32LE",
+          "readU64LE(): U64LE",
+          "readU128LE(): U128LE",
+          "readU256LE(): U256LE",
           "readVarIntBEBuf(): WebBuf",
           "readVarIntU64BE(): U64BE"
         ],
@@ -2736,6 +2751,11 @@
           "writeU64BE(u64: U64BE): BufWriter",
           "writeU128BE(u128: U128BE): BufWriter",
           "writeU256BE(u256: U256BE): BufWriter",
+          "writeU16LE(value: U16LE): BufWriter",
+          "writeU32LE(value: U32LE): BufWriter",
+          "writeU64LE(value: U64LE): BufWriter",
+          "writeU128LE(value: U128LE): BufWriter",
+          "writeU256LE(value: U256LE): BufWriter",
           "writeVarIntU64BE(u64: U64BE): BufWriter"
         ],
         "doc": ""

@@ -54,7 +54,7 @@ const checks: Record<string, string> = {
   "@webbuf/pbkdf2-sha256": `check(derivedKey.toHex() === "${pbkdf2Sync("my password", "random salt", 100_000, 32, "sha256").toString("hex")}");`,
   "@webbuf/ripemd160": `check(hash.toHex() === "${createHash("ripemd160").update("Hello, world!").digest("hex")}"); check(doubleHash.toHex() === ripemd160Hash(hash.buf).toHex());`,
   "@webbuf/rw":
-    'check(buf.length === 50); check(buf.subarray(0, 15).toHex() === "ff03e80001e240123456789abcdef0"); check(buf.subarray(15, 47).toHex() === hash.toHex()); check(buf.subarray(47).toHex() === "fd03e8");',
+    'check(buf.length === 112); check(buf.subarray(0, 15).toHex() === "ff03e80001e240123456789abcdef0"); check(buf.subarray(15, 47).toHex() === hash.toHex()); check(buf.subarray(47, 50).toHex() === "fd03e8"); check(buf.subarray(50, 64).toHex() === "e80340e20100f0debc9a78563412"); check(buf.subarray(64, 80).toHex() === "00".repeat(12) + "10" + "00".repeat(3)); check(buf.subarray(80).toHex() === "00".repeat(25) + "01" + "00".repeat(6));',
   "@webbuf/secp256k1":
     "check(privateKeyVerify(privKey)); check(publicKeyVerify(pubKey)); check(pubKey.buf.length === 33);",
   "@webbuf/sha256":

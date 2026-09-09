@@ -75,7 +75,9 @@ mod tests {
         .unwrap();
         assert_eq!(
             result,
-            hex!("348c89dbcbd32b2f32d814b8116e84cf2b17347ebc1800181c4e2a1fb8dd53e1c635518c7dac47e9")
+            hex!(
+                "348c89dbcbd32b2f32d814b8116e84cf2b17347ebc1800181c4e2a1fb8dd53e1c635518c7dac47e9"
+            )
         );
     }
 

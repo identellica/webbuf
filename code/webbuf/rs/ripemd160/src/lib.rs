@@ -1,4 +1,4 @@
-use ripemd::{Ripemd160, Digest};
+use ripemd::{Digest, Ripemd160};
 
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;

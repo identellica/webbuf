@@ -35,9 +35,9 @@ value normalization. A mapper supplied to `from` is honored for native arrays
 instead of being ignored. `wipe`, `set`, `write`, `reverse` and `fill` mutate
 shared storage; `copy` handles overlapping regions.
 
-This is the in-progress WebBuf 4 source contract. Coordinated release metadata
-and publication follow the full consumer migration; no intermediate release
-is intended.
+WebBuf 4.0.0 was released with this composition-based API. All 29 WebBuf npm
+libraries were released together at 4.0.0. Existing WebBuf 3 consumers must
+update native-array boundaries and indexed access as described above.
 
 ## Installation
 

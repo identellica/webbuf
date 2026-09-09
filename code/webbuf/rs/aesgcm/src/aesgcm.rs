@@ -25,15 +25,13 @@ pub fn aesgcm_encrypt(
 
     match key.len() {
         16 => {
-            let cipher = Aes128Gcm::new_from_slice(key)
-                .map_err(|_| "Invalid key".to_string())?;
+            let cipher = Aes128Gcm::new_from_slice(key).map_err(|_| "Invalid key".to_string())?;
             cipher
                 .encrypt(nonce, payload)
                 .map_err(|_| "Encryption failed".to_string())
         }
         32 => {
-            let cipher = Aes256Gcm::new_from_slice(key)
-                .map_err(|_| "Invalid key".to_string())?;
+            let cipher = Aes256Gcm::new_from_slice(key).map_err(|_| "Invalid key".to_string())?;
             cipher
                 .encrypt(nonce, payload)
                 .map_err(|_| "Encryption failed".to_string())
@@ -64,15 +62,13 @@ pub fn aesgcm_decrypt(
 
     match key.len() {
         16 => {
-            let cipher = Aes128Gcm::new_from_slice(key)
-                .map_err(|_| "Invalid key".to_string())?;
+            let cipher = Aes128Gcm::new_from_slice(key).map_err(|_| "Invalid key".to_string())?;
             cipher
                 .decrypt(nonce, payload)
                 .map_err(|_| "Decryption failed: authentication error".to_string())
         }
         32 => {
-            let cipher = Aes256Gcm::new_from_slice(key)
-                .map_err(|_| "Invalid key".to_string())?;
+            let cipher = Aes256Gcm::new_from_slice(key).map_err(|_| "Invalid key".to_string())?;
             cipher
                 .decrypt(nonce, payload)
                 .map_err(|_| "Decryption failed: authentication error".to_string())

@@ -524,6 +524,7 @@
     "code/webbuf/ts/rw/test/buf-writer.test.ts",
     "code/webbuf/ts/rw/test/composition.test.ts",
     "code/webbuf/ts/rw/test/index.test.ts",
+    "code/webbuf/ts/rw/test/little-endian.test.ts",
     "code/webbuf/ts/rw/tsconfig.build.json",
     "code/webbuf/ts/rw/tsconfig.json",
     "code/webbuf/ts/rw/vectors/buf-reader.json",

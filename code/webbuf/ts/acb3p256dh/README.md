@@ -57,10 +57,10 @@ Both parties can derive the same shared secret:
 
 ## API
 
-| Function                                              | Description                   |
-| ----------------------------------------------------- | ----------------------------- |
-| `acb3p256dhEncrypt(privKey, pubKey, plaintext, iv?)`  | Encrypt with ECDH-derived key |
-| `acb3p256dhDecrypt(privKey, pubKey, ciphertext)`      | Decrypt with ECDH-derived key |
+| Function                                             | Description                   |
+| ---------------------------------------------------- | ----------------------------- |
+| `acb3p256dhEncrypt(privKey, pubKey, plaintext, iv?)` | Encrypt with ECDH-derived key |
+| `acb3p256dhDecrypt(privKey, pubKey, ciphertext)`     | Decrypt with ECDH-derived key |
 
 ## License
 

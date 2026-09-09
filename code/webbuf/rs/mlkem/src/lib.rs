@@ -1,5 +1,5 @@
 use ml_kem::{
-    kem::Decapsulate, Encoded, EncodedSizeUser, EncapsulateDeterministic, KemCore, MlKem1024,
+    kem::Decapsulate, EncapsulateDeterministic, Encoded, EncodedSizeUser, KemCore, MlKem1024,
     MlKem512, MlKem768, B32,
 };
 

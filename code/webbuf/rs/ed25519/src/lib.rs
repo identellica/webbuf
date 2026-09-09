@@ -37,11 +37,7 @@ pub fn ed25519_sign(priv_key: &[u8], message: &[u8]) -> Result<Vec<u8>, String> 
 /// strict RFC 8032 §5.1.7 semantics: signatures with non-canonical S and
 /// signatures with small-order R are rejected.
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
-pub fn ed25519_verify(
-    pub_key: &[u8],
-    message: &[u8],
-    signature: &[u8],
-) -> Result<bool, String> {
+pub fn ed25519_verify(pub_key: &[u8], message: &[u8], signature: &[u8]) -> Result<bool, String> {
     let pub_arr: [u8; 32] = pub_key
         .try_into()
         .map_err(|_| "public key must be exactly 32 bytes".to_string())?;

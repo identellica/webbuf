@@ -1,5 +1,17 @@
 import { WebBuf } from "@webbuf/webbuf";
-import { U8, U16BE, U32BE, U64BE, U128BE, U256BE } from "@webbuf/numbers";
+import {
+  U8,
+  U16BE,
+  U32BE,
+  U64BE,
+  U128BE,
+  U256BE,
+  U16LE,
+  U32LE,
+  U64LE,
+  U128LE,
+  U256LE,
+} from "@webbuf/numbers";
 
 export class BufWriter {
   bufs: WebBuf[];
@@ -52,6 +64,31 @@ export class BufWriter {
 
   writeU256BE(u256: U256BE): this {
     this.write(u256.toBEBuf().buf);
+    return this;
+  }
+
+  writeU16LE(value: U16LE): this {
+    this.write(value.toLEBuf().buf);
+    return this;
+  }
+
+  writeU32LE(value: U32LE): this {
+    this.write(value.toLEBuf().buf);
+    return this;
+  }
+
+  writeU64LE(value: U64LE): this {
+    this.write(value.toLEBuf().buf);
+    return this;
+  }
+
+  writeU128LE(value: U128LE): this {
+    this.write(value.toLEBuf().buf);
+    return this;
+  }
+
+  writeU256LE(value: U256LE): this {
+    this.write(value.toLEBuf().buf);
     return this;
   }
 

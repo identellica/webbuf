@@ -233,13 +233,13 @@ pub fn shared_secret(priv_key_buf: &[u8], pub_key_buf: &[u8]) -> Result<Vec<u8>,
 #[cfg(test)]
 mod tests {
     use super::*;
-    use webbuf_blake3;
     use hex_literal::hex;
     use log::debug;
     use rfc6979::consts::U32;
     use rfc6979::generate_k;
     use secp256k1;
     use sha2::{Digest, Sha256};
+    use webbuf_blake3;
 
     #[test]
     fn test_private_key_verify() {

@@ -30,10 +30,7 @@ pub fn x25519_public_key_create(priv_key: &[u8]) -> Result<Vec<u8>, String> {
 /// The error message text is intentionally stable so audit tests can
 /// pin against it.
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
-pub fn x25519_shared_secret_raw(
-    priv_key: &[u8],
-    pub_key: &[u8],
-) -> Result<Vec<u8>, String> {
+pub fn x25519_shared_secret_raw(priv_key: &[u8], pub_key: &[u8]) -> Result<Vec<u8>, String> {
     let priv_arr: [u8; 32] = priv_key
         .try_into()
         .map_err(|_| "private key must be exactly 32 bytes".to_string())?;
@@ -47,8 +44,7 @@ pub fn x25519_shared_secret_raw(
 
     if !shared.was_contributory() {
         return Err(
-            "X25519 shared secret is non-contributory (small-order public key)"
-                .to_string(),
+            "X25519 shared secret is non-contributory (small-order public key)".to_string(),
         );
     }
 
@@ -130,33 +126,19 @@ mod tests {
     fn small_order_public_keys_are_rejected() {
         let small_order_points: &[[u8; 32]] = &[
             // u = 0 — the identity element.
-            hex!(
-                "0000000000000000000000000000000000000000000000000000000000000000"
-            ),
+            hex!("0000000000000000000000000000000000000000000000000000000000000000"),
             // u = 1 — order-1 point.
-            hex!(
-                "0100000000000000000000000000000000000000000000000000000000000000"
-            ),
+            hex!("0100000000000000000000000000000000000000000000000000000000000000"),
             // 325606250916557431795983626356110631294008115727848805560023387167927233504
-            hex!(
-                "e0eb7a7c3b41b8ae1656e3faf19fc46ada098deb9c32b1fd866205165f49b800"
-            ),
+            hex!("e0eb7a7c3b41b8ae1656e3faf19fc46ada098deb9c32b1fd866205165f49b800"),
             // 39382357235489614581723060781553021112529911719440698176882885853963445705823
-            hex!(
-                "5f9c95bca3508c24b1d0b1559c83ef5b04445cc4581c8e86d8224eddd09f1157"
-            ),
+            hex!("5f9c95bca3508c24b1d0b1559c83ef5b04445cc4581c8e86d8224eddd09f1157"),
             // p - 1 (i.e. 2^255 - 20).
-            hex!(
-                "ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f"
-            ),
+            hex!("ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f"),
             // p (i.e. 2^255 - 19).
-            hex!(
-                "edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f"
-            ),
+            hex!("edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f"),
             // p + 1 (i.e. 2^255 - 18).
-            hex!(
-                "eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f"
-            ),
+            hex!("eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f"),
         ];
 
         // An arbitrary non-zero private key for the local side. The exact

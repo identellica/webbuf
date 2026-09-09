@@ -1,6 +1,6 @@
 {
   "name": "@webbuf/acb3dh",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "AES+CBC encryption/decryption with blake3 mac and secp256k1 Diffie-Hellman shared secret for web, node.js, deno and bun.",
   "repository": {
     "type": "git",
@@ -15,6 +15,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --fix",
     "format": "prettier --write . --ignore-path ../.prettierignore",
+    "format:check": "prettier --check . --ignore-path ../.prettierignore",
     "fix": "bun run typecheck && bun run lint && bun run format",
     "build": "tsc -p tsconfig.build.json",
     "prepublishOnly": "bun run clean && bun run build"

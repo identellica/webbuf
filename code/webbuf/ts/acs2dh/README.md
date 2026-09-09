@@ -51,15 +51,16 @@ console.log(decrypted.toUtf8()); // "Hello Bob!"
 3. Encrypts/decrypts using ACS2 (AES-CBC + SHA-256 HMAC)
 
 Both parties can derive the same shared secret:
+
 - Alice: `sharedSecret(alicePriv, bobPub)`
 - Bob: `sharedSecret(bobPriv, alicePub)`
 
 ## API
 
-| Function | Description |
-|----------|-------------|
+| Function                                         | Description                   |
+| ------------------------------------------------ | ----------------------------- |
 | `acs2dhEncrypt(privKey, pubKey, plaintext, iv?)` | Encrypt with ECDH-derived key |
-| `acs2dhDecrypt(privKey, pubKey, ciphertext)` | Decrypt with ECDH-derived key |
+| `acs2dhDecrypt(privKey, pubKey, ciphertext)`     | Decrypt with ECDH-derived key |
 
 ## License
 

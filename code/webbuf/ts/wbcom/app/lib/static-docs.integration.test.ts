@@ -77,7 +77,12 @@ test("built static preview serves every package and composed documentation", asy
       if (pkg.slug === "core") {
         const text = html.replace(/<[^>]*>/g, "");
         expect(text).toContain("WebBuf 4 byte access");
-        expect(text).toContain("in-progress WebBuf 4 source contract");
+        expect(text).toContain("WebBuf 4.0.0 was released");
+        expect(text).toContain("all 29 WebBuf npm libraries");
+        expect(text).not.toContain("in-progress WebBuf 4 source contract");
+        expect(text).not.toContain(
+          "not a claim that version 4 is already published",
+        );
         expect(text).toContain("buf.bytes[i]");
         expect(text).toContain("SharedArrayBuffer");
         expect(text).toContain("selected.bytes");

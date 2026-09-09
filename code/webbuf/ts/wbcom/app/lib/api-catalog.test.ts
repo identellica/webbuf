@@ -93,6 +93,22 @@ describe("generated API catalog", () => {
     expect(PACKAGES.map((pkg) => pkg.npm).sort()).toEqual(names);
   });
 
+  test("rw documents all five typed LE reader and writer pairs", () => {
+    const rw = allApi["@webbuf/rw"];
+    if (!rw) throw new Error("Missing rw API");
+    const reader = rw.exports.find(
+      (entry) => entry.name === "BufReader",
+    )?.signatures;
+    const writer = rw.exports.find(
+      (entry) => entry.name === "BufWriter",
+    )?.signatures;
+    for (const bits of [16, 32, 64, 128, 256]) {
+      expect(reader).toContain(`readU${bits}LE(): U${bits}LE`);
+      // The existing extractor resolves polymorphic `this` to the class name.
+      expect(writer).toContain(`writeU${bits}LE(value: U${bits}LE): BufWriter`);
+    }
+  });
+
   test("core exposes composition, a single constructor and public iterator", () => {
     const core = allApi["@webbuf/webbuf"];
     if (!core) throw new Error("Missing core API");

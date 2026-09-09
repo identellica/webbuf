@@ -29,17 +29,18 @@ const salt = WebBuf.fromUtf8("random salt");
 const iterations = 100_000;
 const keyLen = 32;
 
-const derivedKey = pbkdf2Sha256(password, salt, iterations, keyLen);  // FixedBuf<32>
+const derivedKey = pbkdf2Sha256(password, salt, iterations, keyLen); // FixedBuf<32>
 console.log(derivedKey.toHex());
 ```
 
 ## API
 
-| Function | Description |
-| -------- | ----------- |
+| Function                                                                                      | Description              |
+| --------------------------------------------------------------------------------------------- | ------------------------ |
 | `pbkdf2Sha256<N>(password: WebBuf, salt: WebBuf, iterations: number, keyLen: N): FixedBuf<N>` | Derive key from password |
 
 **Parameters:**
+
 - `password` - Password bytes (any length)
 - `salt` - Salt bytes (any length, should be random)
 - `iterations` - Number of HMAC rounds (higher = slower + more secure)

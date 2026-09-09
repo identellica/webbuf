@@ -44,21 +44,23 @@ try {
 ## How It Works
 
 **Encryption:**
+
 1. Encrypts plaintext with AES-CBC (random IV)
 2. Computes SHA-256 HMAC over the ciphertext
 3. Returns: `HMAC (32 bytes) || IV (16 bytes) || encrypted data`
 
 **Decryption:**
+
 1. Extracts and verifies the HMAC
 2. Throws if HMAC doesn't match (tampered data)
 3. Decrypts and returns plaintext
 
 ## API
 
-| Function | Description |
-|----------|-------------|
-| `acs2Encrypt(plaintext, key, iv?)` | Encrypt with HMAC. Optional custom IV. |
-| `acs2Decrypt(ciphertext, key)` | Decrypt and verify. Throws on auth failure. |
+| Function                           | Description                                 |
+| ---------------------------------- | ------------------------------------------- |
+| `acs2Encrypt(plaintext, key, iv?)` | Encrypt with HMAC. Optional custom IV.      |
+| `acs2Decrypt(ciphertext, key)`     | Decrypt and verify. Throws on auth failure. |
 
 ## License
 
